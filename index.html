@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+  <meta charset="UTF-8"/>
+  <title>ZONE</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
+  <link rel="icon" href="zone.jpg" type="image/png">
+  <style>
+    /* ===== RESET & BASE ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f0 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    /* ===== CONTAINER PRINCIPAL ===== */
+    .container {
+      background: #ffffff;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.04);
+      padding: 48px 40px 40px;
+      width: 400px;
+      max-width: 100%;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #6C63FF, #4A3FCF, #6C63FF);
+      background-size: 200% 100%;
+      animation: gradientMove 3s ease infinite;
+    }
+
+    @keyframes gradientMove {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    /* ===== LOGO ===== */
+    .logo-section {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .logo-img {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6C63FF, #4A3FCF);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      font-size: 36px;
+      font-weight: 800;
+      color: #ffffff;
+      border: 3px solid #6C63FF;
+      padding: 2px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      user-select: none;
+    }
+
+    .logo-img:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(108, 99, 255, 0.25);
+    }
+
+    .container h2 {
+      text-align: center;
+      font-size: 28px;
+      font-weight: 800;
+      color: #1a1a2e;
+      margin-top: 12px;
+      margin-bottom: 32px;
+      letter-spacing: -0.5px;
+    }
+
+    .container h2 span {
+      background: linear-gradient(135deg, #6C63FF, #4A3FCF);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* ===== TABS ===== */
+    .tabs {
+      display: flex;
+      background: #f0f2f5;
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 32px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 10px 0;
+      border: none;
+      background: transparent;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 14px;
+      color: #6b7280;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .tab-btn.active {
+      background: #ffffff;
+      color: #6C63FF;
+      box-shadow: 0 4px 12px rgba(108, 99, 255, 0.15);
+    }
+
+    .tab-btn:hover:not(.active) {
+      color: #1a1a2e;
+    }
+
+    /* ===== SECTIONS ===== */
+    #section-login, #section-cadastro, #section-recuperar {
+      animation: fadeSlide 0.4s ease;
+    }
+
+    #section-recuperar {
+      display: none;
+    }
+
+    @keyframes fadeSlide {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ===== STEP INDICATOR ===== */
+    .step-indicator {
+      display: flex;
+      justify-content: space-between;
+      margin: 8px 0 32px 0;
+      position: relative;
+      padding: 0 10px;
+    }
+
+    .step-indicator::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 15%;
+      right: 15%;
+      height: 2px;
+      background: #e5e7eb;
+      transform: translateY(-50%);
+      z-index: 1;
+    }
+
+    .step {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #e5e7eb;
+      color: #6b7280;
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 2;
+      border: 2px solid #ffffff;
+    }
+
+    .step.active {
+      background: #6C63FF;
+      color: #ffffff;
+      box-shadow: 0 4px 16px rgba(108, 99, 255, 0.3);
+      transform: scale(1.05);
+    }
+
+    .step.done {
+      background: #34d399;
+      color: #ffffff;
+    }
+
+    /* ===== STEP CONTENT ===== */
+    .step-content {
+      animation: fadeSlide 0.35s ease;
+    }
+
+    .step-content h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .step-content h3 i {
+      color: #6C63FF;
+      font-size: 18px;
+    }
+
+    .step-content p {
+      color: #6b7280;
+      text-align: center;
+      margin-bottom: 24px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* ===== INPUTS ===== */
+    .input-group {
+      position: relative;
+      margin-bottom: 18px;
+    }
+
+    .input-group i {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #9ca3af;
+      font-size: 16px;
+      transition: color 0.3s ease;
+    }
+
+    .input-group:focus-within i {
+      color: #6C63FF;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px 16px 14px 44px;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      background: #fafbfc;
+      color: #1a1a2e;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #6C63FF;
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(108, 99, 255, 0.1);
+    }
+
+    input::placeholder {
+      color: #9ca3af;
+    }
+
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+
+    /* ===== PHOTO UPLOAD ===== */
+    .photo-upload-container {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .photo-preview {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 3px dashed #d1d5db;
+      margin: 0 auto 12px;
+      background: #fafbfc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .photo-preview:hover {
+      border-color: #6C63FF;
+      background: #f0f0ff;
+      transform: scale(1.02);
+    }
+
+    .photo-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .photo-preview i {
+      font-size: 32px;
+      color: #9ca3af;
+    }
+
+    .photo-upload-text {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+
+    #photo-input {
+      display: none;
+    }
+
+    .photo-btn {
+      background: #f3f4f6;
+      color: #1a1a2e;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .photo-btn:hover {
+      background: #6C63FF;
+      color: #ffffff;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn-primary {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #6C63FF, #4A3FCF);
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(108, 99, 255, 0.3);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      width: 100%;
+      padding: 14px;
+      background: #f3f4f6;
+      color: #1a1a2e;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .btn-secondary:hover {
+      background: #e5e7eb;
+    }
+
+    .form-navigation {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .nav-btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .nav-btn.next {
+      background: #6C63FF;
+      color: #ffffff;
+    }
+
+    .nav-btn.next:hover {
+      background: #4A3FCF;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(108, 99, 255, 0.3);
+    }
+
+    .nav-btn.prev {
+      background: #f3f4f6;
+      color: #1a1a2e;
+    }
+
+    .nav-btn.prev:hover {
+      background: #e5e7eb;
+    }
+
+    .nav-btn.submit {
+      background: linear-gradient(135deg, #34d399, #059669);
+      color: #ffffff;
+    }
+
+    .nav-btn.submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(52, 211, 153, 0.3);
+    }
+
+    /* ===== LINK BUTTON ===== */
+    .link-btn {
+      background: none;
+      border: none;
+      color: #6b7280;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      margin-top: 16px;
+      transition: color 0.3s ease;
+      float: right;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .link-btn:hover {
+      color: #6C63FF;
+    }
+
+    .back-link {
+      background: none;
+      border: none;
+      color: #6C63FF;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: color 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .back-link:hover {
+      color: #4A3FCF;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 480px) {
+      .container {
+        padding: 32px 20px 28px;
+        border-radius: 16px;
+      }
+
+      .container h2 {
+        font-size: 24px;
+        margin-bottom: 24px;
+      }
+
+      .step {
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
+      }
+
+      .photo-preview {
+        width: 80px;
+        height: 80px;
+      }
+
+      .nav-btn {
+        padding: 10px 16px;
+        font-size: 13px;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .container {
+        padding: 24px 16px 20px;
+      }
+
+      .form-navigation {
+        flex-direction: column;
+      }
+
+      .nav-btn {
+        padding: 12px;
+      }
+    }
+
+    /* ===== SWEETALERT OVERRIDE ===== */
+    .swal2-popup {
+      border-radius: 16px !important;
+      font-family: 'Inter', sans-serif !important;
+    }
+
+    .swal2-title {
+      color: #1a1a2e !important;
+      font-weight: 700 !important;
+    }
+
+    .swal2-confirm {
+      background: #6C63FF !important;
+      border-radius: 10px !important;
+      font-weight: 600 !important;
+      padding: 10px 28px !important;
+    }
+
+    .swal2-confirm:hover {
+      background: #4A3FCF !important;
+    }
+
+    .swal2-cancel {
+      border-radius: 10px !important;
+      font-weight: 600 !important;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <!-- LOGO -->
+  <div class="logo-section">
+    <div class="logo-img">Z</div>
+  </div>
+  <h2><span>ZONE</span></h2>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab-btn active" id="tab-login" onclick="switchMainSection('login')">
+      <i class="fa-solid fa-arrow-right-to-bracket"></i> LOGIN
+    </button>
+    <button class="tab-btn" id="tab-cadastro" onclick="switchMainSection('cadastro')">
+      <i class="fa-solid fa-user-plus"></i> CADASTRO
+    </button>
+  </div>
+  
+  <!-- ===== LOGIN SECTION ===== -->
+  <section id="section-login" style="display:block;">
+    <form onsubmit="loginUser(); return false;">
+      <div class="input-group">
+        <i class="fa-solid fa-envelope"></i>
+        <input type="email" id="login-email" placeholder="Seu e-mail" required autocomplete="email" />
+      </div>
+      <div class="input-group">
+        <i class="fa-solid fa-lock"></i>
+        <input type="password" id="login-senha" placeholder="Sua senha" required autocomplete="current-password" />
+      </div>
+      <button type="submit" class="btn-primary">
+        <i class="fa-solid fa-arrow-right-to-bracket"></i> ENTRAR
+      </button>
+      <button class="link-btn" type="button" onclick="showRecuperar()">
+        <i class="fa-solid fa-circle-question"></i> Esqueceu a senha?
+      </button>
+    </form>
+  </section>
+
+  <!-- ===== RECUPERAR SENHA SECTION ===== -->
+  <section id="section-recuperar">
+    <div style="margin-bottom: 24px;">
+      <button class="back-link" type="button" onclick="switchMainSection('login')">
+        <i class="fa-solid fa-arrow-left"></i> Voltar para Login
+      </button>
+    </div>
+    <form onsubmit="sendPasswordReset(); return false;">
+      <p style="color: #6b7280; text-align: center; margin-bottom: 24px; font-size: 14px; line-height: 1.6;">
+        Digite seu e-mail para receber um link de redefinição de senha.
+      </p>
+      <div class="input-group">
+        <i class="fa-solid fa-envelope"></i>
+        <input type="email" id="reset-email" placeholder="Seu e-mail" required autocomplete="email" />
+      </div>
+      <button type="submit" class="btn-primary">
+        <i class="fa-solid fa-paper-plane"></i> ENVIAR LINK
+      </button>
+    </form>
+  </section>
+
+  <!-- ===== REGISTER SECTION ===== -->
+  <section id="section-cadastro" style="display:none;">
+    <!-- Step Indicator -->
+    <div class="step-indicator">
+      <div class="step active" id="step-1">1</div>
+      <div class="step" id="step-2">2</div>
+      <div class="step" id="step-3">3</div>
+    </div>
+
+    <form id="multi-step-form" onsubmit="registerUser(); return false;">
+      
+      <!-- STEP 1 -->
+      <div class="step-content" id="content-1" style="display:block;">
+        <h3><i class="fa-solid fa-user-circle"></i> Dados Pessoais</h3>
+        
+        <!-- Photo Upload -->
+        <div class="photo-upload-container">
+          <div class="photo-preview" id="photo-preview" onclick="document.getElementById('photo-input').click()">
+            <i class="fa-solid fa-camera"></i>
+          </div>
+          <div class="photo-upload-text">Clique para adicionar foto de perfil</div>
+          <input type="file" id="photo-input" accept="image/*" onchange="handlePhotoUpload(event)" />
+          <button type="button" class="photo-btn" onclick="document.getElementById('photo-input').click()">
+            <i class="fa-solid fa-upload"></i> Escolher Foto
+          </button>
+        </div>
+
+        <div class="input-group">
+          <i class="fa-solid fa-file-signature"></i>
+          <input type="text" id="reg-nome" placeholder="Nome completo" required />
+        </div>
+        <div class="input-group">
+          <i class="fa-solid fa-calendar-alt"></i>
+          <input type="date" id="reg-nascimento" required />
+        </div>
+        <div class="form-navigation">
+          <span></span>
+          <button type="button" class="nav-btn next" onclick="nextStep(1)">
+            PRÓXIMO <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="step-content" id="content-2" style="display:none;">
+        <h3><i class="fa-solid fa-lock-alt"></i> Contato e Segurança</h3>
+        <div class="input-group">
+          <i class="fa-solid fa-phone"></i>
+          <input type="number" id="reg-telefone" placeholder="Telefone (somente números)" required />
+        </div>
+        <div class="input-group">
+          <i class="fa-solid fa-envelope"></i>
+          <input type="email" id="reg-email" placeholder="E-mail" required autocomplete="email" />
+        </div>
+        <div class="input-group">
+          <i class="fa-solid fa-lock"></i>
+          <input type="password" id="reg-senha" placeholder="Criar senha (mín. 6 caracteres)" required autocomplete="new-password" />
+        </div>
+        <div class="form-navigation">
+          <button type="button" class="nav-btn prev" onclick="prevStep(2)">
+            <i class="fa-solid fa-arrow-left"></i> ANTERIOR
+          </button>
+          <button type="button" class="nav-btn next" onclick="nextStep(2)">
+            PRÓXIMO <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="step-content" id="content-3" style="display:none;">
+        <h3><i class="fa-solid fa-check-circle"></i> Finalização</h3>
+        <p>Confirme sua senha e finalize seu cadastro na ZONE.</p>
+        <div class="input-group">
+          <i class="fa-solid fa-key"></i>
+          <input type="password" id="reg-confirma" placeholder="Confirmar senha" required autocomplete="new-password" />
+        </div>
+        <div class="form-navigation">
+          <button type="button" class="nav-btn prev" onclick="prevStep(3)">
+            <i class="fa-solid fa-arrow-left"></i> ANTERIOR
+          </button>
+          <button type="submit" class="nav-btn submit">
+            <i class="fa-solid fa-paper-plane"></i> CADASTRAR
+          </button>
+        </div>
+      </div>
+    </form>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  // ===== GLOBAL VARIABLES =====
+  let currentStep = 1;
+  const totalSteps = 3;
+  let profilePhotoBase64 = null;
+
+  // ===== PHOTO UPLOAD =====
+  function handlePhotoUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+      if (!file.type.match('image.*')) {
+        Swal.fire({ icon: 'error', title: 'Erro', text: 'Por favor, selecione apenas arquivos de imagem.' });
+        return;
+      }
+
+      if (file.size > 2 * 1024 * 1024) {
+        Swal.fire({ icon: 'error', title: 'Erro', text: 'A imagem deve ter no máximo 2MB.' });
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        profilePhotoBase64 = e.target.result;
+        const preview = document.getElementById('photo-preview');
+        preview.innerHTML = `<img src="${profilePhotoBase64}" alt="Preview da Foto">`;
+        
+        Swal.fire({
+          icon: 'success',
+          title: 'Foto carregada!',
+          text: 'Sua foto de perfil foi carregada com sucesso.',
+          timer: 2000,
+          showConfirmButton: false
+        });
+      };
+      reader.onerror = function() {
+        Swal.fire({ icon: 'error', title: 'Erro', text: 'Erro ao carregar a imagem. Tente novamente.' });
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  // ===== STEP VALIDATION =====
+  function validateStep(step) {
+    let isValid = true;
+    const inputs = document.querySelectorAll(`#content-${step} input[required]`);
+    
+    inputs.forEach(input => {
+      if (!input.value.trim()) {
+        isValid = false;
+      }
+    });
+
+    if (step === 2) {
+      const email = document.getElementById('reg-email').value.trim();
+      const senha = document.getElementById('reg-senha').value;
+      if (!/\S+@\S+\.\S+/.test(email)) {
+        Swal.fire({ icon: 'error', title: 'Erro', text: 'Por favor, insira um endereço de e-mail válido.' });
+        return false;
+      }
+      if (senha.length < 6) {
+        Swal.fire({ icon: 'error', title: 'Erro', text: 'A senha deve ter no mínimo 6 caracteres.' });
+        return false;
+      }
+    }
+    
+    if (!isValid) {
+      Swal.fire({ icon: 'warning', title: 'Atenção', text: 'Preencha todos os campos obrigatórios para continuar.' });
+    }
+    return isValid;
+  }
+
+  // ===== NAVIGATION =====
+  function nextStep(step) {
+    if (validateStep(step)) {
+      document.getElementById(`content-${step}`).style.display = 'none';
+      document.getElementById(`step-${step}`).classList.add('done');
+      document.getElementById(`step-${step}`).classList.remove('active');
+      
+      currentStep = step + 1;
+      
+      const nextContent = document.getElementById(`content-${currentStep}`);
+      const nextStepIndicator = document.getElementById(`step-${currentStep}`);
+      
+      setTimeout(() => {
+        nextContent.style.display = 'block';
+        nextStepIndicator.classList.add('active');
+      }, 100);
+    }
+  }
+
+  function prevStep(step) {
+    document.getElementById(`content-${step}`).style.display = 'none';
+    document.getElementById(`step-${step}`).classList.remove('active');
+    document.getElementById(`step-${step-1}`).classList.remove('done');
+
+    currentStep = step - 1;
+    
+    const prevContent = document.getElementById(`content-${currentStep}`);
+    const prevStepIndicator = document.getElementById(`step-${currentStep}`);
+
+    setTimeout(() => {
+      prevContent.style.display = 'block';
+      prevStepIndicator.classList.add('active');
+    }, 100);
+  }
+
+  // ===== SWITCH BETWEEN LOGIN / REGISTER / RECUPERAR =====
+  window.switchMainSection = function(section) {
+    document.getElementById('section-cadastro').style.display = section === 'cadastro' ? 'block' : 'none';
+    document.getElementById('section-login').style.display = section === 'login' ? 'block' : 'none';
+    document.getElementById('section-recuperar').style.display = section === 'recuperar' ? 'block' : 'none';
+    
+    document.getElementById('tab-cadastro').classList.toggle('active', section === 'cadastro');
+    document.getElementById('tab-login').classList.toggle('active', section === 'login');
+
+    if (section === 'cadastro') {
+      document.querySelectorAll('.step-content').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.step').forEach(el => el.classList.remove('active', 'done'));
+      document.getElementById('content-1').style.display = 'block';
+      document.getElementById('step-1').classList.add('active');
+      currentStep = 1;
+      
+      profilePhotoBase64 = null;
+      const preview = document.getElementById('photo-preview');
+      preview.innerHTML = '<i class="fa-solid fa-camera"></i>';
+    }
+  }
+
+  // ===== SHOW RECUPERAR SECTION =====
+  window.showRecuperar = function() {
+    document.getElementById('section-login').style.display = 'none';
+    document.getElementById('section-recuperar').style.display = 'block';
+    document.getElementById('section-cadastro').style.display = 'none';
+  }
+
+  window.onload = () => switchMainSection('login');
+</script>
+
+<script type="module">
+  // ===== FIREBASE IMPORTS =====
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+  import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+
+  // ===== FIREBASE CONFIG =====
+  const firebaseConfig = {
+    apiKey: "AIzaSyBkS3OI-pDr30aqp8GHjeuWd1J2HUmdqcg",
+    authDomain: "shelio.firebaseapp.com",
+    databaseURL: "https://shelio-default-rtdb.firebaseio.com",
+    projectId: "shelio",
+    storageBucket: "shelio.firebasestorage.app",
+    messagingSenderId: "92498333116",
+    appId: "1:92498333116:web:a8a117e2b126caab93efb9"
+  };
+    
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+
+  // ===== REGISTER FUNCTION =====
+  window.registerUser = async function() {
+    let nome = document.getElementById('reg-nome').value.trim();
+    let nascimento = document.getElementById('reg-nascimento').value.trim();
+    let telefone = document.getElementById('reg-telefone').value.trim();
+    let email = document.getElementById('reg-email').value.trim();
+    let senha = document.getElementById('reg-senha').value;
+    let senha2 = document.getElementById('reg-confirma').value;
+
+    if (senha !== senha2) {
+      Swal.fire({ icon: 'error', title: 'Erro', text: 'As senhas não coincidem! Volte ao passo 2.' });
+      return;
+    }
+    if (senha.length < 6) {
+      Swal.fire({ icon: 'error', title: 'Erro', text: 'A senha deve ter no mínimo 6 caracteres.' });
+      return;
+    }
+    
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
+      const userId = userCredential.user.uid;
+
+      const userData = {
+        displayName: nome,
+        nascimento: nascimento,
+        telefone: telefone,
+        email: email,
+        profilePhoto: profilePhotoBase64 || null,
+        createdAt: new Date().toISOString()
+      };
+
+      await set(ref(db, 'users/' + userId), userData);
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Cadastro realizado!',
+        text: 'Bem-vindo(a) à ZONE! Faça login para continuar.',
+        confirmButtonText: 'Ir para Login'
+      }).then(() => {
+        switchMainSection('login');
+        document.getElementById('login-email').value = email;
+      });
+    } catch (error) {
+      let errorMsg = error.message;
+      if (error.code === 'auth/email-already-in-use') {
+        errorMsg = 'Este e-mail já está cadastrado. Faça login ou use outro e-mail.';
+      }
+      Swal.fire({
+        icon: 'error',
+        title: 'Erro no Cadastro',
+        text: errorMsg
+      });
+    }
+  };
+
+  // ===== LOGIN FUNCTION =====
+  window.loginUser = async function() {
+    let email = document.getElementById('login-email').value.trim();
+    let senha = document.getElementById('login-senha').value;
+    
+    if (!email || !senha) {
+      Swal.fire({ icon: 'warning', title: 'Atenção', text: 'Preencha todos os campos para fazer login.' });
+      return;
+    }
+    
+    try {
+      await signInWithEmailAndPassword(auth, email, senha);
+      Swal.fire({
+        icon: 'success',
+        title: 'Bem-vindo(a)!',
+        text: 'Login realizado com sucesso!',
+        timer: 1500,
+        showConfirmButton: false
+      }).then(() => {
+        window.location.href = 'socialsphere.html';
+      });
+    } catch (error) {
+      let errorMsg = error.message;
+      if (error.code === 'auth/user-not-found') {
+        errorMsg = 'Usuário não encontrado. Verifique seu e-mail ou cadastre-se.';
+      } else if (error.code === 'auth/wrong-password') {
+        errorMsg = 'Senha incorreta. Tente novamente.';
+      } else if (error.code === 'auth/invalid-email') {
+        errorMsg = 'E-mail inválido. Verifique o formato.';
+      }
+      Swal.fire({
+        icon: 'error',
+        title: 'Erro ao fazer login',
+        text: errorMsg
+      });
+    }
+  };
+
+  // ===== PASSWORD RESET FUNCTION =====
+  window.sendPasswordReset = async function() {
+    const email = document.getElementById('reset-email').value.trim();
+    
+    if (!email) {
+      Swal.fire({ icon: 'warning', title: 'Atenção', text: 'Digite seu e-mail para recuperar a senha.' });
+      return;
+    }
+
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      Swal.fire({ icon: 'error', title: 'Erro', text: 'Por favor, insira um endereço de e-mail válido.' });
+      return;
+    }
+
+    try {
+      await sendPasswordResetEmail(auth, email);
+      Swal.fire({
+        icon: 'success',
+        title: 'E-mail enviado!',
+        text: 'Verifique sua caixa de entrada e siga as instruções para redefinir sua senha.',
+        confirmButtonText: 'OK'
+      }).then(() => {
+        switchMainSection('login');
+        document.getElementById('login-email').value = email;
+        document.getElementById('reset-email').value = '';
+      });
+    } catch (error) {
+      let errorMsg = error.message;
+      if (error.code === 'auth/user-not-found') {
+        errorMsg = 'Este e-mail não está cadastrado. Verifique ou crie uma conta.';
+      } else if (error.code === 'auth/invalid-email') {
+        errorMsg = 'E-mail inválido. Verifique o formato.';
+      }
+      Swal.fire({
+        icon: 'error',
+        title: 'Erro ao enviar',
+        text: errorMsg
+      });
+    }
+  };
+</script>
+</body>
+</html>

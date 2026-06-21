@@ -1,0 +1,1559 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>conexões · chat real</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        body {
+            background: #f0f4f9;
+        }
+        .conversation-item {
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .conversation-item:hover {
+            background: #f5f9ff;
+        }
+        .conversation-item.active {
+            background: #eef4fe;
+            border-left: 3px solid #3b82f6;
+        }
+        .message-bubble {
+            max-width: 75%;
+            padding: 8px 14px;
+            border-radius: 20px;
+            word-wrap: break-word;
+        }
+        .message-sent {
+            background: #3b82f6;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+        .message-received {
+            background: #f1f5f9;
+            color: #1e293b;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+        .sticker-btn {
+            font-size: 32px;
+            cursor: pointer;
+            transition: transform 0.1s;
+            padding: 8px;
+            border-radius: 16px;
+        }
+        .sticker-btn:hover {
+            transform: scale(1.15);
+            background: #f1f5f9;
+        }
+        .sticker-picker {
+            position: absolute;
+            bottom: 75px;
+            left: 20px;
+            background: white;
+            border-radius: 28px;
+            padding: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            display: none;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            z-index: 50;
+            border: 1px solid #eef3fc;
+            max-width: 350px;
+        }
+        .sticker-picker.show {
+            display: grid;
+        }
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        .toast-msg {
+            position: fixed;
+            bottom: 80px;
+            left: 20px;
+            right: 20px;
+            background: #1e293b;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 60px;
+            text-align: center;
+            z-index: 1000;
+            animation: fadeUp 0.25s ease;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .bottom-nav {
+            position: fixed;
+            bottom: 16px;
+            left: 16px;
+            right: 16px;
+            background: rgba(255,255,255,0.96);
+            backdrop-filter: blur(12px);
+            border-radius: 60px;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 16px;
+            border: 1px solid #eef3fc;
+            max-width: 480px;
+            margin: 0 auto;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+            z-index: 50;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .bottom-nav.hide-nav {
+            transform: translateY(100px);
+            opacity: 0;
+            pointer-events: none;
+        }
+        .nav-link {
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            color: #7e95ae;
+            font-size: 11px;
+            font-weight: 500;
+            position: relative;
+        }
+        .nav-link i {
+            font-size: 20px;
+        }
+        .nav-link.active {
+            color: #3b82f6;
+        }
+        .nav-badge {
+            position: absolute;
+            top: -6px;
+            right: -8px;
+            background: #ef4444;
+            color: white;
+            font-size: 9px;
+            font-weight: bold;
+            border-radius: 30px;
+            min-width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+        }
+        .image-preview {
+            max-width: 200px;
+            max-height: 150px;
+            border-radius: 12px;
+            margin-top: 4px;
+            cursor: pointer;
+        }
+        .visto-texto {
+            font-size: 9px;
+            margin-top: 2px;
+            text-align: right;
+        }
+        .unread-badge {
+            background: #ef4444;
+            color: white;
+            border-radius: 30px;
+            font-size: 10px;
+            font-weight: bold;
+            min-width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 5px;
+        }
+        .sticker-message {
+            font-size: 48px;
+            line-height: 1.2;
+        }
+        .group-call-panel {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border-radius: 28px;
+            padding: 12px 20px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .call-participants {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+        .tab-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 8px;
+        }
+        .tab-group-btn {
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: transparent;
+            color: #64748b;
+        }
+        .tab-group-btn.active {
+            background: #3b82f6;
+            color: white;
+        }
+        .group-member-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .member-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+    </style>
+</head>
+<body>
+
+<div class="max-w-6xl mx-auto h-screen flex flex-col">
+    <!-- Header -->
+    <div class="bg-white border-b border-gray-100 px-5 py-4 flex justify-between items-center sticky top-0 z-10">
+        <div class="flex items-center gap-3">
+            <i class="fas fa-comment-dots text-2xl text-blue-600"></i>
+            <h1 class="text-xl font-bold text-gray-800">Chat · Tempo Real</h1>
+        </div>
+        <div class="flex gap-2">
+            <button id="newGroupBtn" class="w-9 h-9 rounded-full bg-blue-50 hover:bg-blue-100 transition">
+                <i class="fas fa-users text-blue-600"></i>
+            </button>
+            <button id="logoutBtn" class="w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 transition">
+                <i class="fas fa-sign-out-alt text-gray-600"></i>
+            </button>
+        </div>
+    </div>
+    
+    <div class="flex flex-1 overflow-hidden">
+        <!-- Sidebar de conversas -->
+        <div id="conversationsSidebar" class="w-full md:w-80 bg-white border-r border-gray-100 flex flex-col overflow-hidden">
+            <div class="p-4 border-b border-gray-100">
+                <div class="relative">
+                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                    <input type="text" id="searchInput" placeholder="Buscar conversas..." class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-sm outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+            </div>
+            <div id="conversationsList" class="flex-1 overflow-y-auto divide-y divide-gray-100"></div>
+        </div>
+        
+        <!-- Área do chat -->
+        <div id="chatArea" class="hidden md:flex flex-1 flex-col bg-white relative">
+            <div id="chatHeader" class="p-4 border-b border-gray-100 flex items-center gap-3 sticky top-0 bg-white z-10">
+                <button id="backBtn" class="md:hidden w-8 h-8 rounded-full bg-gray-100">
+                    <i class="fas fa-arrow-left text-gray-600"></i>
+                </button>
+                <div id="chatAvatar" class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-blue-700 flex items-center justify-center text-white font-bold text-lg overflow-hidden"></div>
+                <div class="flex-1">
+                    <h3 id="chatName" class="font-bold text-gray-800">Selecione uma conversa</h3>
+                    <p id="chatStatus" class="text-xs text-gray-500 mt-0.5"></p>
+                </div>
+                <div class="flex gap-2">
+                    <button id="callAudioBtn" class="w-9 h-9 rounded-full bg-green-50 hover:bg-green-100 transition hidden">
+                        <i class="fas fa-phone text-green-600"></i>
+                    </button>
+                    <button id="callVideoBtn" class="w-9 h-9 rounded-full bg-purple-50 hover:bg-purple-100 transition hidden">
+                        <i class="fas fa-video text-purple-600"></i>
+                    </button>
+                    <button id="groupInfoBtn" class="w-9 h-9 rounded-full bg-gray-50 hover:bg-gray-100 transition hidden">
+                        <i class="fas fa-info-circle text-gray-600"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="groupCallStatus" class="hidden"></div>
+            <div id="messagesContainer" class="flex-1 overflow-y-auto p-4 flex flex-col gap-2 bg-gray-50"></div>
+            <div class="p-4 border-t border-gray-100 bg-white relative">
+                <div id="stickerPicker" class="sticker-picker"></div>
+                <div class="flex gap-2 items-center">
+                    <button id="stickerBtn" class="w-10 h-10 rounded-full hover:bg-gray-100 transition">
+                        <i class="far fa-smile-wink text-2xl text-blue-600"></i>
+                    </button>
+                    <button id="imageUploadBtn" class="w-10 h-10 rounded-full hover:bg-gray-100 transition">
+                        <i class="fas fa-image text-2xl text-green-600"></i>
+                    </button>
+                    <input type="text" id="messageInput" placeholder="Digite uma mensagem..." class="flex-1 border border-gray-200 rounded-full px-5 py-3 outline-none focus:ring-2 focus:ring-blue-500 text-sm" disabled>
+                    <button id="sendBtn" class="w-10 h-10 rounded-full bg-blue-600 hover:bg-blue-700 text-white transition disabled:opacity-50" disabled>
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                    <input type="file" id="imageFileInput" accept="image/jpeg,image/png,image/gif,image/webp" class="hidden">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bottom Navigation -->
+<div id="bottomNav" class="bottom-nav">
+    <a href="social.html" class="nav-link">
+        <i class="fas fa-home"></i>
+        <span>Início</span>
+    </a>
+    <a href="amigos.html" class="nav-link">
+        <i class="fas fa-users"></i>
+        <span>Amigos</span>
+        <span id="amigosNotifBadge" class="nav-badge" style="display: none;">0</span>
+    </a>
+    <a href="chat.html" class="nav-link active">
+        <i class="fas fa-comment-dots"></i>
+        <span>Chat</span>
+        <span id="chatNotifBadge" class="nav-badge" style="display: none;">0</span>
+    </a>
+    <a href="perfil.html" class="nav-link">
+        <i class="fas fa-user"></i>
+        <span>Perfil</span>
+    </a>
+</div>
+
+<!-- Modal de criação de grupo -->
+<div id="groupModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-3xl w-full max-w-md mx-4 overflow-hidden shadow-2xl">
+        <div class="p-5 border-b border-gray-100 flex justify-between items-center">
+            <h3 class="text-xl font-bold text-gray-800">Criar Grupo</h3>
+            <button id="closeGroupModalBtn" class="text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        
+        <div class="tab-group px-5 pt-4">
+            <button id="tabInfoBtn" class="tab-group-btn active">Informações</button>
+            <button id="tabMembersBtn" class="tab-group-btn">Adicionar Membros</button>
+        </div>
+        
+        <div id="tabInfoPanel" class="p-5">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Nome do Grupo</label>
+            <input type="text" id="groupNameInput" placeholder="Digite o nome do grupo..." class="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 mb-4">
+            
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Descrição (opcional)</label>
+            <textarea id="groupDescInput" rows="2" placeholder="Descreva o propósito do grupo..." class="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+        </div>
+        
+        <div id="tabMembersPanel" class="p-5 hidden">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Selecione os amigos</label>
+            <div id="friendsListForGroup" class="max-h-64 overflow-y-auto border border-gray-100 rounded-xl divide-y divide-gray-100"></div>
+        </div>
+        
+        <div class="p-5 border-t border-gray-100">
+            <button id="confirmCreateGroupBtn" class="w-full bg-blue-600 text-white py-3 rounded-full font-semibold hover:bg-blue-700 transition">
+                Criar Grupo
+            </button>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, get, set, update, remove, push, onValue, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDpndyjvOk62csgt84AmGDzu3ShqnSHJ_M",
+        authDomain: "sandnney-cb0c4.firebaseapp.com",
+        databaseURL: "https://sandnney-cb0c4-default-rtdb.firebaseio.com",
+        projectId: "sandnney-cb0c4",
+        storageBucket: "sandnney-cb0c4.firebasestorage.app",
+        messagingSenderId: "571535952362",
+        appId: "1:571535952362:web:de395a9c216d9726078a93"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
+    
+    let currentUserId = null;
+    let currentChatId = null;
+    let currentChatType = null;
+    let currentGroupId = null;
+    let currentFriendId = null;
+    let messagesUnsubscribe = null;
+    let conversationsMap = new Map();
+    let groupsMap = new Map();
+    let searchTerm = "";
+    
+    const conversationsList = document.getElementById("conversationsList");
+    const chatArea = document.getElementById("chatArea");
+    const conversationsSidebar = document.getElementById("conversationsSidebar");
+    const chatName = document.getElementById("chatName");
+    const chatStatus = document.getElementById("chatStatus");
+    const chatAvatar = document.getElementById("chatAvatar");
+    const messagesContainer = document.getElementById("messagesContainer");
+    const messageInput = document.getElementById("messageInput");
+    const sendBtn = document.getElementById("sendBtn");
+    const searchInput = document.getElementById("searchInput");
+    const backBtn = document.getElementById("backBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const stickerBtn = document.getElementById("stickerBtn");
+    const stickerPicker = document.getElementById("stickerPicker");
+    const imageUploadBtn = document.getElementById("imageUploadBtn");
+    const imageFileInput = document.getElementById("imageFileInput");
+    const newGroupBtn = document.getElementById("newGroupBtn");
+    const callAudioBtn = document.getElementById("callAudioBtn");
+    const callVideoBtn = document.getElementById("callVideoBtn");
+    const groupInfoBtn = document.getElementById("groupInfoBtn");
+    const bottomNav = document.getElementById("bottomNav");
+    const chatNotifBadge = document.getElementById("chatNotifBadge");
+    const amigosNotifBadge = document.getElementById("amigosNotifBadge");
+    const groupCallStatus = document.getElementById("groupCallStatus");
+    const groupModal = document.getElementById("groupModal");
+    const closeGroupModalBtn = document.getElementById("closeGroupModalBtn");
+    const tabInfoBtn = document.getElementById("tabInfoBtn");
+    const tabMembersBtn = document.getElementById("tabMembersBtn");
+    const tabInfoPanel = document.getElementById("tabInfoPanel");
+    const tabMembersPanel = document.getElementById("tabMembersPanel");
+    const groupNameInput = document.getElementById("groupNameInput");
+    const groupDescInput = document.getElementById("groupDescInput");
+    const friendsListForGroup = document.getElementById("friendsListForGroup");
+    const confirmCreateGroupBtn = document.getElementById("confirmCreateGroupBtn");
+    
+    let selectedFriendsForGroup = new Set();
+    
+    const stickers = [
+        "😀", "😂", "🥰", "😎", "🤣",
+        "😍", "😘", "🥳", "😭", "🤔",
+        "😱", "🥺", "😡", "🔥", "💀",
+        "👻", "🎉", "💯", "✨", "💪",
+        "🙌", "👏", "❤️", "💔", "💖",
+        "⭐", "🌈", "🍕", "🎸", "⚽"
+    ];
+    
+    stickers.forEach(sticker => {
+        const btn = document.createElement("div");
+        btn.className = "sticker-btn text-4xl text-center hover:bg-gray-100 rounded-xl p-2 transition";
+        btn.textContent = sticker;
+        btn.onclick = () => sendSticker(sticker);
+        stickerPicker.appendChild(btn);
+    });
+    
+    function showToast(msg, isError = false) {
+        const existing = document.querySelector(".toast-msg");
+        if (existing) existing.remove();
+        const toast = document.createElement("div");
+        toast.className = "toast-msg";
+        if (isError) toast.style.background = "#ef4444";
+        toast.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-triangle' : 'fa-info-circle'} mr-2"></i> ${msg}`;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+    
+    function getChatId(uid1, uid2) {
+        if (uid1 < uid2) return uid1 + "_" + uid2;
+        return uid2 + "_" + uid1;
+    }
+    
+    function formatTime(timestamp) {
+        if (!timestamp) return "";
+        const d = new Date(timestamp);
+        const now = new Date();
+        if (d.toDateString() === now.toDateString()) {
+            return d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        }
+        return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return "";
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function updateTotalUnreadBadge() {
+        let total = 0;
+        conversationsMap.forEach(conv => { total += conv.unread || 0; });
+        groupsMap.forEach(group => { total += group.unread || 0; });
+        if (total > 0) {
+            chatNotifBadge.style.display = "flex";
+            chatNotifBadge.textContent = total > 99 ? "99+" : total;
+        } else {
+            chatNotifBadge.style.display = "none";
+        }
+    }
+    
+    async function loadConversations() {
+        if (!currentUserId) return;
+        
+        try {
+            conversationsList.innerHTML = `
+                <div class="p-8 text-center text-gray-400">
+                    <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                    <p class="text-sm">Carregando conversas...</p>
+                </div>
+            `;
+            
+            const friendsRef = ref(db, `friends/${currentUserId}`);
+            const friendsSnap = await get(friendsRef);
+            const friendIds = friendsSnap.exists() ? Object.keys(friendsSnap.val()) : [];
+            
+            const groupsRef = ref(db, `userGroups/${currentUserId}`);
+            const groupsSnap = await get(groupsRef);
+            const groupIds = groupsSnap.exists() ? Object.keys(groupsSnap.val()) : [];
+            
+            conversationsMap.clear();
+            groupsMap.clear();
+            
+            for (const friendId of friendIds) {
+                const userRef = ref(db, `users/${friendId}`);
+                const userSnap = await get(userRef);
+                if (!userSnap.exists()) continue;
+                const user = userSnap.val();
+                const chatId = getChatId(currentUserId, friendId);
+                
+                let lastMessage = "Nenhuma mensagem";
+                let lastTime = 0;
+                let unreadCount = 0;
+                
+                const lastMsgRef = ref(db, `chats/${chatId}/lastMessage`);
+                const lastSnap = await get(lastMsgRef);
+                if (lastSnap.exists()) {
+                    lastMessage = lastSnap.val().text || "📎 Mídia";
+                    lastTime = lastSnap.val().timestamp || 0;
+                }
+                
+                const unreadRef = ref(db, `chats/${chatId}/unread/${currentUserId}`);
+                const unreadSnap = await get(unreadRef);
+                unreadCount = unreadSnap.exists() ? unreadSnap.val() : 0;
+                
+                conversationsMap.set(`private_${friendId}`, {
+                    type: 'private',
+                    id: friendId,
+                    chatId: chatId,
+                    name: user.displayName || "Usuário",
+                    avatarUrl: user.avatarUrl,
+                    isOnline: user.isOnline || false,
+                    lastMessage: lastMessage,
+                    lastTime: lastTime,
+                    unread: unreadCount
+                });
+            }
+            
+            for (const groupId of groupIds) {
+                const groupRef = ref(db, `groups/${groupId}`);
+                const groupSnap = await get(groupRef);
+                if (!groupSnap.exists()) continue;
+                const group = groupSnap.val();
+                
+                let lastMessage = "Nenhuma mensagem";
+                let lastTime = 0;
+                let unreadCount = 0;
+                
+                const lastMsgRef = ref(db, `groupChats/${groupId}/lastMessage`);
+                const lastSnap = await get(lastMsgRef);
+                if (lastSnap.exists()) {
+                    lastMessage = lastSnap.val().text || "📎 Mídia";
+                    lastTime = lastSnap.val().timestamp || 0;
+                }
+                
+                const unreadRef = ref(db, `userGroups/${currentUserId}/${groupId}/unreadCount`);
+                const unreadSnap = await get(unreadRef);
+                unreadCount = unreadSnap.exists() ? unreadSnap.val() : 0;
+                
+                groupsMap.set(groupId, {
+                    type: 'group',
+                    id: groupId,
+                    name: group.name,
+                    members: group.members || {},
+                    adminId: group.adminId,
+                    lastMessage: lastMessage,
+                    lastTime: lastTime,
+                    unread: unreadCount
+                });
+            }
+            
+            renderConversationsList();
+            updateTotalUnreadBadge();
+            
+        } catch (error) {
+            console.error("Erro ao carregar conversas:", error);
+            conversationsList.innerHTML = `
+                <div class="p-8 text-center text-red-400">
+                    <i class="fas fa-exclamation-triangle text-2xl mb-2"></i>
+                    <p class="text-sm">Erro ao carregar conversas</p>
+                    <button id="retryLoadBtn" class="mt-3 text-blue-600 underline">Tentar novamente</button>
+                </div>
+            `;
+            document.getElementById("retryLoadBtn")?.addEventListener("click", () => {
+                loadConversations();
+            });
+        }
+    }
+    
+    function renderConversationsList() {
+        let all = [];
+        conversationsMap.forEach(conv => all.push(conv));
+        groupsMap.forEach(group => all.push(group));
+        
+        if (searchTerm.trim()) {
+            const term = searchTerm.toLowerCase();
+            all = all.filter(c => c.name.toLowerCase().includes(term));
+        }
+        
+        all.sort((a, b) => b.lastTime - a.lastTime);
+        
+        if (all.length === 0) {
+            conversationsList.innerHTML = `
+                <div class="p-8 text-center text-gray-400">
+                    <i class="fas fa-comments text-3xl mb-2"></i>
+                    <p class="text-sm">Nenhuma conversa encontrada</p>
+                    <p class="text-xs mt-1">Adicione amigos para começar a conversar</p>
+                </div>
+            `;
+            return;
+        }
+        
+        conversationsList.innerHTML = "";
+        
+        all.forEach(conv => {
+            const isActive = (conv.type === 'private' && currentFriendId === conv.id) || (conv.type === 'group' && currentGroupId === conv.id);
+            const isGroup = conv.type === 'group';
+            const div = document.createElement("div");
+            div.className = `conversation-item p-4 flex items-center gap-3 ${isActive ? 'active' : ''}`;
+            div.setAttribute("data-id", conv.id);
+            
+            let avatarContent = "";
+            if (isGroup) {
+                avatarContent = `<i class="fas fa-users text-white text-xl"></i>`;
+            } else {
+                if (conv.avatarUrl && conv.avatarUrl.startsWith('data:')) {
+                    avatarContent = `<img src="${conv.avatarUrl}" class="avatar-img">`;
+                } else {
+                    avatarContent = conv.name.charAt(0).toUpperCase();
+                }
+            }
+            
+            div.innerHTML = `
+                <div class="relative">
+                    <div class="w-12 h-12 rounded-full ${isGroup ? 'bg-gradient-to-r from-purple-500 to-indigo-600' : 'bg-gradient-to-r from-blue-500 to-blue-700'} flex items-center justify-center text-white font-bold text-lg overflow-hidden">
+                        ${avatarContent}
+                    </div>
+                    ${!isGroup && conv.isOnline ? '<div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>' : ''}
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="flex justify-between items-baseline">
+                        <h4 class="font-semibold text-gray-800 truncate">${escapeHtml(conv.name)}${isGroup ? ' <span class="text-xs text-gray-400">👥</span>' : ''}</h4>
+                        <span class="text-xs text-gray-400 ml-2">${conv.lastTime ? formatTime(conv.lastTime) : ''}</span>
+                    </div>
+                    <p class="text-xs text-gray-500 truncate mt-0.5">${escapeHtml(conv.lastMessage)}</p>
+                </div>
+                ${conv.unread > 0 ? `<div class="unread-badge">${conv.unread > 99 ? '99+' : conv.unread}</div>` : ''}
+            `;
+            
+            div.addEventListener("click", () => {
+                if (conv.type === 'private') {
+                    openPrivateChat(conv.id, conv.chatId, conv.name, conv.avatarUrl);
+                } else {
+                    openGroupChat(conv.id);
+                }
+            });
+            
+            conversationsList.appendChild(div);
+        });
+    }
+    
+    async function openPrivateChat(friendId, chatId, name, avatarUrl) {
+        if (messagesUnsubscribe) messagesUnsubscribe();
+        
+        currentFriendId = friendId;
+        currentChatId = chatId;
+        currentChatType = 'private';
+        currentGroupId = null;
+        
+        chatName.textContent = name;
+        if (avatarUrl && avatarUrl.startsWith('data:')) {
+            chatAvatar.innerHTML = `<img src="${avatarUrl}" class="avatar-img">`;
+        } else {
+            chatAvatar.innerHTML = name.charAt(0).toUpperCase();
+        }
+        
+        callAudioBtn.classList.remove("hidden");
+        callVideoBtn.classList.remove("hidden");
+        groupInfoBtn.classList.add("hidden");
+        groupCallStatus.classList.add("hidden");
+        
+        messageInput.disabled = false;
+        sendBtn.disabled = false;
+        
+        if (window.innerWidth < 768) {
+            conversationsSidebar.classList.add("hidden");
+            chatArea.classList.remove("hidden");
+            chatArea.classList.add("flex");
+        }
+        
+        bottomNav.classList.add("hide-nav");
+        
+        try {
+            await update(ref(db), {
+                [`/chats/${currentChatId}/unread/${currentUserId}`]: 0
+            });
+        } catch(e) { console.error(e); }
+        
+        loadMessagesRealtime();
+        
+        const userRef = ref(db, `users/${friendId}`);
+        onValue(userRef, (snap) => {
+            if (snap.exists() && currentFriendId === friendId) {
+                const isOnline = snap.val().isOnline;
+                chatStatus.innerHTML = isOnline ? '<span class="text-green-600">● Online</span>' : '<span class="text-gray-400">● Offline</span>';
+            }
+        });
+    }
+    
+    async function openGroupChat(groupId) {
+        if (messagesUnsubscribe) messagesUnsubscribe();
+        
+        currentGroupId = groupId;
+        currentChatType = 'group';
+        currentChatId = null;
+        currentFriendId = null;
+        
+        const group = groupsMap.get(groupId);
+        if (!group) return;
+        
+        chatName.textContent = `${group.name} 👥`;
+        chatAvatar.innerHTML = `<i class="fas fa-users text-white text-xl"></i>`;
+        
+        callAudioBtn.classList.remove("hidden");
+        callVideoBtn.classList.remove("hidden");
+        groupInfoBtn.classList.remove("hidden");
+        
+        messageInput.disabled = false;
+        sendBtn.disabled = false;
+        
+        if (window.innerWidth < 768) {
+            conversationsSidebar.classList.add("hidden");
+            chatArea.classList.remove("hidden");
+            chatArea.classList.add("flex");
+        }
+        
+        bottomNav.classList.add("hide-nav");
+        
+        try {
+            await update(ref(db), {
+                [`/userGroups/${currentUserId}/${groupId}/unreadCount`]: 0
+            });
+        } catch(e) { console.error(e); }
+        
+        loadGroupMessagesRealtime();
+        chatStatus.innerHTML = `${Object.keys(group.members).length} membros`;
+        
+        listenGroupCalls(groupId);
+    }
+    
+    function loadMessagesRealtime() {
+        if (!currentChatId) return;
+        
+        const messagesRef = ref(db, `chats/${currentChatId}/messages`);
+        const messagesQuery = query(messagesRef, orderByChild("timestamp"), limitToLast(50));
+        
+        messagesUnsubscribe = onValue(messagesQuery, async (snapshot) => {
+            messagesContainer.innerHTML = "";
+            const messages = [];
+            
+            if (snapshot.exists()) {
+                snapshot.forEach(child => {
+                    messages.push({ id: child.key, ...child.val() });
+                });
+            }
+            
+            messages.sort((a, b) => a.timestamp - b.timestamp);
+            
+            if (messages.length === 0) {
+                messagesContainer.innerHTML = `
+                    <div class="flex-1 flex items-center justify-center text-gray-400">
+                        <div class="text-center">
+                            <i class="fas fa-comment-dots text-4xl mb-3 opacity-30"></i>
+                            <p>Nenhuma mensagem ainda</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            let lastDate = null;
+            
+            messages.forEach(msg => {
+                const msgDate = new Date(msg.timestamp);
+                const today = new Date();
+                let dateStr = msgDate.toLocaleDateString('pt-BR');
+                if (msgDate.toDateString() === today.toDateString()) dateStr = "Hoje";
+                
+                if (dateStr !== lastDate) {
+                    lastDate = dateStr;
+                    const dateDiv = document.createElement("div");
+                    dateDiv.className = "text-center my-2";
+                    dateDiv.innerHTML = `<span class="text-xs bg-gray-200 text-gray-600 px-3 py-1 rounded-full">${dateStr}</span>`;
+                    messagesContainer.appendChild(dateDiv);
+                }
+                
+                const bubble = document.createElement("div");
+                bubble.className = `message-bubble ${msg.senderId === currentUserId ? 'message-sent' : 'message-received'}`;
+                
+                if (msg.type === "sticker") {
+                    bubble.innerHTML = `
+                        <div class="sticker-message">${escapeHtml(msg.text)}</div>
+                        <div class="visto-texto">${formatTime(msg.timestamp)}</div>
+                    `;
+                } else if (msg.type === "image") {
+                    bubble.innerHTML = `
+                        <div>
+                            <img src="${msg.imageUrl}" class="image-preview max-w-[200px] max-h-[150px] rounded-xl" loading="lazy" onclick="window.open('${msg.imageUrl}','_blank')">
+                        </div>
+                        <div class="visto-texto">${formatTime(msg.timestamp)}</div>
+                    `;
+                } else {
+                    bubble.innerHTML = `
+                        <div class="text-sm">${escapeHtml(msg.text)}</div>
+                        <div class="visto-texto">${formatTime(msg.timestamp)}</div>
+                    `;
+                }
+                
+                messagesContainer.appendChild(bubble);
+            });
+            
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        });
+    }
+    
+    function loadGroupMessagesRealtime() {
+        if (!currentGroupId) return;
+        
+        const messagesRef = ref(db, `groupChats/${currentGroupId}/messages`);
+        const messagesQuery = query(messagesRef, orderByChild("timestamp"), limitToLast(50));
+        
+        messagesUnsubscribe = onValue(messagesQuery, (snapshot) => {
+            messagesContainer.innerHTML = "";
+            const messages = [];
+            
+            if (snapshot.exists()) {
+                snapshot.forEach(child => {
+                    messages.push({ id: child.key, ...child.val() });
+                });
+            }
+            
+            messages.sort((a, b) => a.timestamp - b.timestamp);
+            
+            if (messages.length === 0) {
+                messagesContainer.innerHTML = `
+                    <div class="flex-1 flex items-center justify-center text-gray-400">
+                        <div class="text-center">
+                            <i class="fas fa-users text-4xl mb-3 opacity-30"></i>
+                            <p>Nenhuma mensagem no grupo</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            let lastDate = null;
+            
+            messages.forEach(msg => {
+                const msgDate = new Date(msg.timestamp);
+                const today = new Date();
+                let dateStr = msgDate.toLocaleDateString('pt-BR');
+                if (msgDate.toDateString() === today.toDateString()) dateStr = "Hoje";
+                
+                if (dateStr !== lastDate) {
+                    lastDate = dateStr;
+                    const dateDiv = document.createElement("div");
+                    dateDiv.className = "text-center my-2";
+                    dateDiv.innerHTML = `<span class="text-xs bg-gray-200 text-gray-600 px-3 py-1 rounded-full">${dateStr}</span>`;
+                    messagesContainer.appendChild(dateDiv);
+                }
+                
+                const bubble = document.createElement("div");
+                bubble.className = `message-bubble ${msg.senderId === currentUserId ? 'message-sent' : 'message-received'}`;
+                const senderName = msg.senderName || (msg.senderId === currentUserId ? "Você" : "Alguém");
+                
+                if (msg.type === "sticker") {
+                    bubble.innerHTML = `
+                        <div class="text-xs text-gray-500 mb-1">${escapeHtml(senderName)}</div>
+                        <div class="sticker-message">${escapeHtml(msg.text)}</div>
+                        <div class="visto-texto">${formatTime(msg.timestamp)}</div>
+                    `;
+                } else if (msg.type === "image") {
+                    bubble.innerHTML = `
+                        <div class="text-xs text-gray-500 mb-1">${escapeHtml(senderName)}</div>
+                        <div>
+                            <img src="${msg.imageUrl}" class="image-preview max-w-[200px] max-h-[150px] rounded-xl" loading="lazy">
+                        </div>
+                        <div class="visto-texto">${formatTime(msg.timestamp)}</div>
+                    `;
+                } else {
+                    bubble.innerHTML = `
+                        <div class="text-xs text-gray-500 mb-1">${escapeHtml(senderName)}</div>
+                        <div class="text-sm">${escapeHtml(msg.text)}</div>
+                        <div class="visto-texto">${formatTime(msg.timestamp)}</div>
+                    `;
+                }
+                
+                messagesContainer.appendChild(bubble);
+            });
+            
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        });
+    }
+    
+    async function sendMessage(text) {
+        if (!text) return;
+        if (!currentChatId && !currentGroupId) return;
+        
+        try {
+            const messageData = {
+                text: text,
+                senderId: currentUserId,
+                senderName: "Você",
+                timestamp: Date.now(),
+                type: "text"
+            };
+            
+            if (currentChatId) {
+                await push(ref(db, `chats/${currentChatId}/messages`), messageData);
+                await set(ref(db, `chats/${currentChatId}/lastMessage`), {
+                    text: text,
+                    timestamp: Date.now()
+                });
+                
+                const unreadRef = ref(db, `chats/${currentChatId}/unread/${currentFriendId}`);
+                const unreadSnap = await get(unreadRef);
+                await set(unreadRef, (unreadSnap.exists() ? unreadSnap.val() : 0) + 1);
+                
+            } else if (currentGroupId) {
+                await push(ref(db, `groupChats/${currentGroupId}/messages`), messageData);
+                await set(ref(db, `groupChats/${currentGroupId}/lastMessage`), {
+                    text: text,
+                    timestamp: Date.now()
+                });
+                
+                const group = groupsMap.get(currentGroupId);
+                const members = group?.members || {};
+                
+                for (const memberId in members) {
+                    if (memberId !== currentUserId) {
+                        const unreadRef = ref(db, `userGroups/${memberId}/${currentGroupId}/unreadCount`);
+                        const snap = await get(unreadRef);
+                        await set(unreadRef, (snap.exists() ? snap.val() : 0) + 1);
+                    }
+                }
+            }
+            
+            await loadConversations();
+            
+        } catch (error) {
+            console.error("Erro ao enviar mensagem:", error);
+            showToast("Erro ao enviar mensagem", true);
+        }
+    }
+    
+    async function sendSticker(sticker) {
+        if (!sticker) return;
+        if (!currentChatId && !currentGroupId) return;
+        
+        try {
+            const messageData = {
+                text: sticker,
+                senderId: currentUserId,
+                senderName: "Você",
+                timestamp: Date.now(),
+                type: "sticker"
+            };
+            
+            if (currentChatId) {
+                await push(ref(db, `chats/${currentChatId}/messages`), messageData);
+                await set(ref(db, `chats/${currentChatId}/lastMessage`), {
+                    text: `Sticker`,
+                    timestamp: Date.now()
+                });
+                
+                const unreadRef = ref(db, `chats/${currentChatId}/unread/${currentFriendId}`);
+                const unreadSnap = await get(unreadRef);
+                await set(unreadRef, (unreadSnap.exists() ? unreadSnap.val() : 0) + 1);
+                
+            } else if (currentGroupId) {
+                await push(ref(db, `groupChats/${currentGroupId}/messages`), messageData);
+                await set(ref(db, `groupChats/${currentGroupId}/lastMessage`), {
+                    text: `Sticker`,
+                    timestamp: Date.now()
+                });
+                
+                const group = groupsMap.get(currentGroupId);
+                const members = group?.members || {};
+                
+                for (const memberId in members) {
+                    if (memberId !== currentUserId) {
+                        const unreadRef = ref(db, `userGroups/${memberId}/${currentGroupId}/unreadCount`);
+                        const snap = await get(unreadRef);
+                        await set(unreadRef, (snap.exists() ? snap.val() : 0) + 1);
+                    }
+                }
+            }
+            
+            stickerPicker.classList.remove("show");
+            await loadConversations();
+            
+        } catch (error) {
+            console.error("Erro ao enviar sticker:", error);
+            showToast("Erro ao enviar sticker", true);
+        }
+    }
+    
+    async function sendImage(file) {
+        if (file.size > 300 * 1024) {
+            showToast("Imagem muito grande! Máximo 300KB", true);
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            const imageUrl = e.target.result;
+            
+            try {
+                const messageData = {
+                    imageUrl: imageUrl,
+                    senderId: currentUserId,
+                    senderName: "Você",
+                    timestamp: Date.now(),
+                    type: "image",
+                    text: "📷 Imagem"
+                };
+                
+                if (currentChatId) {
+                    await push(ref(db, `chats/${currentChatId}/messages`), messageData);
+                    await set(ref(db, `chats/${currentChatId}/lastMessage`), {
+                        text: "📷 Imagem",
+                        timestamp: Date.now()
+                    });
+                    
+                    const unreadRef = ref(db, `chats/${currentChatId}/unread/${currentFriendId}`);
+                    const unreadSnap = await get(unreadRef);
+                    await set(unreadRef, (unreadSnap.exists() ? unreadSnap.val() : 0) + 1);
+                    
+                } else if (currentGroupId) {
+                    await push(ref(db, `groupChats/${currentGroupId}/messages`), messageData);
+                    await set(ref(db, `groupChats/${currentGroupId}/lastMessage`), {
+                        text: "📷 Imagem",
+                        timestamp: Date.now()
+                    });
+                    
+                    const group = groupsMap.get(currentGroupId);
+                    const members = group?.members || {};
+                    
+                    for (const memberId in members) {
+                        if (memberId !== currentUserId) {
+                            const unreadRef = ref(db, `userGroups/${memberId}/${currentGroupId}/unreadCount`);
+                            const snap = await get(unreadRef);
+                            await set(unreadRef, (snap.exists() ? snap.val() : 0) + 1);
+                        }
+                    }
+                }
+                
+                await loadConversations();
+                
+            } catch (error) {
+                console.error("Erro ao enviar imagem:", error);
+                showToast("Erro ao enviar imagem", true);
+            }
+        };
+        
+        reader.readAsDataURL(file);
+    }
+    
+    async function loadFriendsForGroup() {
+        const friendsRef = ref(db, `friends/${currentUserId}`);
+        const friendsSnap = await get(friendsRef);
+        const friendIds = friendsSnap.exists() ? Object.keys(friendsSnap.val()) : [];
+        
+        friendsListForGroup.innerHTML = "";
+        
+        if (friendIds.length === 0) {
+            friendsListForGroup.innerHTML = `
+                <div class="p-4 text-center text-gray-500">
+                    <p>Você não tem amigos para adicionar</p>
+                </div>
+            `;
+            return;
+        }
+        
+        for (const fid of friendIds) {
+            const userRef = ref(db, `users/${fid}`);
+            const userSnap = await get(userRef);
+            if (userSnap.exists()) {
+                const user = userSnap.val();
+                const div = document.createElement("div");
+                div.className = "flex items-center justify-between p-3 hover:bg-gray-50";
+                div.innerHTML = `
+                    <div>
+                        <span class="font-medium">${escapeHtml(user.displayName)}</span>
+                        <p class="text-xs text-gray-500">${escapeHtml(user.email)}</p>
+                    </div>
+                    <button class="toggle-friend-btn w-8 h-8 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center" data-id="${fid}">
+                        <i class="fas fa-plus"></i>
+                        <i class="fas fa-check hidden"></i>
+                    </button>
+                `;
+                friendsListForGroup.appendChild(div);
+            }
+        }
+        
+        document.querySelectorAll(".toggle-friend-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const fid = btn.getAttribute("data-id");
+                if (selectedFriendsForGroup.has(fid)) {
+                    selectedFriendsForGroup.delete(fid);
+                    btn.classList.remove("bg-blue-600", "text-white");
+                    btn.classList.add("bg-gray-200", "text-gray-600");
+                    btn.querySelector(".fa-check").classList.add("hidden");
+                    btn.querySelector(".fa-plus").classList.remove("hidden");
+                } else {
+                    selectedFriendsForGroup.add(fid);
+                    btn.classList.add("bg-blue-600", "text-white");
+                    btn.classList.remove("bg-gray-200", "text-gray-600");
+                    btn.querySelector(".fa-check").classList.remove("hidden");
+                    btn.querySelector(".fa-plus").classList.add("hidden");
+                }
+            });
+        });
+    }
+    
+    newGroupBtn.addEventListener("click", async () => {
+        selectedFriendsForGroup.clear();
+        groupNameInput.value = "";
+        groupDescInput.value = "";
+        await loadFriendsForGroup();
+        groupModal.classList.remove("hidden");
+        groupModal.classList.add("flex");
+    });
+    
+    closeGroupModalBtn.addEventListener("click", () => {
+        groupModal.classList.add("hidden");
+        groupModal.classList.remove("flex");
+    });
+    
+    tabInfoBtn.addEventListener("click", () => {
+        tabInfoBtn.classList.add("active");
+        tabMembersBtn.classList.remove("active");
+        tabInfoPanel.classList.remove("hidden");
+        tabMembersPanel.classList.add("hidden");
+    });
+    
+    tabMembersBtn.addEventListener("click", () => {
+        tabMembersBtn.classList.add("active");
+        tabInfoBtn.classList.remove("active");
+        tabMembersPanel.classList.remove("hidden");
+        tabInfoPanel.classList.add("hidden");
+    });
+    
+    confirmCreateGroupBtn.addEventListener("click", async () => {
+        const groupName = groupNameInput.value.trim();
+        if (!groupName) {
+            showToast("Digite um nome para o grupo", true);
+            return;
+        }
+        
+        const groupId = "group_" + Date.now() + "_" + Math.random().toString(36).substr(2, 6);
+        const members = {
+            [currentUserId]: { role: 'admin', joinedAt: Date.now() }
+        };
+        
+        selectedFriendsForGroup.forEach(fid => {
+            members[fid] = { role: 'member', joinedAt: Date.now() };
+        });
+        
+        try {
+            await set(ref(db, `groups/${groupId}`), {
+                id: groupId,
+                name: groupName,
+                description: groupDescInput.value,
+                adminId: currentUserId,
+                createdAt: Date.now(),
+                members: members
+            });
+            
+            for (const uid of Object.keys(members)) {
+                await set(ref(db, `userGroups/${uid}/${groupId}`), {
+                    groupId: groupId,
+                    groupName: groupName,
+                    joinedAt: Date.now(),
+                    unreadCount: 0
+                });
+            }
+            
+            showToast(`Grupo "${groupName}" criado!`);
+            groupModal.classList.add("hidden");
+            groupModal.classList.remove("flex");
+            await loadConversations();
+            
+        } catch (error) {
+            console.error("Erro ao criar grupo:", error);
+            showToast("Erro ao criar grupo", true);
+        }
+    });
+    
+    groupInfoBtn.addEventListener("click", async () => {
+        if (!currentGroupId) return;
+        
+        const group = groupsMap.get(currentGroupId);
+        if (!group) return;
+        
+        const isAdmin = group.adminId === currentUserId;
+        let membersHtml = "";
+        
+        for (const [uid, data] of Object.entries(group.members)) {
+            const userRef = ref(db, `users/${uid}`);
+            const userSnap = await get(userRef);
+            const name = userSnap.exists() ? userSnap.val().displayName : "Usuário";
+            
+            membersHtml += `
+                <div class="member-row">
+                    <div>
+                        <i class="fas fa-user-circle mr-2 text-gray-400"></i>
+                        ${escapeHtml(name)} ${data.role === 'admin' ? '👑' : ''}
+                    </div>
+                    ${isAdmin && uid !== currentUserId ? `
+                        <div class="flex gap-2">
+                            <button class="promote-member-btn px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm" data-uid="${uid}">Promover</button>
+                            <button class="remove-member-btn px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm" data-uid="${uid}">Remover</button>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+        
+        let addButtonHtml = "";
+        if (isAdmin) {
+            addButtonHtml = `
+                <button id="addMemberToGroupBtn" class="w-full mt-4 bg-blue-600 text-white py-3 rounded-full font-semibold">
+                    <i class="fas fa-plus mr-2"></i> Adicionar Amigo
+                </button>
+            `;
+        }
+        
+        messagesContainer.innerHTML = `
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-bold text-gray-800">${escapeHtml(group.name)}</h3>
+                    <button id="closeGroupInfoPanel" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                ${group.description ? `<p class="text-gray-600 mb-4">${escapeHtml(group.description)}</p>` : ''}
+                <div class="font-semibold text-gray-700 mb-2">Membros (${Object.keys(group.members).length})</div>
+                <div class="group-member-list border rounded-xl border-gray-100">
+                    ${membersHtml}
+                </div>
+                ${addButtonHtml}
+            </div>
+        `;
+        
+        document.getElementById("closeGroupInfoPanel")?.addEventListener("click", () => {
+            if (currentGroupId) loadGroupMessagesRealtime();
+        });
+        
+        document.querySelectorAll(".promote-member-btn").forEach(btn => {
+            btn.addEventListener("click", async () => {
+                const uid = btn.getAttribute("data-uid");
+                await update(ref(db, `groups/${currentGroupId}/members/${uid}`), { role: 'admin' });
+                showToast("Membro promovido a administrador!");
+                if (currentGroupId) openGroupChat(currentGroupId);
+            });
+        });
+        
+        document.querySelectorAll(".remove-member-btn").forEach(btn => {
+            btn.addEventListener("click", async () => {
+                const uid = btn.getAttribute("data-uid");
+                await remove(ref(db, `groups/${currentGroupId}/members/${uid}`));
+                await remove(ref(db, `userGroups/${uid}/${currentGroupId}`));
+                showToast("Membro removido do grupo!");
+                if (currentGroupId) openGroupChat(currentGroupId);
+            });
+        });
+        
+        document.getElementById("addMemberToGroupBtn")?.addEventListener("click", async () => {
+            const friendsRef = ref(db, `friends/${currentUserId}`);
+            const friendsSnap = await get(friendsRef);
+            const friendIds = friendsSnap.exists() ? Object.keys(friendsSnap.val()) : [];
+            
+            let availableFriends = [];
+            for (const fid of friendIds) {
+                if (!group.members[fid]) {
+                    const userSnap = await get(ref(db, `users/${fid}`));
+                    if (userSnap.exists()) {
+                        availableFriends.push({ id: fid, name: userSnap.val().displayName });
+                    }
+                }
+            }
+            
+            if (availableFriends.length === 0) {
+                showToast("Não há amigos disponíveis para adicionar", true);
+                return;
+            }
+            
+            let friendOptions = "";
+            availableFriends.forEach(f => {
+                friendOptions += `<option value="${f.id}">${escapeHtml(f.name)}</option>`;
+            });
+            
+            messagesContainer.innerHTML = `
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Adicionar ao grupo</h3>
+                    <select id="friendSelectForAdd" class="w-full border border-gray-200 rounded-xl p-3 mb-4">
+                        ${friendOptions}
+                    </select>
+                    <div class="flex gap-2">
+                        <button id="confirmAddMemberBtn" class="flex-1 bg-blue-600 text-white py-2 rounded-full">Adicionar</button>
+                        <button id="cancelAddMemberBtn" class="flex-1 bg-gray-200 text-gray-700 py-2 rounded-full">Cancelar</button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById("confirmAddMemberBtn")?.addEventListener("click", async () => {
+                const select = document.getElementById("friendSelectForAdd");
+                const selectedId = select.value;
+                await update(ref(db, `groups/${currentGroupId}/members/${selectedId}`), {
+                    role: 'member',
+                    joinedAt: Date.now()
+                });
+                await set(ref(db, `userGroups/${selectedId}/${currentGroupId}`), {
+                    groupId: currentGroupId,
+                    groupName: group.name,
+                    joinedAt: Date.now(),
+                    unreadCount: 0
+                });
+                showToast("Amigo adicionado ao grupo!");
+                await loadConversations();
+                if (currentGroupId) openGroupChat(currentGroupId);
+            });
+            
+            document.getElementById("cancelAddMemberBtn")?.addEventListener("click", () => {
+                if (currentGroupId) openGroupChat(currentGroupId);
+            });
+        });
+    });
+    
+    function listenGroupCalls(groupId) {
+        const callsRef = ref(db, `groupCalls/${groupId}`);
+        onValue(callsRef, (snap) => {
+            if (snap.exists()) {
+                const call = snap.val();
+                if (call.active && call.startedBy !== currentUserId) {
+                    groupCallStatus.classList.remove("hidden");
+                    groupCallStatus.innerHTML = `
+                        <div class="group-call-panel mx-4 mt-2">
+                            <div>
+                                <i class="fas fa-${call.type === 'audio' ? 'phone' : 'video'} text-white mr-2"></i>
+                                <span class="text-white font-medium">Chamada de ${call.type === 'audio' ? 'áudio' : 'vídeo'}</span>
+                                <div class="call-participants">${call.participants?.length || 1} participante(s)</div>
+                            </div>
+                            <div class="flex gap-2">
+                                <button id="joinCallBtn" class="bg-green-500 text-white px-4 py-2 rounded-full text-sm font-semibold">Participar</button>
+                                <button id="declineCallBtn" class="bg-red-500 text-white px-4 py-2 rounded-full text-sm font-semibold">Recusar</button>
+                            </div>
+                        </div>
+                    `;
+                    document.getElementById("joinCallBtn")?.addEventListener("click", () => {
+                        showToast("Você entrou na chamada!");
+                        groupCallStatus.classList.add("hidden");
+                    });
+                    document.getElementById("declineCallBtn")?.addEventListener("click", () => {
+                        groupCallStatus.classList.add("hidden");
+                    });
+                } else {
+                    groupCallStatus.classList.add("hidden");
+                }
+            } else {
+                groupCallStatus.classList.add("hidden");
+            }
+        });
+    }
+    
+    function startGroupCall(type) {
+        if (!currentGroupId) {
+            showToast("Selecione um grupo primeiro", true);
+            return;
+        }
+        
+        const callData = {
+            type: type,
+            groupId: currentGroupId,
+            startedBy: currentUserId,
+            startedAt: Date.now(),
+            active: true,
+            participants: [currentUserId]
+        };
+        
+        set(ref(db, `groupCalls/${currentGroupId}`), callData);
+        showToast(`Chamada de ${type === 'audio' ? 'áudio' : 'vídeo'} iniciada!`);
+        
+        groupCallStatus.classList.remove("hidden");
+        groupCallStatus.innerHTML = `
+            <div class="group-call-panel mx-4 mt-2">
+                <div>
+                    <i class="fas fa-${type === 'audio' ? 'phone' : 'video'} text-white mr-2"></i>
+                    <span class="text-white font-medium">Você está em chamada de ${type === 'audio' ? 'áudio' : 'vídeo'}</span>
+                    <div class="call-participants">1 participante</div>
+                </div>
+                <button id="endCallBtn" class="bg-red-500 text-white px-4 py-2 rounded-full text-sm font-semibold">Encerrar</button>
+            </div>
+        `;
+        
+        document.getElementById("endCallBtn")?.addEventListener("click", () => {
+            remove(ref(db, `groupCalls/${currentGroupId}`));
+            groupCallStatus.classList.add("hidden");
+            showToast("Chamada encerrada.");
+        });
+    }
+    
+    callAudioBtn.addEventListener("click", () => {
+        if (currentGroupId) {
+            startGroupCall("audio");
+        } else if (currentFriendId) {
+            showToast(`Chamada de áudio com ${chatName.textContent}`);
+        }
+    });
+    
+    callVideoBtn.addEventListener("click", () => {
+        if (currentGroupId) {
+            startGroupCall("video");
+        } else if (currentFriendId) {
+            showToast(`Chamada de vídeo com ${chatName.textContent}`);
+        }
+    });
+    
+    sendBtn.addEventListener("click", () => {
+        if (messageInput.value.trim()) {
+            sendMessage(messageInput.value.trim());
+            messageInput.value = "";
+        }
+    });
+    
+    messageInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter" && messageInput.value.trim()) {
+            sendMessage(messageInput.value.trim());
+            messageInput.value = "";
+        }
+    });
+    
+    stickerBtn.addEventListener("click", () => {
+        stickerPicker.classList.toggle("show");
+    });
+    
+    imageUploadBtn.addEventListener("click", () => {
+        imageFileInput.click();
+    });
+    
+    imageFileInput.addEventListener("change", (e) => {
+        if (e.target.files[0]) {
+            sendImage(e.target.files[0]);
+        }
+        imageFileInput.value = "";
+    });
+    
+    searchInput.addEventListener("input", (e) => {
+        searchTerm = e.target.value;
+        renderConversationsList();
+    });
+    
+    backBtn.addEventListener("click", () => {
+        conversationsSidebar.classList.remove("hidden");
+        chatArea.classList.add("hidden");
+        chatArea.classList.remove("flex");
+        
+        if (messagesUnsubscribe) {
+            messagesUnsubscribe();
+            messagesUnsubscribe = null;
+        }
+        
+        currentFriendId = null;
+        currentGroupId = null;
+        currentChatId = null;
+        messageInput.disabled = true;
+        sendBtn.disabled = true;
+        bottomNav.classList.remove("hide-nav");
+        groupCallStatus.classList.add("hidden");
+    });
+    
+    logoutBtn.addEventListener("click", async () => {
+        if (currentUserId) {
+            await update(ref(db), {
+                [`/users/${currentUserId}/isOnline`]: false,
+                [`/users/${currentUserId}/lastSeen`]: Date.now()
+            });
+        }
+        await signOut(auth);
+        window.location.href = "social.html";
+    });
+    
+    onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+            window.location.href = "social.html";
+            return;
+        }
+        
+        currentUserId = user.uid;
+        
+        try {
+            await update(ref(db), {
+                [`/users/${currentUserId}/isOnline`]: true,
+                [`/users/${currentUserId}/lastSeen`]: Date.now()
+            });
+        } catch(e) {
+            console.log("Erro ao atualizar status online:", e);
+        }
+        
+        window.addEventListener("beforeunload", () => {
+            if (currentUserId) {
+                update(ref(db), {
+                    [`/users/${currentUserId}/isOnline`]: false,
+                    [`/users/${currentUserId}/lastSeen`]: Date.now()
+                });
+            }
+        });
+        
+        await loadConversations();
+        
+        const requestsRef = ref(db, `friendRequests/${currentUserId}`);
+        onValue(requestsRef, (snap) => {
+            let pending = 0;
+            if (snap.exists()) {
+                const data = snap.val();
+                for (let key in data) {
+                    if (data[key].status === "pending") pending++;
+                }
+            }
+            if (pending > 0) {
+                amigosNotifBadge.style.display = "flex";
+                amigosNotifBadge.textContent = pending > 99 ? "99+" : pending;
+            } else {
+                amigosNotifBadge.style.display = "none";
+            }
+        });
+    });
+</script>
+</body>
+</html>

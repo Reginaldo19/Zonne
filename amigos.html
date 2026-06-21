@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>conexões · amigos</title>
+    <!-- Tailwind CSS apenas para reset e utilitários básicos -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, get, set, update, remove, push, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDpndyjvOk62csgt84AmGDzu3ShqnSHJ_M",
+            authDomain: "sandnney-cb0c4.firebaseapp.com",
+            databaseURL: "https://sandnney-cb0c4-default-rtdb.firebaseio.com",
+            projectId: "sandnney-cb0c4",
+            storageBucket: "sandnney-cb0c4.firebasestorage.app",
+            messagingSenderId: "571535952362",
+            appId: "1:571535952362:web:de395a9c216d9726078a93"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const auth = getAuth(app);
+        window.db = database;
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: #f5f7fc; }
+        
+        /* Layout principal - estilo próprio, azul e branco */
+        .app-container { max-width: 1300px; margin: 0 auto; padding: 0 24px; }
+        
+        /* Header azul e branco elegante */
+        .main-header {
+            background: white;
+            border-radius: 0 0 32px 32px;
+            padding: 16px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.02);
+            border-bottom: 1px solid #e8f0f6;
+            margin-bottom: 28px;
+        }
+        .logo h2 { font-weight: 800; font-size: 22px; background: linear-gradient(135deg, #0066FF, #0047b3); -webkit-background-clip: text; background-clip: text; color: transparent; display: inline; }
+        .logo i { color: #0066FF; margin-right: 8px; }
+        .header-actions button {
+            background: white; border: 1px solid #e2edf2; width: 42px; height: 42px;
+            border-radius: 24px; cursor: pointer; transition: 0.2s; color: #1e3a5f;
+        }
+        .header-actions button:hover { background: #0066FF10; border-color: #0066FF; color: #0066FF; }
+        
+        /* Tabs estilo moderno */
+        .tabs-bar {
+            background: white; border-radius: 60px; display: inline-flex; padding: 6px;
+            margin-bottom: 28px; box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+            border: 1px solid #eef3f8;
+        }
+        .tab-btn {
+            padding: 10px 32px; border-radius: 50px; font-weight: 600; background: transparent;
+            border: none; cursor: pointer; color: #5b7c9e; transition: 0.2s;
+        }
+        .tab-btn.active { background: #0066FF; color: white; box-shadow: 0 4px 12px rgba(0,102,255,0.2); }
+        
+        /* Busca */
+        .search-area {
+            background: white; border-radius: 60px; display: flex; align-items: center;
+            padding: 4px 4px 4px 24px; margin-bottom: 32px; border: 1px solid #e6f0f5;
+        }
+        .search-area input {
+            flex: 1; border: none; outline: none; padding: 14px 0; font-size: 15px;
+            background: transparent; font-weight: 500; color: #0f2b3f;
+        }
+        .search-area button {
+            background: #0066FF; border: none; border-radius: 60px; padding: 10px 28px;
+            color: white; font-weight: 700; cursor: pointer; transition: 0.2s;
+        }
+        .search-area button:active { transform: scale(0.96); }
+        
+        /* Grid de cards */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+        }
+        
+        /* Card exclusivo */
+        .friend-card {
+            background: white;
+            border-radius: 28px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+            border: 1px solid #ecf3f9;
+        }
+        .friend-card:hover { transform: translateY(-3px); box-shadow: 0 20px 28px -12px rgba(0,102,255,0.12); border-color: #cde0ef; }
+        
+        .card-header {
+            padding: 20px 20px 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .avatar-large {
+            width: 64px; height: 64px; background: linear-gradient(145deg, #0066FF, #0052cc);
+            border-radius: 28px; display: flex; align-items: center; justify-content: center;
+            font-size: 26px; font-weight: 700; color: white; flex-shrink: 0;
+        }
+        .user-name {
+            font-weight: 800; font-size: 18px; color: #0a2a44; margin-bottom: 4px;
+            cursor: pointer;
+        }
+        .user-name:hover { text-decoration: underline; color: #0066FF; }
+        .user-email { font-size: 12px; color: #6b8aae; word-break: break-all; }
+        .online-badge { font-size: 10px; font-weight: 700; padding: 4px 12px; border-radius: 40px; display: inline-block; margin-top: 8px; }
+        .online { background: #e0f5e9; color: #007a3d; }
+        .offline { background: #eff3f8; color: #5c7f9c; }
+        
+        .card-footer {
+            padding: 12px 20px 20px 20px;
+            border-top: 1px solid #f0f6fc;
+            display: flex;
+            gap: 12px;
+        }
+        .btn-blue {
+            background: #0066FF; border: none; padding: 10px 0; border-radius: 40px;
+            font-weight: 700; font-size: 13px; color: white; display: flex;
+            align-items: center; justify-content: center; gap: 8px; cursor: pointer;
+            flex: 1; transition: 0.2s;
+        }
+        .btn-outline {
+            background: transparent; border: 1px solid #cbdde9; padding: 10px 0;
+            border-radius: 40px; font-weight: 600; font-size: 13px; color: #2c577c;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            cursor: pointer; flex: 1; transition: 0.2s;
+        }
+        .btn-outline:hover { border-color: #0066FF; color: #0066FF; background: #f8fcff; }
+        .btn-blue:active { transform: scale(0.97); background: #0052cc; }
+        
+        .empty-state {
+            background: white; border-radius: 48px; text-align: center;
+            padding: 56px 20px; border: 1px solid #eef3fa; color: #6b8aae;
+        }
+        
+        .toast-msg {
+            position: fixed; bottom: 24px; left: 20px; right: 20px; background: #0a2a44;
+            color: white; padding: 14px 20px; border-radius: 60px; text-align: center;
+            z-index: 1100; max-width: 400px; margin: 0 auto; animation: fadeUp 0.25s;
+        }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .bottom-nav {
+            position: fixed; bottom: 20px; left: 20px; right: 20px; background: rgba(255,255,255,0.96);
+            backdrop-filter: blur(12px); border-radius: 60px; display: flex; justify-content: space-around;
+            padding: 8px 20px; border: 1px solid #eef3fc; max-width: 480px; margin: 0 auto;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+        }
+        .nav-link { text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 4px; color: #7e95ae; font-size: 11px; font-weight: 500; }
+        .nav-link i { font-size: 20px; }
+        .nav-link.active { color: #0066FF; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="main-header">
+        <div class="logo"><i class="fas fa-handshake"></i> <h2>conexões</h2></div>
+        <div class="header-actions"><button id="logoutBtnHeader"><i class="fas fa-sign-out-alt"></i></button></div>
+    </div>
+    
+    <div class="tabs-bar">
+        <button class="tab-btn active" data-tab="discover"><i class="fas fa-compass mr-2"></i> Descobrir</button>
+        <button class="tab-btn" data-tab="requests"><i class="fas fa-clock mr-2"></i> Pedidos <span id="reqBadge" style="background:#0066FF; color:white; border-radius:30px; padding:0px 6px; font-size:11px; margin-left:6px; display:none;">0</span></button>
+        <button class="tab-btn" data-tab="friends"><i class="fas fa-users mr-2"></i> Amigos</button>
+    </div>
+    
+    <div class="search-area">
+        <input type="text" id="searchInput" placeholder="Buscar pessoas por nome ou e-mail...">
+        <button id="searchBtn"><i class="fas fa-search mr-1"></i> Buscar</button>
+    </div>
+    
+    <div id="discoverGrid" class="cards-grid"></div>
+    <div id="requestsGrid" class="cards-grid" style="display: none;"></div>
+    <div id="friendsGrid" class="cards-grid" style="display: none;"></div>
+</div>
+
+<div class="bottom-nav">
+    <a href="#" class="nav-link" id="navHome"><i class="fas fa-home"></i><span>Início</span></a>
+    <a href="#" class="nav-link active" id="navFriendsPage"><i class="fas fa-user-friends"></i><span>Amigos</span></a>
+    <a href="#" class="nav-link" id="navChat"><i class="fas fa-comment-dots"></i><span>Chat</span></a>
+    <a href="#" class="nav-link" id="navProfile"><i class="fas fa-user"></i><span>Perfil</span></a>
+</div>
+
+<script type="module">
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getDatabase, ref, get, set, update, remove, push, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const auth = getAuth();
+    const db = getDatabase();
+    let currentUid = null;
+    let usersMap = new Map();
+    let friendsSet = new Set();
+    let sentPending = new Set();
+    let incomingReqs = new Map();
+    let activeTab = "discover";
+    let searchQuery = "";
+
+    // DOM elements
+    const discoverGrid = document.getElementById("discoverGrid");
+    const requestsGrid = document.getElementById("requestsGrid");
+    const friendsGrid = document.getElementById("friendsGrid");
+    const searchInput = document.getElementById("searchInput");
+    const searchBtn = document.getElementById("searchBtn");
+    const reqBadge = document.getElementById("reqBadge");
+    const logoutBtn = document.getElementById("logoutBtnHeader");
+
+    function showMessage(msg, type = "info") {
+        const existing = document.querySelector(".toast-msg");
+        if(existing) existing.remove();
+        const div = document.createElement("div");
+        div.className = "toast-msg";
+        div.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-info-circle'} mr-2"></i> ${msg}`;
+        document.body.appendChild(div);
+        setTimeout(() => div.remove(), 2800);
+    }
+
+    function getDisplayName() { 
+        const user = auth.currentUser;
+        return user?.displayName || user?.email?.split('@')[0] || "Usuário";
+    }
+
+    // Função que abre a página perfildetalhes.html passando o uid do usuário via query string
+    function goToProfilePage(userId) {
+        if(!userId) return;
+        window.location.href = `perfildetalhes.html?uid=${userId}`;
+    }
+
+    // Real-time listeners
+    function listenUsers() {
+        const usersRef = ref(db, "users");
+        onValue(usersRef, (snap) => {
+            if(snap.exists()) {
+                const data = snap.val();
+                for(let uid in data) {
+                    if(!usersMap.has(uid)) usersMap.set(uid, { uid, ...data[uid] });
+                    else Object.assign(usersMap.get(uid), data[uid]);
+                }
+            }
+            renderCurrentTab();
+        });
+    }
+
+    function listenFriends() {
+        if(!currentUid) return;
+        const friendsRef = ref(db, `friends/${currentUid}`);
+        onValue(friendsRef, (snap) => {
+            friendsSet.clear();
+            if(snap.exists()) Object.keys(snap.val()).forEach(fid => friendsSet.add(fid));
+            renderCurrentTab();
+        });
+    }
+
+    function listenSent() {
+        if(!currentUid) return;
+        const sentRef = ref(db, `friendRequests/${currentUid}`);
+        onValue(sentRef, (snap) => {
+            sentPending.clear();
+            if(snap.exists()) {
+                for(let [target, req] of Object.entries(snap.val())) {
+                    if(req.status === "pending") sentPending.add(target);
+                }
+            }
+            renderCurrentTab();
+        });
+    }
+
+    function listenIncoming() {
+        if(!currentUid) return;
+        const incRef = ref(db, `friendRequests/${currentUid}`);
+        onValue(incRef, (snap) => {
+            incomingReqs.clear();
+            if(snap.exists()) {
+                for(let [from, req] of Object.entries(snap.val())) {
+                    if(req.status === "pending" && req.fromUid === from) incomingReqs.set(from, req);
+                }
+            }
+            const count = incomingReqs.size;
+            if(count > 0) { reqBadge.style.display = "inline-block"; reqBadge.textContent = count > 99 ? "99+" : count; }
+            else reqBadge.style.display = "none";
+            renderCurrentTab();
+        });
+    }
+
+    // Ações de amizade
+    async function sendRequest(toUid, toName) {
+        try {
+            const reqRef = ref(db, `friendRequests/${toUid}/${currentUid}`);
+            const exists = await get(reqRef);
+            if(exists.exists()) { showMessage("Solicitação já enviada", "info"); return; }
+            await set(reqRef, { fromUid: currentUid, fromName: getDisplayName(), toUid, status: "pending", createdAt: Date.now() });
+            await push(ref(db, `notifications/${toUid}`), { type: "friend_request", fromUid: currentUid, fromName: getDisplayName(), createdAt: Date.now(), read: false });
+            showMessage(`Convite enviado para ${toName}`, "success");
+        } catch(e) { showMessage("Erro ao enviar", "error"); }
+    }
+
+    async function acceptRequest(fromUid) {
+        try {
+            await update(ref(db, `friendRequests/${currentUid}/${fromUid}`), { status: "accepted", acceptedAt: Date.now() });
+            await set(ref(db, `friends/${currentUid}/${fromUid}`), { since: Date.now() });
+            await set(ref(db, `friends/${fromUid}/${currentUid}`), { since: Date.now() });
+            await push(ref(db, `notifications/${fromUid}`), { type: "friend_accepted", fromUid: currentUid, fromName: getDisplayName(), createdAt: Date.now(), read: false });
+            await adjustCount(currentUid, 1); await adjustCount(fromUid, 1);
+            showMessage("Amizade confirmada!", "success");
+        } catch(e) { showMessage("Erro", "error"); }
+    }
+
+    async function rejectRequest(fromUid) {
+        try { await remove(ref(db, `friendRequests/${currentUid}/${fromUid}`)); showMessage("Pedido recusado", "info"); } 
+        catch(e) { showMessage("Erro", "error"); }
+    }
+
+    async function removeFriend(friendUid, friendName) {
+        if(!confirm(`Remover ${friendName} dos seus amigos?`)) return;
+        try {
+            await remove(ref(db, `friends/${currentUid}/${friendUid}`));
+            await remove(ref(db, `friends/${friendUid}/${currentUid}`));
+            await adjustCount(currentUid, -1); await adjustCount(friendUid, -1);
+            showMessage("Amigo removido", "success");
+        } catch(e) { showMessage("Erro", "error"); }
+    }
+
+    async function adjustCount(uid, delta) {
+        const userRef = ref(db, `users/${uid}`);
+        const snap = await get(userRef);
+        if(snap.exists()) {
+            const curr = snap.val().friendCount || 0;
+            await update(userRef, { friendCount: curr + delta });
+            if(usersMap.has(uid)) usersMap.get(uid).friendCount = curr + delta;
+        }
+    }
+
+    function escapeHtml(str) { if(!str) return ""; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+    function formatTimeAgo(ts) { if(!ts) return ""; const d=Date.now()-ts; if(d<60000) return "agora"; if(d<3600000) return `${Math.floor(d/60000)} min`; return new Date(ts).toLocaleDateString("pt-BR"); }
+
+    // Renderização
+    function renderDiscover() {
+        const all = Array.from(usersMap.values()).filter(u => u.uid !== currentUid && !friendsSet.has(u.uid) && !sentPending.has(u.uid) && !incomingReqs.has(u.uid));
+        let filtered = all;
+        if(searchQuery.trim()) { const q=searchQuery.toLowerCase(); filtered = all.filter(u => u.displayName?.toLowerCase().includes(q) || u.email?.toLowerCase().includes(q)); }
+        if(filtered.length===0) { discoverGrid.innerHTML = `<div class="empty-state"><i class="fas fa-user-plus fa-3x mb-4 opacity-40"></i><h3>Ninguém encontrado</h3></div>`; return; }
+        discoverGrid.innerHTML = "";
+        filtered.forEach(user => {
+            const card = document.createElement("div"); card.className = "friend-card";
+            card.innerHTML = `
+                <div class="card-header">
+                    <div class="avatar-large">${user.displayName?.charAt(0).toUpperCase() || '?'}</div>
+                    <div style="flex:1"><div class="user-name" data-uid="${user.uid}">${escapeHtml(user.displayName || "Usuário")}</div><div class="user-email">${escapeHtml(user.email || "")}</div></div>
+                </div>
+                <div class="card-footer"><button class="btn-blue send-req" data-uid="${user.uid}" data-name="${escapeHtml(user.displayName)}"><i class="fas fa-user-plus"></i> Conectar</button></div>
+            `;
+            const userNameDiv = card.querySelector(".user-name");
+            if(userNameDiv) userNameDiv.addEventListener("click", (e) => { e.stopPropagation(); goToProfilePage(user.uid); });
+            discoverGrid.appendChild(card);
+        });
+        document.querySelectorAll(".send-req").forEach(btn => btn.addEventListener("click", async (e) => { e.stopPropagation(); const uid=btn.getAttribute("data-uid"), name=btn.getAttribute("data-name"); await sendRequest(uid, name); }));
+    }
+
+    function renderRequests() {
+        if(incomingReqs.size===0) { requestsGrid.innerHTML = `<div class="empty-state"><i class="fas fa-inbox fa-3x mb-4 opacity-40"></i><h3>Nenhum pedido pendente</h3></div>`; return; }
+        requestsGrid.innerHTML = "";
+        for(let [fromUid, req] of incomingReqs.entries()) {
+            const user = usersMap.get(fromUid) || { displayName: req.fromName, email: "" };
+            const card = document.createElement("div"); card.className = "friend-card";
+            card.innerHTML = `
+                <div class="card-header">
+                    <div class="avatar-large">${user.displayName?.charAt(0).toUpperCase() || 'U'}</div>
+                    <div style="flex:1"><div class="user-name" data-uid="${fromUid}">${escapeHtml(user.displayName)}</div><div class="user-email">${escapeHtml(user.email || "")}</div><div class="online-badge offline" style="margin-top:6px;"><i class="far fa-clock mr-1"></i> ${formatTimeAgo(req.createdAt)}</div></div>
+                </div>
+                <div class="card-footer"><button class="btn-blue accept-req" data-uid="${fromUid}"><i class="fas fa-check"></i> Aceitar</button><button class="btn-outline reject-req" data-uid="${fromUid}"><i class="fas fa-times"></i> Recusar</button></div>
+            `;
+            const userNameDiv = card.querySelector(".user-name");
+            if(userNameDiv) userNameDiv.addEventListener("click", (e) => { e.stopPropagation(); goToProfilePage(fromUid); });
+            requestsGrid.appendChild(card);
+        }
+        document.querySelectorAll(".accept-req").forEach(btn => btn.addEventListener("click", async (e) => { e.stopPropagation(); await acceptRequest(btn.getAttribute("data-uid")); }));
+        document.querySelectorAll(".reject-req").forEach(btn => btn.addEventListener("click", async (e) => { e.stopPropagation(); await rejectRequest(btn.getAttribute("data-uid")); }));
+    }
+
+    function renderFriends() {
+        const friendIds = Array.from(friendsSet);
+        if(friendIds.length===0) { friendsGrid.innerHTML = `<div class="empty-state"><i class="fas fa-user-friends fa-3x mb-4 opacity-40"></i><h3>Lista vazia</h3><p>Adicione amigos na aba "Descobrir"</p></div>`; return; }
+        let friendsList = []; for(let fid of friendIds) if(usersMap.has(fid)) friendsList.push(usersMap.get(fid));
+        if(searchQuery.trim()) { const q=searchQuery.toLowerCase(); friendsList = friendsList.filter(f => f.displayName?.toLowerCase().includes(q) || f.email?.toLowerCase().includes(q)); }
+        if(friendsList.length===0) { friendsGrid.innerHTML = `<div class="empty-state"><p>Nenhum amigo com esse filtro</p></div>`; return; }
+        friendsGrid.innerHTML = "";
+        friendsList.forEach(friend => {
+            const card = document.createElement("div"); card.className = "friend-card";
+            card.innerHTML = `
+                <div class="card-header">
+                    <div class="avatar-large">${friend.displayName?.charAt(0).toUpperCase() || 'A'}</div>
+                    <div style="flex:1"><div class="user-name" data-uid="${friend.uid}">${escapeHtml(friend.displayName)}</div><div class="user-email">${escapeHtml(friend.email || "")}</div><div class="online-badge ${friend.isOnline ? 'online' : 'offline'} mt-1">${friend.isOnline ? '● Online' : '○ Offline'}</div></div>
+                </div>
+                <div class="card-footer"><button class="btn-blue msg-friend" data-uid="${friend.uid}"><i class="fas fa-comment"></i> Mensagem</button><button class="btn-outline remove-friend" data-uid="${friend.uid}" data-name="${escapeHtml(friend.displayName)}"><i class="fas fa-user-minus"></i> Remover</button></div>
+            `;
+            const userNameDiv = card.querySelector(".user-name");
+            if(userNameDiv) userNameDiv.addEventListener("click", (e) => { e.stopPropagation(); goToProfilePage(friend.uid); });
+            friendsGrid.appendChild(card);
+        });
+        document.querySelectorAll(".msg-friend").forEach(btn => btn.addEventListener("click", () => window.location.href = `chat.html`));
+        document.querySelectorAll(".remove-friend").forEach(btn => btn.addEventListener("click", async (e) => { e.stopPropagation(); const uid=btn.getAttribute("data-uid"), name=btn.getAttribute("data-name"); await removeFriend(uid, name); }));
+    }
+
+    function renderCurrentTab() {
+        if(activeTab === "discover") { discoverGrid.style.display = "grid"; requestsGrid.style.display = "none"; friendsGrid.style.display = "none"; renderDiscover(); }
+        else if(activeTab === "requests") { discoverGrid.style.display = "none"; requestsGrid.style.display = "grid"; friendsGrid.style.display = "none"; renderRequests(); }
+        else { discoverGrid.style.display = "none"; requestsGrid.style.display = "none"; friendsGrid.style.display = "grid"; renderFriends(); }
+    }
+
+    function switchTab(tab) {
+        activeTab = tab;
+        document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+        if(tab === "discover") document.querySelector(".tab-btn[data-tab='discover']").classList.add("active");
+        if(tab === "requests") document.querySelector(".tab-btn[data-tab='requests']").classList.add("active");
+        if(tab === "friends") document.querySelector(".tab-btn[data-tab='friends']").classList.add("active");
+        renderCurrentTab();
+    }
+
+    document.querySelectorAll(".tab-btn").forEach(btn => btn.addEventListener("click", () => switchTab(btn.getAttribute("data-tab"))));
+    searchBtn.addEventListener("click", () => { searchQuery = searchInput.value; renderCurrentTab(); });
+    searchInput.addEventListener("keyup", (e) => { if(e.key === "Enter") { searchQuery = searchInput.value; renderCurrentTab(); } });
+    logoutBtn.addEventListener("click", async () => { await signOut(auth); window.location.href = "social.html"; });
+    document.getElementById("navHome")?.addEventListener("click", (e) => { e.preventDefault(); window.location.href = "social.html"; });
+    document.getElementById("navFriendsPage")?.addEventListener("click", (e) => e.preventDefault());
+    document.getElementById("navChat")?.addEventListener("click", (e) => { e.preventDefault(); window.location.href = "chat.html"; });
+    document.getElementById("navProfile")?.addEventListener("click", (e) => { e.preventDefault(); window.location.href = "perfil.html"; });
+
+    onAuthStateChanged(auth, async (user) => {
+        if(!user) { window.location.href = "social.html"; return; }
+        currentUid = user.uid;
+        if(!usersMap.has(currentUid)) usersMap.set(currentUid, { uid: currentUid, displayName: user.displayName, email: user.email });
+        listenUsers(); listenFriends(); listenSent(); listenIncoming();
+    });
+</script>
+</body>
+</html>
