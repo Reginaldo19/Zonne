@@ -118,7 +118,7 @@
             margin-left: auto;
         }
         
-        /* LISTA DE CONVERSAS - COM ESPAÇO PARA A BARRA */
+        /* LISTA DE CONVERSAS */
         .chat-list {
             flex: 1;
             overflow-y: auto;
@@ -416,7 +416,7 @@
             30% { opacity: 1; transform: scale(1); }
         }
         
-        /* INPUT - COM ESPAÇO DA BARRA */
+        /* INPUT */
         .message-input-area {
             background: #ffffff;
             padding: 8px 12px;
@@ -494,7 +494,7 @@
             transform: none;
         }
         
-        /* BARRA INFERIOR - FIXA */
+        /* BARRA INFERIOR */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -870,8 +870,8 @@
             </span>
         </div>
         
-        <!-- INPUT COM ESPAÇO DA BARRA -->
-        <div class="message-input-area">
+        <!-- INPUT -->
+        <div class="message-input-area" id="messageInputArea">
             <div class="input-wrapper">
                 <input type="text" id="messageInput" placeholder="Digite uma mensagem..." />
                 <button class="attach-btn" id="attachBtn"><i class="fas fa-paperclip"></i></button>
@@ -971,7 +971,7 @@ let isCallActive = false;
 let callAnswered = false;
 
 // ============================================
-// DOM
+// DOM - VERIFICAR TODOS OS ELEMENTOS
 // ============================================
 const chatList = document.getElementById('chatList');
 const chatCount = document.getElementById('chatCount');
@@ -990,6 +990,10 @@ const btnNewChat = document.getElementById('btnNewChat');
 const chatBadge = document.getElementById('chatBadge');
 const convCall = document.getElementById('convCall');
 const convVideo = document.getElementById('convVideo');
+const convMore = document.getElementById('convMore');
+const btnNotifications = document.getElementById('btnNotifications');
+const attachBtn = document.getElementById('attachBtn');
+const emojiBtn = document.getElementById('emojiBtn');
 
 // Call
 const callOverlay = document.getElementById('callOverlay');
@@ -1022,7 +1026,7 @@ async function loadUsers() {
 // CARREGAR CHATS
 // ============================================
 function loadChats() {
-    if (!currentUser) return;
+    if (!currentUser || !chatList) return;
     
     onValue(ref(database, `chats/${currentUser.uid}`), (snapshot) => {
         const data = snapshot.val();
@@ -1041,7 +1045,10 @@ function loadChats() {
                     <button class="btn-start" id="startChatBtn"><i class="fas fa-plus"></i> Nova conversa</button>
                 </div>
             `;
-            document.getElementById('startChatBtn')?.addEventListener('click', () => btnNewChat?.click());
+            const startBtn = document.getElementById('startChatBtn');
+            if (startBtn && btnNewChat) {
+                startBtn.addEventListener('click', () => btnNewChat.click());
+            }
             return;
         }
         
@@ -1094,40 +1101,48 @@ window.openConversation = function(uid) {
     currentChatUser = user;
     
     const photo = user.photo ? `<img src="${user.photo}" alt="" />` : `<i class="fas fa-user"></i>`;
-    convAvatar.innerHTML = photo;
-    convName.textContent = user.fullName || 'Usuário';
-    convStatus.textContent = user.status === 'online' ? 'Online' : 'Offline';
-    convStatus.className = `conv-status ${user.status === 'online' ? 'online' : ''}`;
+    if (convAvatar) convAvatar.innerHTML = photo;
+    if (convName) convName.textContent = user.fullName || 'Usuário';
+    if (convStatus) {
+        convStatus.textContent = user.status === 'online' ? 'Online' : 'Offline';
+        convStatus.className = `conv-status ${user.status === 'online' ? 'online' : ''}`;
+    }
     
-    conversationView.classList.add('active');
+    if (conversationView) conversationView.classList.add('active');
     document.body.style.overflow = 'hidden';
     
     loadMessages(uid);
     
-    setTimeout(() => messageInput?.focus(), 300);
+    setTimeout(() => {
+        if (messageInput) messageInput.focus();
+    }, 300);
 };
 
 function closeConversation() {
-    conversationView.classList.remove('active');
+    if (conversationView) conversationView.classList.remove('active');
     document.body.style.overflow = 'auto';
     if (messageListener) { messageListener(); messageListener = null; }
     if (isCallActive) endCall();
     currentChatUser = null;
-    messagesContainer.innerHTML = '';
+    if (messagesContainer) messagesContainer.innerHTML = '';
 }
 
-convBack.addEventListener('click', closeConversation);
+if (convBack) {
+    convBack.addEventListener('click', closeConversation);
+}
 
 // ============================================
 // CARREGAR MENSAGENS
 // ============================================
 function loadMessages(uid) {
+    if (!currentUser || !uid) return;
+    
     const chatId = [currentUser.uid, uid].sort().join('_');
     const messagesRef = ref(database, `messages/${chatId}`);
     const messagesQuery = query(messagesRef, orderByChild('timestamp'), limitToLast(50));
     
     if (messageListener) { messageListener(); messageListener = null; }
-    messagesContainer.innerHTML = '';
+    if (messagesContainer) messagesContainer.innerHTML = '';
     
     messageListener = onChildAdded(messagesQuery, (snapshot) => {
         const msg = snapshot.val();
@@ -1140,8 +1155,10 @@ function loadMessages(uid) {
             ${msg.text}
             <span class="msg-time">${time}</span>
         `;
-        messagesContainer.appendChild(div);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        if (messagesContainer) {
+            messagesContainer.appendChild(div);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
     });
 }
 
@@ -1155,8 +1172,10 @@ async function sendMessage() {
     const uid = currentChatUser.uid;
     const chatId = [currentUser.uid, uid].sort().join('_');
     
-    sendBtn.disabled = true;
-    sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+    if (sendBtn) {
+        sendBtn.disabled = true;
+        sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+    }
     
     try {
         const newMsgRef = push(ref(database, `messages/${chatId}`));
@@ -1179,26 +1198,33 @@ async function sendMessage() {
             unread: 1
         });
         
-        messageInput.value = '';
+        if (messageInput) messageInput.value = '';
         
     } catch (error) {
         console.error('Erro ao enviar:', error);
     }
     
-    sendBtn.disabled = false;
-    sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+    if (sendBtn) {
+        sendBtn.disabled = false;
+        sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+    }
 }
 
-sendBtn.addEventListener('click', sendMessage);
-messageInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
-    }
-});
+if (sendBtn) {
+    sendBtn.addEventListener('click', sendMessage);
+}
+
+if (messageInput) {
+    messageInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+}
 
 // ============================================
-// CHAMADA REAL - COM PERMISSÃO
+// CHAMADA
 // ============================================
 async function startAudioCall() {
     if (!currentChatUser) {
@@ -1207,7 +1233,6 @@ async function startAudioCall() {
     }
 
     try {
-        // PEDIR PERMISSÃO DO MICROFONE
         await navigator.mediaDevices.getUserMedia({ audio: true });
         
         isCallActive = true;
@@ -1216,21 +1241,23 @@ async function startAudioCall() {
         
         const user = currentChatUser;
         
-        // CONFIGURAR OVERLAY
-        if (user.photo) {
-            callOverlay.style.backgroundImage = `url('${user.photo}')`;
-        } else {
-            callOverlay.style.backgroundImage = 'linear-gradient(135deg, #0d47a1, #1a73e8)';
+        if (callOverlay) {
+            if (user.photo) {
+                callOverlay.style.backgroundImage = `url('${user.photo}')`;
+            } else {
+                callOverlay.style.backgroundImage = 'linear-gradient(135deg, #0d47a1, #1a73e8)';
+            }
         }
         
-        callAvatar.innerHTML = user.photo ? `<img src="${user.photo}" alt="" />` : `<i class="fas fa-user"></i>`;
-        callName.textContent = user.fullName || 'Usuário';
-        callStatus.textContent = '📞 Chamando...';
-        callTimer.textContent = '00:00';
+        if (callAvatar) {
+            callAvatar.innerHTML = user.photo ? `<img src="${user.photo}" alt="" />` : `<i class="fas fa-user"></i>`;
+        }
+        if (callName) callName.textContent = user.fullName || 'Usuário';
+        if (callStatus) callStatus.textContent = '📞 Chamando...';
+        if (callTimer) callTimer.textContent = '00:00';
         
-        callOverlay.classList.add('active');
+        if (callOverlay) callOverlay.classList.add('active');
         
-        // CRIAR CHAMADA NO FIREBASE
         const callRef = ref(database, `calls/${currentUser.uid}/${user.uid}`);
         await set(callRef, {
             type: 'audio',
@@ -1241,7 +1268,6 @@ async function startAudioCall() {
             timestamp: serverTimestamp()
         });
         
-        // NOTIFICAR OUTRO USUÁRIO
         const notifRef = ref(database, `notifications/${user.uid}/${currentUser.uid}_call`);
         await set(notifRef, {
             type: 'call',
@@ -1252,13 +1278,12 @@ async function startAudioCall() {
             timestamp: serverTimestamp()
         });
         
-        // ESCUTAR RESPOSTA
         const callResponseRef = ref(database, `calls/${user.uid}/${currentUser.uid}`);
         const listener = onValue(callResponseRef, (snapshot) => {
             const data = snapshot.val();
             if (data?.status === 'answered' && !callAnswered) {
                 callAnswered = true;
-                callStatus.textContent = '📞 Chamada conectada';
+                if (callStatus) callStatus.textContent = '📞 Chamada conectada';
                 startCallTimer();
                 Swal.fire({
                     icon: 'success',
@@ -1278,7 +1303,6 @@ async function startAudioCall() {
             }
         });
         
-        // TIMEOUT - NÃO ATENDEU
         setTimeout(() => {
             if (!callAnswered && isCallActive) {
                 update(callRef, { status: 'missed' });
@@ -1309,7 +1333,7 @@ function startCallTimer() {
         callSeconds++;
         const mins = String(Math.floor(callSeconds / 60)).padStart(2, '0');
         const secs = String(callSeconds % 60).padStart(2, '0');
-        callTimer.textContent = `${mins}:${secs}`;
+        if (callTimer) callTimer.textContent = `${mins}:${secs}`;
     }, 1000);
 }
 
@@ -1319,8 +1343,8 @@ function endCall() {
         clearInterval(callTimerInterval);
         callTimerInterval = null;
     }
-    callOverlay.classList.remove('active');
-    callTimer.textContent = '00:00';
+    if (callOverlay) callOverlay.classList.remove('active');
+    if (callTimer) callTimer.textContent = '00:00';
     if (currentChatUser && callAnswered) {
         update(ref(database, `calls/${currentUser.uid}/${currentChatUser.uid}`), { 
             duration: callSeconds,
@@ -1329,7 +1353,9 @@ function endCall() {
     }
 }
 
-convCall.addEventListener('click', startAudioCall);
+if (convCall) {
+    convCall.addEventListener('click', startAudioCall);
+}
 
 // ============================================
 // CHAMADA DE VÍDEO
@@ -1348,13 +1374,17 @@ async function startVideoCall() {
         callSeconds = 0;
         
         const user = currentChatUser;
-        callOverlay.style.backgroundImage = 'linear-gradient(135deg, #0d47a1, #1a73e8)';
-        callAvatar.innerHTML = user.photo ? `<img src="${user.photo}" alt="" />` : `<i class="fas fa-user"></i>`;
-        callName.textContent = user.fullName || 'Usuário';
-        callStatus.textContent = '📹 Chamando...';
-        callTimer.textContent = '00:00';
+        if (callOverlay) {
+            callOverlay.style.backgroundImage = 'linear-gradient(135deg, #0d47a1, #1a73e8)';
+        }
+        if (callAvatar) {
+            callAvatar.innerHTML = user.photo ? `<img src="${user.photo}" alt="" />` : `<i class="fas fa-user"></i>`;
+        }
+        if (callName) callName.textContent = user.fullName || 'Usuário';
+        if (callStatus) callStatus.textContent = '📹 Chamando...';
+        if (callTimer) callTimer.textContent = '00:00';
         
-        callOverlay.classList.add('active');
+        if (callOverlay) callOverlay.classList.add('active');
         
         const callRef = ref(database, `calls/${currentUser.uid}/${user.uid}`);
         await set(callRef, {
@@ -1377,11 +1407,11 @@ async function startVideoCall() {
         });
         
         const callResponseRef = ref(database, `calls/${user.uid}/${currentUser.uid}`);
-        onValue(callResponseRef, (snapshot) => {
+        const listener = onValue(callResponseRef, (snapshot) => {
             const data = snapshot.val();
             if (data?.status === 'answered' && !callAnswered) {
                 callAnswered = true;
-                callStatus.textContent = '📹 Chamada de vídeo conectada';
+                if (callStatus) callStatus.textContent = '📹 Chamada de vídeo conectada';
                 startCallTimer();
                 Swal.fire({
                     icon: 'success',
@@ -1425,7 +1455,9 @@ async function startVideoCall() {
     }
 }
 
-convVideo.addEventListener('click', startVideoCall);
+if (convVideo) {
+    convVideo.addEventListener('click', startVideoCall);
+}
 
 // ============================================
 // ESCUTAR CHAMADAS ENTRANTES
@@ -1458,7 +1490,7 @@ function listenIncomingCalls() {
                 const callRef = ref(database, `calls/${currentUser.uid}/${fromUid}`);
                 if (result.isConfirmed) {
                     await update(callRef, { status: 'answered' });
-                    if (!conversationView.classList.contains('active')) {
+                    if (conversationView && !conversationView.classList.contains('active')) {
                         openConversation(fromUid);
                     }
                 } else {
@@ -1472,45 +1504,51 @@ function listenIncomingCalls() {
 // ============================================
 // NOVA CONVERSA
 // ============================================
-btnNewChat.addEventListener('click', async () => {
-    await loadUsers();
-    
-    const friendsList = Object.keys(allUsers).filter(uid => {
-        if (uid === currentUser.uid) return false;
-        if (chats[uid]) return false;
-        return true;
-    });
-    
-    if (friendsList.length === 0) {
-        friendsListContainer.innerHTML = `
-            <div class="empty-chat">
-                <i class="fas fa-user-friends"></i>
-                <h5>Nenhum amigo disponível</h5>
-                <p>Todos os seus amigos já têm conversa</p>
-            </div>
-        `;
-    } else {
-        let html = '';
-        friendsList.forEach(uid => {
-            const user = allUsers[uid];
-            if (!user) return;
-            html += `
-                <div class="friend-select-item" onclick="window.startNewChat('${uid}')">
-                    <div class="fs-avatar">${user.photo ? `<img src="${user.photo}" alt="" />` : `<i class="fas fa-user"></i>`}</div>
-                    <div class="fs-info">
-                        <div class="fs-name">${user.fullName || 'Usuário'}</div>
-                        <div class="fs-username">@${user.username || 'usuario'}</div>
-                        <div class="fs-status ${user.status === 'online' ? 'online' : 'offline'}">${user.status === 'online' ? '🟢 Online' : '⚪ Offline'}</div>
-                    </div>
-                </div>
-            `;
+if (btnNewChat) {
+    btnNewChat.addEventListener('click', async () => {
+        await loadUsers();
+        
+        const friendsList = Object.keys(allUsers).filter(uid => {
+            if (uid === currentUser.uid) return false;
+            if (chats[uid]) return false;
+            return true;
         });
-        friendsListContainer.innerHTML = html;
-    }
-    
-    friendsListPage.classList.add('active');
-    document.body.style.overflow = 'hidden';
-});
+        
+        if (friendsList.length === 0) {
+            if (friendsListContainer) {
+                friendsListContainer.innerHTML = `
+                    <div class="empty-chat">
+                        <i class="fas fa-user-friends"></i>
+                        <h5>Nenhum amigo disponível</h5>
+                        <p>Todos os seus amigos já têm conversa</p>
+                    </div>
+                `;
+            }
+        } else {
+            let html = '';
+            friendsList.forEach(uid => {
+                const user = allUsers[uid];
+                if (!user) return;
+                html += `
+                    <div class="friend-select-item" onclick="window.startNewChat('${uid}')">
+                        <div class="fs-avatar">${user.photo ? `<img src="${user.photo}" alt="" />` : `<i class="fas fa-user"></i>`}</div>
+                        <div class="fs-info">
+                            <div class="fs-name">${user.fullName || 'Usuário'}</div>
+                            <div class="fs-username">@${user.username || 'usuario'}</div>
+                            <div class="fs-status ${user.status === 'online' ? 'online' : 'offline'}">${user.status === 'online' ? '🟢 Online' : '⚪ Offline'}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            if (friendsListContainer) friendsListContainer.innerHTML = html;
+        }
+        
+        if (friendsListPage) {
+            friendsListPage.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+    });
+}
 
 window.startNewChat = function(uid) {
     const chatId = [currentUser.uid, uid].sort().join('_');
@@ -1525,55 +1563,137 @@ window.startNewChat = function(uid) {
         unread: 0
     });
     
-    friendsListPage.classList.remove('active');
+    if (friendsListPage) friendsListPage.classList.remove('active');
     document.body.style.overflow = 'auto';
     openConversation(uid);
 };
 
-closeFriendsList.addEventListener('click', () => {
-    friendsListPage.classList.remove('active');
-    document.body.style.overflow = 'auto';
-});
+if (closeFriendsList) {
+    closeFriendsList.addEventListener('click', () => {
+        if (friendsListPage) friendsListPage.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    });
+}
 
 // ============================================
 // CALL MUTE / SPEAKER
 // ============================================
-callMute.addEventListener('click', function() {
-    this.classList.toggle('active');
-    this.innerHTML = this.classList.contains('active') ? 
-        '<i class="fas fa-microphone-slash"></i>' : 
-        '<i class="fas fa-microphone"></i>';
-});
+if (callMute) {
+    callMute.addEventListener('click', function() {
+        this.classList.toggle('active');
+        this.innerHTML = this.classList.contains('active') ? 
+            '<i class="fas fa-microphone-slash"></i>' : 
+            '<i class="fas fa-microphone"></i>';
+    });
+}
 
-callSpeaker.addEventListener('click', function() {
-    this.classList.toggle('active');
-    this.innerHTML = this.classList.contains('active') ? 
-        '<i class="fas fa-volume-off"></i>' : 
-        '<i class="fas fa-volume-up"></i>';
-});
+if (callSpeaker) {
+    callSpeaker.addEventListener('click', function() {
+        this.classList.toggle('active');
+        this.innerHTML = this.classList.contains('active') ? 
+            '<i class="fas fa-volume-off"></i>' : 
+            '<i class="fas fa-volume-up"></i>';
+    });
+}
 
-callEnd.addEventListener('click', endCall);
+if (callEnd) {
+    callEnd.addEventListener('click', endCall);
+}
+
+// ============================================
+// NOTIFICAÇÕES
+// ============================================
+if (btnNotifications) {
+    btnNotifications.addEventListener('click', function() {
+        const unreadCount = Object.keys(chats).filter(uid => chats[uid]?.unread > 0).length;
+        Swal.fire({
+            title: '🔔 Notificações',
+            html: `
+                <div style="text-align:left;color:#5f6368;">
+                    <p>Você tem ${unreadCount} conversa${unreadCount !== 1 ? 's' : ''} com mensagens não lidas</p>
+                </div>
+            `,
+            confirmButtonColor: '#1a73e8'
+        });
+    });
+}
+
+// ============================================
+// MAIS OPÇÕES
+// ============================================
+if (convMore) {
+    convMore.addEventListener('click', function() {
+        if (!currentChatUser) return;
+        
+        Swal.fire({
+            title: 'Opções',
+            html: `
+                <div style="text-align:left;">
+                    <button id="optionViewProfile" style="width:100%;padding:10px;border:none;background:none;text-align:left;font-size:14px;cursor:pointer;border-bottom:1px solid #e8f0fe;">
+                        <i class="fas fa-user" style="color:#1a73e8;"></i> Ver perfil
+                    </button>
+                    <button id="optionClear" style="width:100%;padding:10px;border:none;background:none;text-align:left;font-size:14px;cursor:pointer;color:#ea4335;">
+                        <i class="fas fa-trash-alt"></i> Apagar conversa
+                    </button>
+                </div>
+            `,
+            confirmButtonText: 'Fechar',
+            confirmButtonColor: '#5f6368'
+        });
+    });
+}
+
+// ============================================
+// ATTACH E EMOJI
+// ============================================
+if (attachBtn) {
+    attachBtn.addEventListener('click', function() {
+        Swal.fire({
+            icon: 'info',
+            title: '📎 Anexo',
+            text: 'Funcionalidade em desenvolvimento',
+            confirmButtonColor: '#1a73e8'
+        });
+    });
+}
+
+if (emojiBtn) {
+    emojiBtn.addEventListener('click', function() {
+        Swal.fire({
+            icon: 'info',
+            title: '😊 Emojis',
+            text: 'Funcionalidade em desenvolvimento',
+            confirmButtonColor: '#1a73e8'
+        });
+    });
+}
 
 // ============================================
 // LOGOUT
 // ============================================
-btnLogout.addEventListener('click', async () => {
-    const result = await Swal.fire({
-        title: 'Sair?',
-        text: 'Tem certeza?',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#ea4335',
-        cancelButtonColor: '#5f6368',
-        confirmButtonText: 'Sair',
-        cancelButtonText: 'Cancelar'
+if (btnLogout) {
+    btnLogout.addEventListener('click', async () => {
+        const result = await Swal.fire({
+            title: 'Sair?',
+            text: 'Tem certeza?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#ea4335',
+            cancelButtonColor: '#5f6368',
+            confirmButtonText: 'Sair',
+            cancelButtonText: 'Cancelar'
+        });
+        
+        if (result.isConfirmed) {
+            try {
+                await signOut(auth);
+                window.location.reload();
+            } catch (error) {
+                console.error('Erro ao sair:', error);
+            }
+        }
     });
-    
-    if (result.isConfirmed) {
-        await signOut(auth);
-        window.location.reload();
-    }
-});
+}
 
 // ============================================
 // AUTENTICAÇÃO
@@ -1581,20 +1701,26 @@ btnLogout.addEventListener('click', async () => {
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         currentUser = user;
+        console.log('👤 Usuário logado:', user.email);
         
-        const snapshot = await get(ref(database, `users/${user.uid}`));
-        if (snapshot.exists()) {
-            currentUserData = snapshot.val();
-            
-            if (currentUserData.photo) {
-                userAvatarMini.innerHTML = `<img src="${currentUserData.photo}" alt="Foto" />`;
+        try {
+            const snapshot = await get(ref(database, `users/${user.uid}`));
+            if (snapshot.exists()) {
+                currentUserData = snapshot.val();
+                
+                if (currentUserData.photo && userAvatarMini) {
+                    userAvatarMini.innerHTML = `<img src="${currentUserData.photo}" alt="Foto" />`;
+                }
+                
+                await loadUsers();
+                loadChats();
+                listenIncomingCalls();
             }
-            
-            await loadUsers();
-            loadChats();
-            listenIncomingCalls();
+        } catch (error) {
+            console.error('Erro ao carregar dados:', error);
         }
     } else {
+        console.log('👤 Nenhum usuário logado');
         window.location.href = 'social.html';
     }
 });
