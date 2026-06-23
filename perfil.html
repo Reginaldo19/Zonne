@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Zonne - Perfil</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: #f0f4f8; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            padding-bottom: 75px;
+            color: #1a1a2e;
+        }
+        
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #f0f4f8; }
+        ::-webkit-scrollbar-thumb { background: #1a73e8; border-radius: 2px; }
+        
+        .container-custom {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 0;
+            min-height: 100vh;
+            background: #f0f4f8;
+        }
+        
+        /* HEADER */
+        .header-feed {
+            background: #ffffff;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e8f0fe;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        
+        .logo-feed {
+            font-size: clamp(20px, 5vw, 24px);
+            font-weight: 900;
+            color: #1a73e8;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+        .logo-feed i { color: #0d47a1; }
+        .logo-feed span { color: #0d47a1; }
+        
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .header-actions button {
+            background: none;
+            border: none;
+            color: #5f6368;
+            font-size: clamp(16px, 4vw, 18px);
+            cursor: pointer;
+            padding: 6px 8px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            position: relative;
+        }
+        .header-actions button:hover { background: #f0f7ff; color: #1a73e8; }
+        .user-avatar-mini {
+            width: clamp(30px, 7vw, 34px);
+            height: clamp(30px, 7vw, 34px);
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid #1a73e8;
+            cursor: pointer;
+            background: #e8f0fe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(14px, 3vw, 16px);
+            color: #1a73e8;
+        }
+        .user-avatar-mini img { width: 100%; height: 100%; object-fit: cover; }
+        
+        /* CAPA DO PERFIL */
+        .profile-cover {
+            width: 100%;
+            height: clamp(120px, 25vw, 160px);
+            background: linear-gradient(135deg, #1a73e8, #0d47a1);
+            position: relative;
+            overflow: hidden;
+        }
+        .profile-cover::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60%;
+            background: linear-gradient(to top, rgba(0,0,0,0.1), transparent);
+        }
+        .profile-cover .cover-pattern {
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.05) 0%, transparent 60%);
+        }
+        .profile-cover .cover-edit {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 5;
+        }
+        .profile-cover .cover-edit:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        /* INFO DO PERFIL */
+        .profile-info {
+            background: #ffffff;
+            padding: 0 18px 18px;
+            border-bottom: 1px solid #e8f0fe;
+            position: relative;
+            margin-top: -40px;
+        }
+        
+        .profile-avatar-large {
+            width: clamp(80px, 18vw, 100px);
+            height: clamp(80px, 18vw, 100px);
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid #ffffff;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            background: #e8f0fe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(32px, 7vw, 40px);
+            color: #1a73e8;
+            position: relative;
+            margin-top: -50px;
+            margin-bottom: 12px;
+        }
+        .profile-avatar-large img { width: 100%; height: 100%; object-fit: cover; }
+        .profile-avatar-large .avatar-edit {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            background: #1a73e8;
+            color: white;
+            width: clamp(28px, 6vw, 32px);
+            height: clamp(28px, 6vw, 32px);
+            border-radius: 50%;
+            border: 2px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(12px, 2.5vw, 14px);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .profile-avatar-large .avatar-edit:hover {
+            transform: scale(1.1);
+        }
+        
+        .profile-name-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .profile-name {
+            font-size: clamp(20px, 5vw, 24px);
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+        .profile-verified {
+            color: #1a73e8;
+            font-size: clamp(18px, 4vw, 22px);
+        }
+        .profile-username {
+            font-size: clamp(14px, 3vw, 16px);
+            color: #5f6368;
+        }
+        .profile-bio {
+            font-size: clamp(14px, 3vw, 15px);
+            color: #1a1a2e;
+            margin: 6px 0 12px;
+            line-height: 1.5;
+        }
+        
+        .profile-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px 24px;
+            margin: 8px 0 12px;
+        }
+        .profile-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: clamp(12px, 2.5vw, 13px);
+            color: #5f6368;
+        }
+        .profile-meta-item i { color: #1a73e8; width: 16px; }
+        
+        .profile-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+        .profile-actions button {
+            padding: clamp(8px, 2vw, 10px) clamp(16px, 4vw, 20px);
+            border: none;
+            border-radius: 20px;
+            font-size: clamp(13px, 3vw, 14px);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .profile-actions .btn-edit {
+            background: #f0f7ff;
+            color: #1a73e8;
+            border: 1px solid #e8f0fe;
+        }
+        .profile-actions .btn-edit:hover {
+            background: #e8f0fe;
+            transform: translateY(-2px);
+        }
+        .profile-actions .btn-share {
+            background: #1a73e8;
+            color: white;
+        }
+        .profile-actions .btn-share:hover {
+            background: #1557b0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(26,115,232,0.3);
+        }
+        .profile-actions .btn-more {
+            background: #f0f4f8;
+            color: #5f6368;
+        }
+        .profile-actions .btn-more:hover {
+            background: #e8e8e8;
+        }
+        
+        /* ESTATÍSTICAS */
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            background: #ffffff;
+            padding: 12px 18px;
+            border-bottom: 1px solid #e8f0fe;
+        }
+        .profile-stats .stat-item {
+            text-align: center;
+            padding: 8px 4px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .profile-stats .stat-item:hover {
+            background: #f0f7ff;
+        }
+        .profile-stats .stat-number {
+            font-size: clamp(18px, 4.5vw, 22px);
+            font-weight: 700;
+            color: #1a73e8;
+            display: block;
+        }
+        .profile-stats .stat-label {
+            font-size: clamp(10px, 2vw, 11px);
+            color: #5f6368;
+            display: block;
+            margin-top: 2px;
+        }
+        
+        /* TABS DO PERFIL */
+        .profile-tabs {
+            background: #ffffff;
+            border-bottom: 1px solid #e8f0fe;
+            display: flex;
+            position: sticky;
+            top: 65px;
+            z-index: 50;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .profile-tabs::-webkit-scrollbar { height: 0; }
+        
+        .profile-tab-btn {
+            flex: 0 0 auto;
+            padding: 12px 18px;
+            border: none;
+            background: none;
+            font-size: clamp(12px, 2.5vw, 13px);
+            font-weight: 600;
+            color: #5f6368;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .profile-tab-btn.active {
+            color: #1a73e8;
+        }
+        .profile-tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 20%;
+            right: 20%;
+            height: 3px;
+            background: #1a73e8;
+            border-radius: 3px 3px 0 0;
+        }
+        .profile-tab-btn:hover { color: #1a73e8; }
+        .profile-tab-btn i { font-size: clamp(14px, 3vw, 16px); }
+        .profile-tab-btn .badge-tab {
+            background: #ea4335;
+            color: white;
+            font-size: 10px;
+            border-radius: 50%;
+            padding: 1px 6px;
+            min-width: 18px;
+            text-align: center;
+        }
+        
+        .profile-tab-content {
+            display: none;
+            padding: 12px 14px;
+            animation: fadeIn 0.3s ease;
+        }
+        .profile-tab-content.active { display: block; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* POSTS NO PERFIL */
+        .profile-post-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 10px;
+            border: 1px solid #e8f0fe;
+            transition: all 0.3s;
+        }
+        .profile-post-card:hover { border-color: #1a73e8; }
+        .profile-post-card .post-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        .profile-post-card .post-avatar-sm {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: #e8f0fe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #1a73e8;
+        }
+        .profile-post-card .post-avatar-sm img { width: 100%; height: 100%; object-fit: cover; }
+        .profile-post-card .post-name {
+            font-weight: 600;
+            font-size: 13px;
+            color: #1a1a2e;
+        }
+        .profile-post-card .post-time {
+            font-size: 11px;
+            color: #9aa0a6;
+        }
+        .profile-post-card .post-text {
+            font-size: 14px;
+            color: #1a1a2e;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+        .profile-post-card .post-stats {
+            display: flex;
+            gap: 16px;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #5f6368;
+        }
+        .profile-post-card .post-stats span { display: flex; align-items: center; gap: 4px; }
+        
+        /* EMPTY STATE */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #5f6368;
+        }
+        .empty-state i { 
+            font-size: clamp(40px, 10vw, 48px); 
+            color: #e8f0fe; 
+            display: block; 
+            margin-bottom: 16px; 
+        }
+        .empty-state h5 { 
+            color: #1a1a2e; 
+            margin-bottom: 6px;
+            font-size: clamp(16px, 4vw, 18px);
+        }
+        .empty-state p { 
+            font-size: clamp(12px, 2.5vw, 13px); 
+            color: #9aa0a6; 
+        }
+        
+        .loading-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+        .spinner {
+            width: clamp(26px, 6vw, 30px);
+            height: clamp(26px, 6vw, 30px);
+            border: 3px solid #e8f0fe;
+            border-top-color: #1a73e8;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* BARRA INFERIOR */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #ffffff;
+            border-top: 1px solid #e8f0fe;
+            display: flex;
+            justify-content: space-around;
+            padding: 6px 0 10px;
+            max-width: 480px;
+            margin: 0 auto;
+            z-index: 1000;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.04);
+        }
+        
+        .nav-item {
+            background: none;
+            border: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #5f6368;
+            font-size: clamp(8px, 2vw, 10px);
+            cursor: pointer;
+            padding: 2px 8px;
+            transition: all 0.3s;
+            position: relative;
+            min-width: 44px;
+            text-decoration: none;
+        }
+        .nav-item i {
+            font-size: clamp(18px, 4.5vw, 20px);
+            margin-bottom: 2px;
+            transition: all 0.3s;
+        }
+        .nav-item span { 
+            font-size: clamp(7px, 1.8vw, 9px); 
+            margin-top: 0px; 
+        }
+        .nav-item.active { color: #1a73e8; }
+        .nav-item.active i { transform: scale(1.05); }
+        .nav-item:hover { color: #1a73e8; }
+        
+        .nav-item .badge-nav {
+            position: absolute;
+            top: 0;
+            right: 2px;
+            background: #ea4335;
+            color: white;
+            font-size: 9px;
+            border-radius: 50%;
+            padding: 1px 6px;
+            min-width: 18px;
+            text-align: center;
+            font-weight: 700;
+        }
+        
+        /* RESPONSIVO */
+        @media (max-width: 380px) {
+            .profile-tabs { top: 55px; }
+            .profile-stats { grid-template-columns: repeat(2, 1fr); }
+            .profile-actions button { 
+                padding: 6px 12px; 
+                font-size: 12px; 
+            }
+        }
+        
+        @media (min-width: 481px) {
+            .container-custom {
+                box-shadow: 0 0 20px rgba(0,0,0,0.05);
+                background: #f0f4f8;
+            }
+            .bottom-nav { max-width: 480px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-custom">
+
+    <!-- HEADER -->
+    <div class="header-feed">
+        <a href="social.html" class="logo-feed">
+            <i class="fas fa-sun"></i> Zonne<span>.</span>
+        </a>
+        <div class="header-actions">
+            <button id="btnSettings" title="Configurações">
+                <i class="fas fa-cog"></i>
+            </button>
+            <button id="btnLogout" title="Sair">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+            <div class="user-avatar-mini" id="userAvatarMini">
+                <i class="fas fa-user"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- CAPA -->
+    <div class="profile-cover" id="profileCover">
+        <div class="cover-pattern"></div>
+        <button class="cover-edit" id="editCoverBtn">
+            <i class="fas fa-camera"></i> Alterar capa
+        </button>
+    </div>
+
+    <!-- INFO DO PERFIL -->
+    <div class="profile-info">
+        <div class="profile-avatar-large" id="profileAvatarLarge">
+            <i class="fas fa-user"></i>
+            <div class="avatar-edit" id="editAvatarBtn">
+                <i class="fas fa-camera"></i>
+            </div>
+        </div>
+        
+        <div class="profile-name-row">
+            <span class="profile-name" id="profileName">Usuário</span>
+            <span class="profile-verified" id="profileVerified" style="display:none;">
+                <i class="fas fa-check-circle"></i>
+            </span>
+        </div>
+        <div class="profile-username" id="profileUsername">@usuario</div>
+        <div class="profile-bio" id="profileBio">Olá! Estou no Zonne 🌟</div>
+        
+        <div class="profile-meta">
+            <span class="profile-meta-item">
+                <i class="fas fa-calendar-alt"></i>
+                <span id="profileJoined">Entrou em Janeiro 2024</span>
+            </span>
+            <span class="profile-meta-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <span id="profileLocation">📍 Não informado</span>
+            </span>
+        </div>
+        
+        <div class="profile-actions">
+            <button class="btn-edit" id="editProfileBtn">
+                <i class="fas fa-edit"></i> Editar perfil
+            </button>
+            <button class="btn-share" id="shareProfileBtn">
+                <i class="fas fa-share-alt"></i> Compartilhar
+            </button>
+            <button class="btn-more" id="moreProfileBtn">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- ESTATÍSTICAS -->
+    <div class="profile-stats">
+        <div class="stat-item">
+            <span class="stat-number" id="statPosts">0</span>
+            <span class="stat-label"><i class="fas fa-file-alt"></i> Publicações</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number" id="statFriends">0</span>
+            <span class="stat-label"><i class="fas fa-user-friends"></i> Amigos</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number" id="statLikes">0</span>
+            <span class="stat-label"><i class="fas fa-heart" style="color:#ea4335;"></i> Curtidas</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number" id="statViews">0</span>
+            <span class="stat-label"><i class="fas fa-eye"></i> Visualizações</span>
+        </div>
+    </div>
+
+    <!-- TABS DO PERFIL -->
+    <div class="profile-tabs" id="profileTabs">
+        <button class="profile-tab-btn active" data-tab="tabProfilePosts">
+            <i class="fas fa-file-alt"></i> Publicações
+        </button>
+        <button class="profile-tab-btn" data-tab="tabProfilePhotos">
+            <i class="fas fa-images"></i> Fotos
+        </button>
+        <button class="profile-tab-btn" data-tab="tabProfileAbout">
+            <i class="fas fa-info-circle"></i> Sobre
+        </button>
+        <button class="profile-tab-btn" data-tab="tabProfileFriends">
+            <i class="fas fa-user-friends"></i> Amigos
+            <span class="badge-tab" id="tabFriendsBadge">0</span>
+        </button>
+    </div>
+
+    <!-- TAB: PUBLICAÇÕES -->
+    <div class="profile-tab-content active" id="tabProfilePosts">
+        <div id="profilePostsContainer">
+            <div class="loading-container"><div class="spinner"></div></div>
+        </div>
+    </div>
+
+    <!-- TAB: FOTOS -->
+    <div class="profile-tab-content" id="tabProfilePhotos">
+        <div id="profilePhotosContainer">
+            <div class="empty-state">
+                <i class="fas fa-images"></i>
+                <h5>Nenhuma foto</h5>
+                <p>Suas fotos aparecerão aqui</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB: SOBRE -->
+    <div class="profile-tab-content" id="tabProfileAbout">
+        <div id="profileAboutContainer">
+            <div style="background:#ffffff;border-radius:12px;padding:20px;border:1px solid #e8f0fe;">
+                <div style="display:flex;flex-direction:column;gap:16px;">
+                    <div>
+                        <h6 style="font-weight:700;color:#1a73e8;font-size:14px;margin-bottom:4px;">
+                            <i class="fas fa-user"></i> Sobre mim
+                        </h6>
+                        <p id="aboutBio" style="color:#1a1a2e;font-size:14px;line-height:1.6;">Olá! Estou no Zonne 🌟</p>
+                    </div>
+                    <div>
+                        <h6 style="font-weight:700;color:#1a73e8;font-size:14px;margin-bottom:4px;">
+                            <i class="fas fa-map-marker-alt"></i> Localização
+                        </h6>
+                        <p id="aboutLocation" style="color:#1a1a2e;font-size:14px;">📍 Não informado</p>
+                    </div>
+                    <div>
+                        <h6 style="font-weight:700;color:#1a73e8;font-size:14px;margin-bottom:4px;">
+                            <i class="fas fa-calendar-alt"></i> Entrou em
+                        </h6>
+                        <p id="aboutJoined" style="color:#1a1a2e;font-size:14px;">Janeiro 2024</p>
+                    </div>
+                    <div>
+                        <h6 style="font-weight:700;color:#1a73e8;font-size:14px;margin-bottom:4px;">
+                            <i class="fas fa-globe"></i> Site
+                        </h6>
+                        <p id="aboutWebsite" style="color:#1a73e8;font-size:14px;cursor:pointer;">Não informado</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB: AMIGOS -->
+    <div class="profile-tab-content" id="tabProfileFriends">
+        <div id="profileFriendsContainer">
+            <div class="loading-container"><div class="spinner"></div></div>
+        </div>
+    </div>
+
+    <!-- BARRA INFERIOR -->
+    <div class="bottom-nav">
+        <a class="nav-item" href="social.html">
+            <i class="fas fa-home"></i>
+            <span>Feed</span>
+        </a>
+        <a class="nav-item" href="amigos.html">
+            <i class="fas fa-user-friends"></i>
+            <span>Amigos</span>
+            <span class="badge-nav" id="navFriendsBadge">0</span>
+        </a>
+        <a class="nav-item" href="chat.html">
+            <i class="fas fa-comment-dots"></i>
+            <span>Chat</span>
+            <span class="badge-nav" id="chatBadge">0</span>
+        </a>
+        <a class="nav-item" href="live.html">
+            <i class="fas fa-broadcast-tower"></i>
+            <span>Live</span>
+        </a>
+        <a class="nav-item active" href="perfil.html">
+            <i class="fas fa-user"></i>
+            <span>Perfil</span>
+        </a>
+    </div>
+</div>
+
+<!-- FIREBASE COM IMPORTS -->
+<script type="importmap">
+{
+    "imports": {
+        "firebase/app": "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js",
+        "firebase/auth": "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js",
+        "firebase/database": "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"
+    }
+}
+</script>
+
+<script type="module">
+import { initializeApp } from 'firebase/app';
+import { getAuth, signOut, onAuthStateChanged } from 'firebase/auth';
+import { 
+    getDatabase, ref, set, onValue, update, get, 
+    serverTimestamp, query, orderByChild, limitToLast 
+} from 'firebase/database';
+
+// ============================================
+// CONFIGURAÇÃO FIREBASE
+// ============================================
+const firebaseConfig = {
+    apiKey: "AIzaSyAZsQVXCSr8NO4PynoMPKTQyx45Bpeh0vI",
+    authDomain: "social-media-d8ea8.firebaseapp.com",
+    databaseURL: "https://social-media-d8ea8-default-rtdb.firebaseio.com",
+    projectId: "social-media-d8ea8",
+    storageBucket: "social-media-d8ea8.firebasestorage.app",
+    messagingSenderId: "189544295",
+    appId: "1:189544295:web:369c23d5026b1848caf852"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const database = getDatabase(app);
+
+console.log('🔥 Firebase iniciado!');
+
+// ============================================
+// VARIÁVEIS
+// ============================================
+let currentUser = null;
+let currentUserData = null;
+let userPosts = [];
+let userFriends = {};
+let allUsers = {};
+
+// ============================================
+// DOM
+// ============================================
+const profileAvatarLarge = document.getElementById('profileAvatarLarge');
+const profileName = document.getElementById('profileName');
+const profileUsername = document.getElementById('profileUsername');
+const profileBio = document.getElementById('profileBio');
+const profileVerified = document.getElementById('profileVerified');
+const profileJoined = document.getElementById('profileJoined');
+const profileLocation = document.getElementById('profileLocation');
+const userAvatarMini = document.getElementById('userAvatarMini');
+const btnLogout = document.getElementById('btnLogout');
+const btnSettings = document.getElementById('btnSettings');
+
+const statPosts = document.getElementById('statPosts');
+const statFriends = document.getElementById('statFriends');
+const statLikes = document.getElementById('statLikes');
+const statViews = document.getElementById('statViews');
+const tabFriendsBadge = document.getElementById('tabFriendsBadge');
+
+const profilePostsContainer = document.getElementById('profilePostsContainer');
+const profilePhotosContainer = document.getElementById('profilePhotosContainer');
+const profileFriendsContainer = document.getElementById('profileFriendsContainer');
+const profileAboutContainer = document.getElementById('profileAboutContainer');
+
+const editProfileBtn = document.getElementById('editProfileBtn');
+const shareProfileBtn = document.getElementById('shareProfileBtn');
+const editAvatarBtn = document.getElementById('editAvatarBtn');
+const editCoverBtn = document.getElementById('editCoverBtn');
+const moreProfileBtn = document.getElementById('moreProfileBtn');
+
+// Tabs
+const profileTabBtns = document.querySelectorAll('.profile-tab-btn');
+const profileTabContents = {
+    tabProfilePosts: document.getElementById('tabProfilePosts'),
+    tabProfilePhotos: document.getElementById('tabProfilePhotos'),
+    tabProfileAbout: document.getElementById('tabProfileAbout'),
+    tabProfileFriends: document.getElementById('tabProfileFriends')
+};
+
+// ============================================
+// TABS
+// ============================================
+profileTabBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+        const tabId = this.dataset.tab;
+        
+        profileTabBtns.forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        Object.keys(profileTabContents).forEach(key => {
+            profileTabContents[key].classList.remove('active');
+        });
+        profileTabContents[tabId].classList.add('active');
+        
+        if (tabId === 'tabProfileFriends') loadProfileFriends();
+    });
+});
+
+// ============================================
+// CARREGAR USUÁRIOS
+// ============================================
+async function loadUsers() {
+    const usersRef = ref(database, 'users');
+    const snapshot = await get(usersRef);
+    if (snapshot.exists()) {
+        allUsers = snapshot.val();
+    }
+}
+
+// ============================================
+// CARREGAR PERFIL
+// ============================================
+async function loadProfile() {
+    if (!currentUser || !currentUserData) return;
+    
+    try {
+        // Avatar
+        if (currentUserData.photo) {
+            profileAvatarLarge.innerHTML = `
+                <img src="${currentUserData.photo}" alt="Foto" />
+                <div class="avatar-edit" id="editAvatarBtn">
+                    <i class="fas fa-camera"></i>
+                </div>
+            `;
+            userAvatarMini.innerHTML = `<img src="${currentUserData.photo}" alt="Foto" />`;
+        } else {
+            profileAvatarLarge.innerHTML = `
+                <i class="fas fa-user"></i>
+                <div class="avatar-edit" id="editAvatarBtn">
+                    <i class="fas fa-camera"></i>
+                </div>
+            `;
+            userAvatarMini.innerHTML = `<i class="fas fa-user"></i>`;
+        }
+        
+        // Reatachar evento do avatar
+        document.getElementById('editAvatarBtn')?.addEventListener('click', editAvatar);
+        
+        // Nome
+        profileName.textContent = currentUserData.fullName || 'Usuário';
+        
+        // Verificado
+        if (currentUserData.verified) {
+            profileVerified.style.display = 'inline';
+        } else {
+            profileVerified.style.display = 'none';
+        }
+        
+        // Username
+        profileUsername.textContent = `@${currentUserData.username || 'usuario'}`;
+        
+        // Bio
+        profileBio.textContent = currentUserData.bio || 'Olá! Estou no Zonne 🌟';
+        
+        // Data de entrada
+        if (currentUserData.createdAt) {
+            const date = new Date(currentUserData.createdAt);
+            profileJoined.textContent = `Entrou em ${date.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}`;
+        }
+        
+        // Localização
+        if (currentUserData.location) {
+            profileLocation.textContent = `📍 ${currentUserData.location}`;
+        }
+        
+        // Estatísticas
+        statPosts.textContent = currentUserData.postsCount || 0;
+        statLikes.textContent = currentUserData.likesCount || 0;
+        statViews.textContent = currentUserData.viewsCount || 0;
+        
+        // Carregar amigos
+        await loadProfileFriends();
+        
+        // Carregar posts do perfil
+        loadProfilePosts();
+        
+        // Carregar fotos
+        loadProfilePhotos();
+        
+        // Sobre
+        loadAbout();
+        
+    } catch (error) {
+        console.error('Erro ao carregar perfil:', error);
+    }
+}
+
+// ============================================
+// CARREGAR POSTS DO PERFIL
+// ============================================
+function loadProfilePosts() {
+    if (!currentUser) return;
+    
+    const userPostsRef = ref(database, `userPosts/${currentUser.uid}`);
+    onValue(userPostsRef, async (snapshot) => {
+        const data = snapshot.val();
+        
+        if (!data) {
+            profilePostsContainer.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-file-alt"></i>
+                    <h5>Nenhuma publicação</h5>
+                    <p>Suas publicações aparecerão aqui</p>
+                </div>
+            `;
+            return;
+        }
+        
+        const postIds = Object.keys(data);
+        const posts = [];
+        
+        for (const postId of postIds) {
+            const postRef = ref(database, `posts/${postId}`);
+            const postSnapshot = await get(postRef);
+            if (postSnapshot.exists()) {
+                const post = postSnapshot.val();
+                post.id = postId;
+                posts.push(post);
+            }
+        }
+        
+        posts.sort((a, b) => {
+            if (!a.timestamp) return 1;
+            if (!b.timestamp) return -1;
+            return b.timestamp - a.timestamp;
+        });
+        
+        userPosts = posts;
+        
+        if (posts.length === 0) {
+            profilePostsContainer.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-file-alt"></i>
+                    <h5>Nenhuma publicação</h5>
+                    <p>Suas publicações aparecerão aqui</p>
+                </div>
+            `;
+            return;
+        }
+        
+        let html = '';
+        posts.forEach(post => {
+            const time = post.timestamp ? new Date(post.timestamp).toLocaleDateString('pt-BR', {
+                day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
+            }) : 'Agora';
+            
+            const feeling = post.feeling ? ` ${post.feeling}` : '';
+            const location = post.location ? ` 📍 ${post.location}` : '';
+            const image = post.image ? `<div style="margin-top:8px;border-radius:8px;overflow:hidden;max-height:200px;"><img src="${post.image}" style="width:100%;height:auto;max-height:200px;object-fit:cover;" /></div>` : '';
+            
+            html += `
+                <div class="profile-post-card">
+                    <div class="post-header">
+                        <div class="post-avatar-sm">
+                            ${currentUserData?.photo ? `<img src="${currentUserData.photo}" alt="" />` : `<i class="fas fa-user"></i>`}
+                        </div>
+                        <div>
+                            <div class="post-name">${currentUserData?.fullName || 'Usuário'}</div>
+                            <div class="post-time">${time}</div>
+                        </div>
+                    </div>
+                    <div class="post-text">${post.text || ''}</div>
+                    ${feeling ? `<div style="font-size:13px;color:#1a73e8;margin-top:4px;">${feeling}</div>` : ''}
+                    ${location ? `<div style="font-size:12px;color:#5f6368;margin-top:2px;">${location}</div>` : ''}
+                    ${image}
+                    <div class="post-stats">
+                        <span><i class="fas fa-heart" style="color:#ea4335;"></i> ${post.likes || 0}</span>
+                        <span><i class="fas fa-comment" style="color:#1a73e8;"></i> ${post.comments || 0}</span>
+                        <span><i class="fas fa-share" style="color:#2ed573;"></i> ${post.shares || 0}</span>
+                    </div>
+                </div>
+            `;
+        });
+        
+        profilePostsContainer.innerHTML = html;
+    });
+}
+
+// ============================================
+// CARREGAR FOTOS DO PERFIL
+// ============================================
+function loadProfilePhotos() {
+    if (!userPosts) return;
+    
+    const photos = userPosts.filter(post => post.image);
+    
+    if (photos.length === 0) {
+        profilePhotosContainer.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-images"></i>
+                <h5>Nenhuma foto</h5>
+                <p>Suas fotos aparecerão aqui</p>
+            </div>
+        `;
+        return;
+    }
+    
+    let html = '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">';
+    photos.forEach(post => {
+        html += `
+            <div style="border-radius:8px;overflow:hidden;aspect-ratio:1/1;background:#e8f0fe;cursor:pointer;" onclick="window.open('${post.image}', '_blank')">
+                <img src="${post.image}" style="width:100%;height:100%;object-fit:cover;" loading="lazy" />
+            </div>
+        `;
+    });
+    html += '</div>';
+    
+    profilePhotosContainer.innerHTML = html;
+}
+
+// ============================================
+// CARREGAR SOBRE
+// ============================================
+function loadAbout() {
+    if (!currentUserData) return;
+    
+    document.getElementById('aboutBio').textContent = currentUserData.bio || 'Olá! Estou no Zonne 🌟';
+    document.getElementById('aboutLocation').textContent = currentUserData.location ? `📍 ${currentUserData.location}` : '📍 Não informado';
+    
+    if (currentUserData.createdAt) {
+        const date = new Date(currentUserData.createdAt);
+        document.getElementById('aboutJoined').textContent = date.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+    }
+    
+    document.getElementById('aboutWebsite').textContent = currentUserData.website || 'Não informado';
+}
+
+// ============================================
+// CARREGAR AMIGOS DO PERFIL
+// ============================================
+async function loadProfileFriends() {
+    if (!currentUser) return;
+    
+    try {
+        const friendsRef = ref(database, `friends/${currentUser.uid}`);
+        const snapshot = await get(friendsRef);
+        
+        if (!snapshot.exists()) {
+            userFriends = {};
+            statFriends.textContent = '0';
+            tabFriendsBadge.textContent = '0';
+            profileFriendsContainer.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-user-friends"></i>
+                    <h5>Nenhum amigo</h5>
+                    <p>Adicione amigos para aparecerem aqui</p>
+                </div>
+            `;
+            return;
+        }
+        
+        const data = snapshot.val();
+        userFriends = data;
+        const friendIds = Object.keys(data);
+        statFriends.textContent = friendIds.length;
+        tabFriendsBadge.textContent = friendIds.length;
+        
+        if (friendIds.length === 0) {
+            profileFriendsContainer.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-user-friends"></i>
+                    <h5>Nenhum amigo</h5>
+                    <p>Adicione amigos para aparecerem aqui</p>
+                </div>
+            `;
+            return;
+        }
+        
+        let html = '';
+        for (const uid of friendIds) {
+            const userRef = ref(database, `users/${uid}`);
+            const userSnapshot = await get(userRef);
+            if (userSnapshot.exists()) {
+                const user = userSnapshot.val();
+                const photo = user.photo ? `<img src="${user.photo}" alt="" />` : `<i class="fas fa-user"></i>`;
+                const verified = user.verified ? `<i class="fas fa-check-circle" style="color:#1a73e8;font-size:12px;"></i>` : '';
+                const statusIcon = user.status === 'online' ? 
+                    '<i class="fas fa-circle" style="color:#2ed573;font-size:8px;"></i>' : 
+                    '<i class="fas fa-circle" style="color:#9aa0a6;font-size:8px;"></i>';
+                
+                html += `
+                    <div style="display:flex;align-items:center;gap:12px;background:#ffffff;padding:10px 14px;border-radius:10px;margin-bottom:6px;border:1px solid #e8f0fe;cursor:pointer;" onclick="window.location.href='perfil.html?uid=${uid}'">
+                        <div style="width:40px;height:40px;border-radius:50%;overflow:hidden;flex-shrink:0;background:#e8f0fe;display:flex;align-items:center;justify-content:center;font-size:18px;color:#1a73e8;">${photo}</div>
+                        <div style="flex:1;min-width:0;">
+                            <div style="font-weight:600;font-size:14px;color:#1a1a2e;display:flex;align-items:center;gap:4px;">
+                                ${user.fullName || 'Usuário'}
+                                ${verified}
+                            </div>
+                            <div style="font-size:12px;color:#5f6368;">@${user.username || 'usuario'} ${statusIcon} ${user.status === 'online' ? 'Online' : 'Offline'}</div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        profileFriendsContainer.innerHTML = html;
+        
+    } catch (error) {
+        console.error('Erro ao carregar amigos do perfil:', error);
+    }
+}
+
+// ============================================
+// EDITAR AVATAR
+// ============================================
+function editAvatar() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = async (ev) => {
+                const imageData = ev.target.result;
+                try {
+                    await update(ref(database, `users/${currentUser.uid}`), { photo: imageData });
+                    currentUserData.photo = imageData;
+                    loadProfile();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Foto atualizada!',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                } catch (error) {
+                    console.error('Erro ao atualizar foto:', error);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+    input.click();
+}
+
+// ============================================
+// EDITAR PERFIL
+// ============================================
+editProfileBtn.addEventListener('click', function() {
+    Swal.fire({
+        title: 'Editar Perfil',
+        html: `
+            <input class="form-control" id="editName" placeholder="Nome completo" value="${currentUserData?.fullName || ''}" style="border:2px solid #e8f0fe;border-radius:8px;padding:10px;margin-bottom:8px;" />
+            <input class="form-control" id="editBio" placeholder="Biografia" value="${currentUserData?.bio || ''}" style="border:2px solid #e8f0fe;border-radius:8px;padding:10px;margin-bottom:8px;" />
+            <input class="form-control" id="editLocation" placeholder="Localização" value="${currentUserData?.location || ''}" style="border:2px solid #e8f0fe;border-radius:8px;padding:10px;margin-bottom:8px;" />
+            <input class="form-control" id="editWebsite" placeholder="Site" value="${currentUserData?.website || ''}" style="border:2px solid #e8f0fe;border-radius:8px;padding:10px;" />
+        `,
+        confirmButtonText: 'Salvar',
+        confirmButtonColor: '#1a73e8',
+        showCancelButton: true,
+        cancelButtonText: 'Cancelar',
+        cancelButtonColor: '#5f6368',
+        preConfirm: () => {
+            const name = document.getElementById('editName').value.trim();
+            const bio = document.getElementById('editBio').value.trim();
+            const location = document.getElementById('editLocation').value.trim();
+            const website = document.getElementById('editWebsite').value.trim();
+            if (!name) {
+                Swal.showValidationMessage('Digite seu nome');
+                return false;
+            }
+            return { name, bio, location, website };
+        }
+    }).then(async (result) => {
+        if (result.isConfirmed && result.value) {
+            try {
+                await update(ref(database, `users/${currentUser.uid}`), {
+                    fullName: result.value.name,
+                    bio: result.value.bio || 'Olá! Estou no Zonne 🌟',
+                    location: result.value.location || '',
+                    website: result.value.website || ''
+                });
+                currentUserData.fullName = result.value.name;
+                currentUserData.bio = result.value.bio || 'Olá! Estou no Zonne 🌟';
+                currentUserData.location = result.value.location || '';
+                currentUserData.website = result.value.website || '';
+                loadProfile();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Perfil atualizado!',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            } catch (error) {
+                console.error('Erro ao atualizar perfil:', error);
+            }
+        }
+    });
+});
+
+// ============================================
+// COMPARTILHAR PERFIL
+// ============================================
+shareProfileBtn.addEventListener('click', function() {
+    const text = `🌟 Confira meu perfil no Zonne! @${currentUserData?.username || 'usuario'}`;
+    if (navigator.share) {
+        navigator.share({
+            title: 'Zonne - Perfil',
+            text: text,
+            url: window.location.href
+        }).catch(() => {});
+    } else {
+        navigator.clipboard?.writeText(text).then(() => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Copiado!',
+                text: 'Link do perfil copiado',
+                timer: 1500,
+                showConfirmButton: false
+            });
+        }).catch(() => {});
+    }
+});
+
+// ============================================
+// MAIS OPÇÕES
+// ============================================
+moreProfileBtn.addEventListener('click', function() {
+    Swal.fire({
+        title: 'Opções',
+        html: `
+            <div style="text-align:left;">
+                <button id="optionVerified" style="width:100%;padding:10px;border:none;background:none;text-align:left;font-size:14px;cursor:pointer;border-bottom:1px solid #e8f0fe;">
+                    <i class="fas fa-check-circle" style="color:#1a73e8;"></i> Solicitar verificação
+                </button>
+                <button id="optionPrivacy" style="width:100%;padding:10px;border:none;background:none;text-align:left;font-size:14px;cursor:pointer;border-bottom:1px solid #e8f0fe;">
+                    <i class="fas fa-lock" style="color:#5f6368;"></i> Privacidade
+                </button>
+                <button id="optionBlock" style="width:100%;padding:10px;border:none;background:none;text-align:left;font-size:14px;cursor:pointer;color:#ea4335;">
+                    <i class="fas fa-ban"></i> Bloquear perfil
+                </button>
+            </div>
+        `,
+        confirmButtonText: 'Fechar',
+        confirmButtonColor: '#5f6368',
+        showConfirmButton: true,
+        showCancelButton: false
+    }).then(() => {});
+});
+
+// ============================================
+// CONFIGURAÇÕES
+// ============================================
+btnSettings.addEventListener('click', function() {
+    Swal.fire({
+        title: '⚙️ Configurações',
+        html: `
+            <div style="text-align:left;">
+                <button id="optionTheme" style="width:100%;padding:10px;border:none;background:none;text-align:left;font-size:14px;cursor:pointer;border-bottom:1px solid #e8f0fe;">
+                    <i class="fas fa-palette" style="color:#1a73e8;"></i> Tema
+                </button>
+                <button id="optionNotifications" style="width:100%;padding:10px;border:none;background:none;text-align:left;font-size:14px;cursor:pointer;border-bottom:1px solid #e8f0fe;">
+                    <i class="fas fa-bell" style="color:#f9ab00;"></i> Notificações
+                </button>
+                <button id="optionPrivacy" style="width:100%;padding:10px;border:none;background:none;text-align:left;font-size:14px;cursor:pointer;border-bottom:1px solid #e8f0fe;">
+                    <i class="fas fa-shield-alt" style="color:#2ed573;"></i> Privacidade
+                </button>
+                <button id="optionData" style="width:100%;padding:10px;border:none;background:none;text-align:left;font-size:14px;cursor:pointer;">
+                    <i class="fas fa-database" style="color:#5f6368;"></i> Dados e armazenamento
+                </button>
+            </div>
+        `,
+        confirmButtonText: 'Fechar',
+        confirmButtonColor: '#5f6368',
+        showConfirmButton: true,
+        showCancelButton: false
+    }).then(() => {});
+});
+
+// ============================================
+// LOGOUT
+// ============================================
+btnLogout.addEventListener('click', async function() {
+    const result = await Swal.fire({
+        title: 'Sair?',
+        text: 'Tem certeza que deseja sair?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#ea4335',
+        cancelButtonColor: '#5f6368',
+        confirmButtonText: 'Sair',
+        cancelButtonText: 'Cancelar'
+    });
+    
+    if (result.isConfirmed) {
+        try {
+            await signOut(auth);
+            window.location.reload();
+        } catch (error) {
+            console.error('Erro ao sair:', error);
+        }
+    }
+});
+
+// ============================================
+// AUTENTICAÇÃO
+// ============================================
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        currentUser = user;
+        console.log('👤 Usuário logado:', user.email);
+        
+        const userRef = ref(database, `users/${user.uid}`);
+        const snapshot = await get(userRef);
+        if (snapshot.exists()) {
+            currentUserData = snapshot.val();
+            await loadUsers();
+            loadProfile();
+        } else {
+            window.location.reload();
+        }
+    } else {
+        console.log('👤 Nenhum usuário logado');
+        window.location.href = 'social.html';
+    }
+});
+
+// ============================================
+// INICIALIZAÇÃO
+// ============================================
+console.log('🚀 Zonne - Perfil');
+console.log('✅ Sistema pronto!');
+</script>
+</body>
+</html>

@@ -1,1354 +1,2115 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zonne - Rede Social</title>
-    
-    <!-- Tailwind CSS via CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#eff6ff',
-                            100: '#dbeafe',
-                            200: '#bfdbfe',
-                            300: '#93c5fd',
-                            400: '#60a5fa',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                            800: '#1e40af',
-                            900: '#1e3a8a',
-                        },
-                        secondary: {
-                            50: '#f8fafc',
-                            100: '#f1f5f9',
-                            200: '#e2e8f0',
-                            300: '#cbd5e1',
-                            400: '#94a3b8',
-                            500: '#64748b',
-                            600: '#475569',
-                            700: '#334155',
-                            800: '#1e293b',
-                            900: '#0f172a',
-                        }
-                    },
-                    fontFamily: {
-                        'sans': ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
-                    },
-                    animation: {
-                        'fade-in': 'fadeIn 0.3s ease-in',
-                        'slide-up': 'slideUp 0.3s ease-out',
-                        'pulse': 'pulse 2s infinite',
-                    },
-                    keyframes: {
-                        fadeIn: {
-                            '0%': { opacity: '0' },
-                            '100%': { opacity: '1' }
-                        },
-                        slideUp: {
-                            '0%': { transform: 'translateY(10px)', opacity: '0' },
-                            '100%': { transform: 'translateY(0)', opacity: '1' }
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Zonne - Feed</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <style>
-        /* Estilos personalizados */
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .modal-overlay { background-color: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); }
-        .notification-dot {
-            position: absolute; top: -2px; right: -2px; width: 8px; height: 8px;
-            background-color: #ef4444; border-radius: 50%; border: 2px solid white;
-        }
-        .story-ring {
-            background: linear-gradient(45deg, #3b82f6, #8b5cf6);
-            padding: 2px; border-radius: 50%;
-        }
-        .story-ring.viewed { background: #94a3b8; }
-        
-        /* Reações em fila horizontal */
-        .reaction-bar {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            flex-wrap: wrap;
-        }
-        .reaction-item {
-            display: inline-flex;
-            align-items: center;
-            background: #f1f5f9;
-            padding: 2px 10px 2px 6px;
-            border-radius: 20px;
-            font-size: 13px;
-            gap: 2px;
-            cursor: default;
-        }
-        .reaction-item .emoji {
-            font-size: 16px;
-        }
-        .reaction-item .count {
-            font-size: 12px;
-            color: #64748b;
-            font-weight: 500;
-        }
-        .reaction-item:hover {
-            background: #e2e8f0;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: #f0f4f8; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            padding-bottom: 75px;
+            color: #1a1a2e;
         }
         
-        .reaction-palette {
-            position: absolute;
-            bottom: 100%;
-            left: 0;
-            background: white;
-            border-radius: 30px;
-            padding: 6px 10px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-            z-index: 50;
-            display: none;
-            gap: 2px;
-            border: 1px solid #e2e8f0;
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #f0f4f8; }
+        ::-webkit-scrollbar-thumb { background: #1a73e8; border-radius: 2px; }
+        
+        .container-custom {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 0;
+            min-height: 100vh;
+            background: #f0f4f8;
         }
-        .reaction-palette.visible { display: flex; }
-        .reaction-palette .emoji-btn {
-            font-size: 28px;
-            cursor: pointer;
-            transition: transform 0.15s;
-            width: 40px;
-            height: 40px;
+        
+        /* HEADER */
+        .header-feed {
+            background: #ffffff;
+            padding: 14px 18px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background: transparent;
+            justify-content: space-between;
+            border-bottom: 1px solid #e8f0fe;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        
+        .logo-feed {
+            font-size: 24px;
+            font-weight: 900;
+            color: #1a73e8;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .logo-feed i { color: #0d47a1; }
+        .logo-feed span { color: #0d47a1; }
+        
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .header-actions button {
+            background: none;
             border: none;
-        }
-        .reaction-palette .emoji-btn:hover {
-            transform: scale(1.3);
-            background-color: #f1f5f9;
-        }
-        
-        .sidebar-item.active { background-color: #eff6ff; color: #1d4ed8; }
-        .tab-active { background-color: #dbeafe; color: #1d4ed8; }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .fade-in { animation: fadeIn 0.3s ease-in; }
-        .slide-up { animation: slideUp 0.3s ease-out; }
-        
-        .skeleton {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%; animation: loading 1.5s infinite;
-        }
-        @keyframes loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-        
-        @media (max-width: 640px) {
-            .post-modal-content {
-                max-height: 80vh;
-                overflow-y: auto;
-            }
-            .modal-content {
-                width: 95%;
-                margin: 0 10px;
-            }
-            .reaction-palette .emoji-btn {
-                font-size: 22px;
-                width: 34px;
-                height: 34px;
-            }
-        }
-        
-        input, textarea, select {
-            font-size: 16px !important;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-        }
-        
-        .post-container {
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .post-container:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-        }
-        
-        .post-modal-textarea {
-            min-height: 120px;
-            resize: vertical;
-            font-size: 16px;
-            line-height: 1.5;
-        }
-        
-        .media-preview-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 8px;
-            margin-top: 12px;
-        }
-        .media-preview-item {
-            position: relative;
+            color: #5f6368;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 6px 8px;
             border-radius: 8px;
-            overflow: hidden;
-            aspect-ratio: 1;
+            transition: all 0.3s;
+            position: relative;
         }
-        .media-preview-item img,
-        .media-preview-item video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .media-remove-btn {
+        .header-actions button:hover { background: #f0f7ff; color: #1a73e8; }
+        .header-actions .badge-dot {
             position: absolute;
             top: 4px;
             right: 4px;
-            background: rgba(0,0,0,0.7);
-            color: white;
+            width: 8px;
+            height: 8px;
+            background: #ea4335;
             border-radius: 50%;
-            width: 24px;
-            height: 24px;
+        }
+        .user-avatar-mini {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid #1a73e8;
+            cursor: pointer;
+            background: #e8f0fe;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 16px;
+            color: #1a73e8;
+        }
+        .user-avatar-mini img { width: 100%; height: 100%; object-fit: cover; }
+        
+        /* FEED */
+        .feed-container {
+            padding: 12px 14px;
+        }
+        
+        .post-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid #e8f0fe;
+            transition: all 0.3s;
+            position: relative;
+        }
+        .post-card:hover { border-color: #1a73e8; box-shadow: 0 2px 8px rgba(26,115,232,0.06); }
+        
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .post-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+            border: 2px solid #e8f0fe;
+            background: #e8f0fe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #1a73e8;
+        }
+        .post-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .post-user-name {
+            font-weight: 700;
+            color: #1a1a2e;
+            font-size: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .post-user-name:hover { color: #1a73e8; }
+        .verified-badge {
+            color: #1a73e8;
+            font-size: 14px;
+            display: inline-block;
+        }
+        .post-username {
             font-size: 12px;
-            cursor: pointer;
-            border: none;
+            color: #5f6368;
+        }
+        .post-time {
+            font-size: 11px;
+            color: #9aa0a6;
         }
         
-        .user-link {
-            cursor: pointer;
-            transition: color 0.2s;
+        .post-content {
+            margin: 8px 0;
+            font-size: 15px;
+            color: #1a1a2e;
+            line-height: 1.6;
+            word-wrap: break-word;
+            white-space: pre-wrap;
         }
-        .user-link:hover {
-            color: #2563eb;
-            text-decoration: underline;
-        }
+        .post-content .hashtag { color: #1a73e8; cursor: pointer; font-weight: 500; }
+        .post-content .hashtag:hover { text-decoration: underline; }
+        .post-content .mention { color: #1a73e8; font-weight: 500; cursor: pointer; }
+        .post-content .mention:hover { text-decoration: underline; }
         
-        /* Centralizar ícone do Live no bottom nav */
-        #mobileNav .bg-gradient-to-r {
+        .post-feeling {
+            display: inline-block;
+            background: #e8f0fe;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #1a73e8;
+            margin: 4px 0;
+        }
+        .post-location {
+            display: inline-block;
+            font-size: 13px;
+            color: #5f6368;
+            margin: 4px 0;
+        }
+        .post-location i { margin-right: 4px; color: #1a73e8; }
+        
+        .post-media {
+            margin: 10px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            max-height: 350px;
+            background: #f8f9fa;
             display: flex;
             align-items: center;
             justify-content: center;
         }
+        .post-media img { width: 100%; height: auto; max-height: 350px; object-fit: cover; }
         
-        /* Loading lazy para imagens */
-        img, video {
-            background: #f0f0f0;
+        .post-actions {
+            display: flex;
+            gap: 8px;
+            padding-top: 12px;
+            border-top: 1px solid #e8f0fe;
+            margin-top: 12px;
+        }
+        
+        .post-action-btn {
+            background: none;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #5f6368;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        .post-action-btn:hover { background: #f0f7ff; color: #1a73e8; }
+        .post-action-btn.liked { color: #ea4335; }
+        .post-action-btn.liked i { animation: heartBeat 0.3s; }
+        
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+        
+        .post-action-btn i { font-size: 18px; }
+        .post-action-btn .count { font-weight: 600; }
+        
+        /* MENU DE OPÇÕES */
+        .post-options-menu {
+            display: none;
+            position: absolute;
+            right: 12px;
+            top: 50px;
+            background: #ffffff;
+            border: 1px solid #e8f0fe;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            z-index: 50;
+            min-width: 160px;
+            padding: 4px 0;
+        }
+        .post-options-menu.active { display: block; }
+        .post-options-menu button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 10px 16px;
+            border: none;
+            background: none;
+            font-size: 14px;
+            color: #1a1a2e;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+        .post-options-menu button:hover { background: #f0f7ff; }
+        .post-options-menu button.danger { color: #ea4335; }
+        .post-options-menu button i { width: 18px; color: #5f6368; }
+        .post-options-menu button.danger i { color: #ea4335; }
+        
+        .post-more-btn {
+            background: none;
+            border: none;
+            color: #5f6368;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 18px;
+            transition: all 0.3s;
+            margin-left: auto;
+            position: relative;
+        }
+        .post-more-btn:hover { background: #f0f7ff; color: #1a73e8; }
+        
+        /* POST COMPARTILHADO */
+        .post-shared-info {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin: 8px 0;
+            border-left: 3px solid #1a73e8;
+        }
+        .post-shared-info .shared-label {
+            font-size: 12px;
+            color: #5f6368;
+            font-weight: 500;
+        }
+        .post-shared-info .shared-name {
+            font-weight: 600;
+            color: #1a73e8;
+        }
+        
+        /* BOTÃO PUBLICAR FLUTUANTE */
+        .fab-publish {
+            position: fixed;
+            bottom: 85px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #1a73e8;
+            border: none;
+            color: white;
+            font-size: 26px;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(26,115,232,0.3);
+            transition: all 0.3s;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .fab-publish:hover { transform: scale(1.08); box-shadow: 0 6px 24px rgba(26,115,232,0.4); }
+        
+        /* BARRA INFERIOR */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #ffffff;
+            border-top: 1px solid #e8f0fe;
+            display: flex;
+            justify-content: space-around;
+            padding: 6px 0 10px;
+            max-width: 480px;
+            margin: 0 auto;
+            z-index: 1000;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.04);
+        }
+        
+        .nav-item {
+            background: none;
+            border: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #5f6368;
+            font-size: 10px;
+            cursor: pointer;
+            padding: 2px 8px;
+            transition: all 0.3s;
+            position: relative;
+            min-width: 44px;
+            text-decoration: none;
+        }
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 2px;
+            transition: all 0.3s;
+        }
+        .nav-item span { font-size: 9px; margin-top: 0px; }
+        .nav-item.active { color: #1a73e8; }
+        .nav-item.active i { transform: scale(1.05); }
+        .nav-item:hover { color: #1a73e8; }
+        
+        .nav-item .badge-nav {
+            position: absolute;
+            top: 0;
+            right: 2px;
+            background: #ea4335;
+            color: white;
+            font-size: 9px;
+            border-radius: 50%;
+            padding: 1px 6px;
+            min-width: 18px;
+            text-align: center;
+            font-weight: 700;
+        }
+        
+        /* MODAL PUBLICAR */
+        .modal-publish {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: flex-end;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+        .modal-publish.active { display: flex; }
+        
+        .modal-publish-content {
+            background: #ffffff;
+            border-radius: 16px 16px 0 0;
+            max-width: 480px;
+            width: 100%;
+            max-height: 92vh;
+            padding: 20px;
+            animation: slideUp 0.3s ease;
+            overflow-y: auto;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        
+        .modal-publish-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .modal-publish-header h5 {
+            font-weight: 700;
+            color: #1a1a2e;
+            font-size: 18px;
+        }
+        .modal-publish-header h5 i { color: #1a73e8; margin-right: 8px; }
+        .modal-publish-header button {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #5f6368;
+            cursor: pointer;
+        }
+        
+        .publish-textarea {
+            width: 100%;
+            min-height: 100px;
+            border: 2px solid #e8f0fe;
+            border-radius: 12px;
+            padding: 12px;
+            font-size: 15px;
+            color: #1a1a2e;
+            resize: vertical;
+            outline: none;
+            transition: all 0.3s;
+            background: #fafcff;
+        }
+        .publish-textarea:focus { border-color: #1a73e8; box-shadow: 0 0 0 4px rgba(26,115,232,0.06); }
+        .publish-textarea::placeholder { color: #9aa0a6; }
+        
+        .publish-tools {
+            display: flex;
+            gap: 6px;
+            margin: 12px 0;
+            flex-wrap: wrap;
+        }
+        .publish-tools button {
+            background: #f0f7ff;
+            border: 1px solid #e8f0fe;
+            color: #5f6368;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 13px;
+        }
+        .publish-tools button:hover { background: #e8f0fe; color: #1a73e8; }
+        .publish-tools button.active { border-color: #1a73e8; color: #1a73e8; background: #e8f0fe; }
+        .publish-tools button i { font-size: 16px; }
+        
+        .publish-extras {
+            display: none;
+            margin: 8px 0;
+        }
+        .publish-extras.active { display: block; }
+        .publish-extras select,
+        .publish-extras input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e8f0fe;
+            border-radius: 8px;
+            color: #1a1a2e;
+            font-size: 14px;
+            outline: none;
+            background: #fafcff;
+        }
+        .publish-extras select:focus,
+        .publish-extras input:focus { border-color: #1a73e8; }
+        
+        /* ESTILO DOS SENTIMENTOS - BOTÕES VISUAIS */
+        .feelings-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            margin: 4px 0;
+        }
+        .feelings-grid button {
+            padding: 8px 4px;
+            border: 2px solid #e8f0fe;
+            border-radius: 8px;
+            background: #fafcff;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 13px;
+            color: #1a1a2e;
+            text-align: center;
+        }
+        .feelings-grid button:hover { background: #e8f0fe; border-color: #1a73e8; }
+        .feelings-grid button.active { 
+            background: #e8f0fe; 
+            border-color: #1a73e8;
+            box-shadow: 0 0 0 3px rgba(26,115,232,0.1);
+        }
+        .feelings-grid button .emoji { font-size: 20px; display: block; }
+        .feelings-grid button .label { font-size: 10px; color: #5f6368; }
+        
+        .publish-preview-img {
+            display: none;
+            margin: 8px 0;
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .publish-preview-img.active { display: block; }
+        .publish-preview-img img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+        }
+        .publish-preview-img .remove-img {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+        }
+        
+        .publish-btn {
+            width: 100%;
+            padding: 12px;
+            background: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 8px;
+        }
+        .publish-btn:hover { background: #1557b0; transform: translateY(-2px); }
+        .publish-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        
+        .share-info-preview {
+            background: #f8f9fa;
+            padding: 10px 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 3px solid #1a73e8;
+        }
+        .share-info-preview .label {
+            font-size: 12px;
+            color: #5f6368;
+        }
+        .share-info-preview .text {
+            font-size: 14px;
+            color: #1a1a2e;
+            margin-top: 4px;
+        }
+        
+        /* CARREGANDO */
+        .loading-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+        .spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #e8f0fe;
+            border-top-color: #1a73e8;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* EMPTY STATE */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #5f6368;
+        }
+        .empty-state i { font-size: 48px; color: #e8f0fe; display: block; margin-bottom: 16px; }
+        .empty-state h5 { color: #1a1a2e; margin-bottom: 6px; }
+        .empty-state p { font-size: 13px; color: #9aa0a6; }
+        
+        /* PÁGINA DE COMENTÁRIOS */
+        .comments-page {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #f0f4f8;
+            z-index: 3000;
+            max-width: 480px;
+            margin: 0 auto;
+            animation: slideIn 0.3s ease;
+            overflow-y: auto;
+        }
+        .comments-page.active { display: block; }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+        
+        .comments-header {
+            background: #ffffff;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid #e8f0fe;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .comments-header button {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #5f6368;
+            cursor: pointer;
+        }
+        .comments-header h5 {
+            margin: 0;
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+        
+        .comments-list {
+            padding: 12px 14px;
+            padding-bottom: 80px;
+        }
+        
+        .comment-original-post {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 16px;
+            border: 1px solid #e8f0fe;
+        }
+        .comment-original-post .post-header {
+            margin-bottom: 6px;
+        }
+        .comment-original-post .post-content {
+            font-size: 14px;
+            margin: 4px 0;
+        }
+        .comment-original-post .post-feeling {
+            font-size: 12px;
+        }
+        
+        .comment-item {
+            display: flex;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid #e8f0fe;
+        }
+        .comment-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+            background: #e8f0fe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: #1a73e8;
+        }
+        .comment-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .comment-body { flex: 1; }
+        .comment-name { font-weight: 600; color: #1a1a2e; font-size: 14px; }
+        .comment-text { font-size: 14px; color: #1a1a2e; margin-top: 2px; }
+        .comment-time { font-size: 11px; color: #9aa0a6; }
+        
+        .comment-input-area {
+            position: sticky;
+            bottom: 0;
+            background: #ffffff;
+            padding: 10px 14px;
+            border-top: 1px solid #e8f0fe;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .comment-input-area input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 2px solid #e8f0fe;
+            border-radius: 20px;
+            font-size: 14px;
+            outline: none;
+            background: #fafcff;
+        }
+        .comment-input-area input:focus { border-color: #1a73e8; }
+        .comment-input-area button {
+            background: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .comment-input-area button:hover { background: #1557b0; }
+        
+        /* PÁGINA DE NOTIFICAÇÕES */
+        .notifications-page {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #f0f4f8;
+            z-index: 3000;
+            max-width: 480px;
+            margin: 0 auto;
+            animation: slideIn 0.3s ease;
+            overflow-y: auto;
+        }
+        .notifications-page.active { display: block; }
+        
+        .notifications-header {
+            background: #ffffff;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid #e8f0fe;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .notifications-header button {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #5f6368;
+            cursor: pointer;
+        }
+        .notifications-header h5 {
+            margin: 0;
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+        .notifications-list {
+            padding: 12px 14px;
+        }
+        .notification-item {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            border: 1px solid #e8f0fe;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .notification-item .notif-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #e8f0fe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1a73e8;
+            font-size: 16px;
+        }
+        .notification-item .notif-text {
+            flex: 1;
+            font-size: 14px;
+            color: #1a1a2e;
+        }
+        .notification-item .notif-text strong { color: #1a1a2e; }
+        .notification-item .notif-time {
+            font-size: 11px;
+            color: #9aa0a6;
+        }
+        
+        /* RESPONSIVO */
+        @media (max-width: 480px) {
+            .bottom-nav { padding: 4px 0 8px; }
+            .nav-item { padding: 2px 6px; font-size: 9px; min-width: 36px; }
+            .nav-item i { font-size: 18px; }
+            .header-feed { padding: 10px 14px; }
+            .logo-feed { font-size: 20px; }
+            .fab-publish { width: 48px; height: 48px; font-size: 22px; bottom: 78px; right: 14px; }
+            .feelings-grid { grid-template-columns: repeat(3, 1fr); }
         }
     </style>
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="font-sans bg-gray-50 text-gray-900">
-    <!-- Loading Screen -->
-    <div id="loadingScreen" class="fixed inset-0 bg-white flex items-center justify-center z-50">
-        <div class="text-center">
-            <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500 mx-auto mb-4"></div>
-            <p class="text-gray-600">Carregando Zonne...</p>
+<body>
+
+<div class="container-custom">
+
+    <!-- HEADER -->
+    <div class="header-feed">
+        <div class="logo-feed">
+            <i class="fas fa-sun"></i> Zonne<span>.</span>
         </div>
-    </div>
-
-    <!-- App Container -->
-    <div id="appContainer" class="min-h-screen hidden">
-        <!-- Auth Container (escondido - modo demo) -->
-        <div id="authContainer" class="min-h-screen flex items-center justify-center p-4 hidden">
-            <div class="max-w-md w-full">
-                <div class="text-center mb-8">
-                    <h1 class="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
-                        Zonne
-                    </h1>
-                    <p class="text-gray-600">Conecte-se com amigos e compartilhe momentos</p>
-                </div>
-                
-                <div class="bg-white rounded-xl shadow-xl p-8">
-                    <div id="authTabs" class="flex mb-6 border-b border-gray-200">
-                        <button onclick="showAuthTab('login')" id="loginTab" class="flex-1 py-3 font-medium text-center border-b-2 border-blue-500 text-blue-600">
-                            Entrar
-                        </button>
-                        <button onclick="showAuthTab('register')" id="registerTab" class="flex-1 py-3 font-medium text-center text-gray-500">
-                            Registrar
-                        </button>
-                    </div>
-                    
-                    <!-- Login Form -->
-                    <div id="loginForm">
-                        <div class="space-y-4">
-                            <div>
-                                <input type="email" id="loginEmail" 
-                                       class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                       placeholder="seu@email.com">
-                            </div>
-                            <div>
-                                <input type="password" id="loginPassword" 
-                                       class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                       placeholder="••••••••">
-                            </div>
-                            <button onclick="login()" class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 rounded-lg transition-all">
-                                Entrar
-                            </button>
-                        </div>
-                        <div class="mt-4 text-center">
-                            <p class="text-sm text-gray-600">
-                                Esqueceu a senha? <a href="#" onclick="showForgotPassword()" class="text-blue-600 hover:text-blue-700">Recuperar</a>
-                            </p>
-                        </div>
-                    </div>
-                    
-                    <!-- Register Form -->
-                    <div id="registerForm" class="hidden">
-                        <div class="space-y-4">
-                            <div>
-                                <input type="text" id="registerName" 
-                                       class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                       placeholder="Seu nome completo">
-                            </div>
-                            <div>
-                                <input type="email" id="registerEmail" 
-                                       class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                       placeholder="seu@email.com">
-                            </div>
-                            <div>
-                                <input type="password" id="registerPassword" 
-                                       class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                       placeholder="•••••••• (mínimo 6 caracteres)">
-                            </div>
-                            <div>
-                                <input type="password" id="registerConfirmPassword" 
-                                       class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                       placeholder="Confirmar senha">
-                            </div>
-                            <div>
-                                <label class="flex items-center">
-                                    <input type="checkbox" id="registerTerms" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                                    <span class="ml-2 text-sm text-gray-600">
-                                        Aceito os <a href="#" class="text-blue-600 hover:text-blue-700">Termos de Serviço</a> e <a href="#" class="text-blue-600 hover:text-blue-700">Política de Privacidade</a>
-                                    </span>
-                                </label>
-                            </div>
-                            <button onclick="register()" class="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold py-3 rounded-lg transition-all">
-                                Criar Conta
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- Forgot Password Form -->
-                    <div id="forgotPasswordForm" class="hidden">
-                        <div class="space-y-4">
-                            <div>
-                                <p class="text-gray-600 mb-4">
-                                    Digite seu email para receber um link de recuperação de senha.
-                                </p>
-                                <input type="email" id="forgotPasswordEmail" 
-                                       class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                       placeholder="seu@email.com">
-                            </div>
-                            <button onclick="sendPasswordReset()" class="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold py-3 rounded-lg transition-all">
-                                Enviar Link de Recuperação
-                            </button>
-                            <button onclick="showAuthTab('login')" class="w-full border border-gray-300 text-gray-700 hover:bg-gray-50 py-3 rounded-lg transition-all">
-                                Voltar para Login
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Main App -->
-        <div id="mainApp" class="hidden">
-            <!-- Mobile Header -->
-            <header class="lg:hidden sticky top-0 bg-white border-b border-gray-200 p-4 flex justify-between items-center z-20 shadow-sm">
-                <div class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    Zonne
-                </div>
-                <div class="flex items-center space-x-3">
-                    <button onclick="openSearchModal()" class="text-gray-600 hover:text-blue-600 transition-colors">
-                        <i class="fas fa-search w-5 h-5"></i>
-                    </button>
-                    <button onclick="openNotifications()" class="text-gray-600 hover:text-blue-600 transition-colors relative">
-                        <i class="fas fa-bell w-5 h-5"></i>
-                        <span id="mobileNotificationsBadge" class="notification-dot hidden"></span>
-                    </button>
-                </div>
-            </header>
-
-            <div class="flex h-screen overflow-hidden">
-                <!-- Sidebar (Desktop) -->
-                <aside id="sidebar" class="hidden lg:flex flex-col w-64 bg-white border-r border-gray-200 p-4 sticky top-0 h-full overflow-y-auto">
-                    <!-- Logo -->
-                    <div class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-8">
-                        Zonne
-                    </div>
-                    
-                    <!-- Navigation -->
-                    <nav class="space-y-2 flex-1">
-                        <button onclick="switchView('home')" class="sidebar-item w-full flex items-center p-3 rounded-xl text-left transition-all hover:bg-gray-100 active" id="btnHome">
-                            <i class="fas fa-home w-5 h-5 mr-3"></i>
-                            <span>Início</span>
-                        </button>
-                        
-                        <a href="amigos.html" class="sidebar-item w-full flex items-center p-3 rounded-xl text-left transition-all hover:bg-gray-100">
-                            <i class="fas fa-users w-5 h-5 mr-3"></i>
-                            <span>Amigos</span>
-                        </a>
-                        
-                        <a href="chat.html" class="sidebar-item w-full flex items-center p-3 rounded-xl text-left transition-all hover:bg-gray-100">
-                            <i class="fas fa-comments w-5 h-5 mr-3"></i>
-                            <span>Chat</span>
-                        </a>
-                        
-                        <a href="live.html" class="sidebar-item w-full flex items-center p-3 rounded-xl text-left transition-all hover:bg-gray-100">
-                            <i class="fas fa-broadcast-tower w-5 h-5 mr-3"></i>
-                            <span>Live</span>
-                        </a>
-                        
-                        <button onclick="switchView('notifications')" class="sidebar-item w-full flex items-center p-3 rounded-xl text-left transition-all hover:bg-gray-100" id="btnNotifications">
-                            <i class="fas fa-bell w-5 h-5 mr-3"></i>
-                            <span>Notificações</span>
-                            <span id="notificationsBadge" class="hidden ml-auto bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
-                        </button>
-                        
-                        <button onclick="switchView('settings')" class="sidebar-item w-full flex items-center p-3 rounded-xl text-left transition-all hover:bg-gray-100" id="btnSettings">
-                            <i class="fas fa-cog w-5 h-5 mr-3"></i>
-                            <span>Configurações</span>
-                        </button>
-                        
-                        <button onclick="switchView('profile')" class="sidebar-item w-full flex items-center p-3 rounded-xl text-left transition-all hover:bg-gray-100" id="btnProfile">
-                            <i class="fas fa-user w-5 h-5 mr-3"></i>
-                            <span>Perfil</span>
-                        </button>
-                    </nav>
-                    
-                    <!-- Action Buttons -->
-                    <div class="mt-6 space-y-3">
-                        <button onclick="openCreateStoryModal()" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold py-3 rounded-xl shadow-md transition-all hover:shadow-lg">
-                            <i class="fas fa-plus-circle mr-2"></i>
-                            Criar Story
-                        </button>
-                        
-                        <button onclick="openPostModal()" class="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-3 rounded-xl shadow-md transition-all hover:shadow-lg">
-                            <i class="fas fa-edit mr-2"></i>
-                            Criar Post
-                        </button>
-                    </div>
-                    
-                    <!-- User Profile Mini -->
-                    <div class="mt-6 pt-6 border-t border-gray-200">
-                        <div id="sidebarUserProfile" class="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-all" onclick="switchView('profile')">
-                            <div id="sidebarUserAvatar" class="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">
-                                <i class="fas fa-user"></i>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p id="sidebarUserName" class="font-semibold text-gray-800 truncate">Carregando...</p>
-                                <p id="sidebarUserEmail" class="text-xs text-gray-500 truncate">carregando...</p>
-                            </div>
-                            <div class="w-2 h-2 bg-green-500 rounded-full" title="Online"></div>
-                        </div>
-                    </div>
-                </aside>
-
-                <!-- Main Content -->
-                <main class="flex-1 overflow-y-auto no-scrollbar">
-                    <!-- Home Section -->
-                    <div id="home-section" class="max-w-2xl mx-auto p-4 lg:py-6">
-                        <!-- Stories -->
-                        <div id="stories-section" class="mb-6">
-                            <h2 class="text-lg font-bold text-gray-800 mb-3">Stories</h2>
-                            <div id="stories-container" class="flex space-x-4 overflow-x-auto pb-4 no-scrollbar">
-                                <!-- Stories will be loaded here -->
-                            </div>
-                        </div>
-
-                        <!-- Create Post Card -->
-                        <div class="bg-white p-4 rounded-xl shadow-md mb-6 border border-gray-200">
-                            <div class="flex items-center space-x-3 mb-4">
-                                <div id="userAvatar" class="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">
-                                    <i class="fas fa-user"></i>
-                                </div>
-                                <input type="text" 
-                                       placeholder="O que você está pensando hoje?" 
-                                       class="flex-1 p-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 text-gray-800 cursor-pointer"
-                                       onclick="openPostModal()" 
-                                       readonly>
-                            </div>
-                            <div class="flex justify-between border-t border-gray-100 pt-4">
-                                <button onclick="handleMediaSelection('photo')" class="flex items-center space-x-2 text-gray-600 hover:text-green-600 px-3 py-2 rounded-lg hover:bg-gray-50 transition-all">
-                                    <i class="fas fa-image w-5 h-5"></i>
-                                    <span class="text-sm font-medium">Foto/Vídeo</span>
-                                </button>
-                                <button onclick="handleMediaSelection('feeling')" class="flex items-center space-x-2 text-gray-600 hover:text-yellow-600 px-3 py-2 rounded-lg hover:bg-gray-50 transition-all">
-                                    <i class="fas fa-smile w-5 h-5"></i>
-                                    <span class="text-sm font-medium">Feeling</span>
-                                </button>
-                                <button onclick="handleMediaSelection('tag')" class="flex items-center space-x-2 text-gray-600 hover:text-blue-600 px-3 py-2 rounded-lg hover:bg-gray-50 transition-all">
-                                    <i class="fas fa-tag w-5 h-5"></i>
-                                    <span class="text-sm font-medium">Marcar Pessoas</span>
-                                </button>
-                            </div>
-                            <div id="mediaPreview" class="mt-4 hidden"></div>
-                        </div>
-
-                        <!-- Feed -->
-                        <h2 class="text-xl font-bold text-gray-800 mb-4">Feed Principal</h2>
-                        <div id="posts-container">
-                            <!-- Posts will be loaded here -->
-                        </div>
-                    </div>
-
-                    <!-- Notifications Section -->
-                    <div id="notifications-section" class="max-w-2xl mx-auto p-4 lg:py-6 hidden">
-                        <div class="flex items-center justify-between mb-6">
-                            <h2 class="text-2xl font-bold text-gray-800">Notificações</h2>
-                            <div class="flex space-x-2">
-                                <button onclick="markAllNotificationsAsRead()" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                                    Marcar todas como lidas
-                                </button>
-                            </div>
-                        </div>
-                        <div id="notificationList" class="space-y-3">
-                            <!-- Notifications will be loaded here -->
-                        </div>
-                    </div>
-
-                    <!-- Settings Section -->
-                    <div id="settings-section" class="max-w-2xl mx-auto p-4 lg:py-6 hidden">
-                        <h2 class="text-2xl font-bold text-gray-800 mb-6">Configurações</h2>
-                        
-                        <div class="space-y-6">
-                            <!-- Profile Settings -->
-                            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-                                <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                                    <i class="fas fa-user-circle mr-2"></i> Perfil
-                                </h3>
-                                <div class="space-y-4">
-                                    <div class="flex items-center space-x-4">
-                                        <div id="settingsAvatarPreview" class="w-20 h-20 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white text-2xl font-bold cursor-pointer relative" onclick="openAvatarUpload()">
-                                            <i class="fas fa-user"></i>
-                                            <div class="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                                                <i class="fas fa-camera text-white"></i>
-                                            </div>
-                                        </div>
-                                        <div class="flex-1">
-                                            <p class="text-sm text-gray-600 mb-2">Foto de perfil</p>
-                                            <button onclick="openAvatarUpload()" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                                                Alterar foto
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                                            <i class="fas fa-user mr-1"></i> Nome de Exibição
-                                        </label>
-                                        <input type="text" 
-                                               id="settingsDisplayName" 
-                                               class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-800">
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                                            <i class="fas fa-envelope mr-1"></i> Email
-                                        </label>
-                                        <input type="email" 
-                                               id="settingsEmail" 
-                                               class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-800"
-                                               disabled>
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                                            <i class="fas fa-edit mr-1"></i> Biografia
-                                        </label>
-                                        <textarea id="settingsBio" 
-                                                  rows="3" 
-                                                  class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-800"
-                                                  placeholder="Conte um pouco sobre você..."></textarea>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Account Settings -->
-                            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-                                <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                                    <i class="fas fa-lock mr-2"></i> Conta
-                                </h3>
-                                <div class="space-y-4">
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Alterar Senha</label>
-                                        <div class="space-y-3">
-                                            <input type="password" 
-                                                   id="currentPassword" 
-                                                   class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-800"
-                                                   placeholder="Senha atual">
-                                            <input type="password" 
-                                                   id="newPassword" 
-                                                   class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-800"
-                                                   placeholder="Nova senha">
-                                            <input type="password" 
-                                                   id="confirmNewPassword" 
-                                                   class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-800"
-                                                   placeholder="Confirmar nova senha">
-                                            <button onclick="changePassword()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition-all">
-                                                Alterar Senha
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="pt-4 border-t border-gray-200">
-                                        <button onclick="openDeleteAccountModal()" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 rounded-lg transition-all">
-                                            <i class="fas fa-trash-alt mr-2"></i> Excluir Conta
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Privacy Settings -->
-                            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-                                <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                                    <i class="fas fa-shield-alt mr-2"></i> Privacidade
-                                </h3>
-                                <div class="space-y-4">
-                                    <div class="flex items-center justify-between">
-                                        <div>
-                                            <span class="text-gray-700 font-medium">Perfil Público</span>
-                                            <p class="text-sm text-gray-500">Qualquer pessoa pode ver seu perfil</p>
-                                        </div>
-                                        <label class="relative inline-flex items-center cursor-pointer">
-                                            <input type="checkbox" id="privacyPublicProfile" checked class="sr-only peer">
-                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                                        </label>
-                                    </div>
-                                    <div class="flex items-center justify-between">
-                                        <div>
-                                            <span class="text-gray-700 font-medium">Mostrar Status Online</span>
-                                            <p class="text-sm text-gray-500">Amigos podem ver quando você está online</p>
-                                        </div>
-                                        <label class="relative inline-flex items-center cursor-pointer">
-                                            <input type="checkbox" id="privacyShowOnline" checked class="sr-only peer">
-                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                                        </label>
-                                    </div>
-                                    <div class="flex items-center justify-between">
-                                        <div>
-                                            <span class="text-gray-700 font-medium">Permitir Tags</span>
-                                            <p class="text-sm text-gray-500">Outros podem marcar você em posts</p>
-                                        </div>
-                                        <label class="relative inline-flex items-center cursor-pointer">
-                                            <input type="checkbox" id="privacyAllowTags" checked class="sr-only peer">
-                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Notification Settings -->
-                            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-                                <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                                    <i class="fas fa-bell mr-2"></i> Notificações
-                                </h3>
-                                <div class="space-y-4">
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-gray-700">Notificações de Mensagens</span>
-                                        <label class="relative inline-flex items-center cursor-pointer">
-                                            <input type="checkbox" id="notificationsMessages" checked class="sr-only peer">
-                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                                        </label>
-                                    </div>
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-gray-700">Notificações de Amizade</span>
-                                        <label class="relative inline-flex items-center cursor-pointer">
-                                            <input type="checkbox" id="notificationsFriends" checked class="sr-only peer">
-                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                                        </label>
-                                    </div>
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-gray-700">Notificações de Curtidas</span>
-                                        <label class="relative inline-flex items-center cursor-pointer">
-                                            <input type="checkbox" id="notificationsLikes" checked class="sr-only peer">
-                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                                        </label>
-                                    </div>
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-gray-700">Notificações de Comentários</span>
-                                        <label class="relative inline-flex items-center cursor-pointer">
-                                            <input type="checkbox" id="notificationsComments" checked class="sr-only peer">
-                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Appearance Settings -->
-                            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-                                <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                                    <i class="fas fa-palette mr-2"></i> Aparência
-                                </h3>
-                                <div class="space-y-4">
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Tamanho da Fonte</label>
-                                        <input type="range" 
-                                               id="fontSizeSlider" 
-                                               min="0.8" 
-                                               max="1.5" 
-                                               step="0.1" 
-                                               value="1" 
-                                               class="w-full"
-                                               oninput="updateFontSize(this.value)">
-                                        <div class="flex justify-between text-sm text-gray-500">
-                                            <span>Pequeno</span>
-                                            <span id="fontSizeValue">Normal</span>
-                                            <span>Grande</span>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Tema de Cores</label>
-                                        <div class="grid grid-cols-4 gap-2">
-                                            <button onclick="setThemeColor('blue')" class="h-10 rounded-lg bg-blue-500 border-2 border-blue-600"></button>
-                                            <button onclick="setThemeColor('purple')" class="h-10 rounded-lg bg-purple-500 border-2 border-gray-300"></button>
-                                            <button onclick="setThemeColor('green')" class="h-10 rounded-lg bg-green-500 border-2 border-gray-300"></button>
-                                            <button onclick="setThemeColor('pink')" class="h-10 rounded-lg bg-pink-500 border-2 border-gray-300"></button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Actions -->
-                            <div class="space-y-3">
-                                <button onclick="saveSettings()" class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 rounded-xl shadow-lg transition-all hover:shadow-xl flex items-center justify-center">
-                                    <i class="fas fa-save mr-2"></i> Salvar Configurações
-                                </button>
-                                <button onclick="exportData()" class="w-full border border-gray-300 text-gray-700 hover:bg-gray-50 font-semibold py-3 rounded-xl transition-all flex items-center justify-center">
-                                    <i class="fas fa-download mr-2"></i> Exportar Meus Dados
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Profile Section -->
-                    <div id="profile-section" class="max-w-2xl mx-auto p-4 lg:py-6 hidden">
-                        <!-- Profile Card -->
-                        <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 mb-6">
-                            <!-- Cover -->
-                            <div class="h-48 bg-gradient-to-r from-blue-500 via-purple-600 to-pink-500 relative">
-                                <button onclick="openCoverUpload()" class="absolute bottom-4 right-4 bg-white text-gray-800 px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition-all">
-                                    <i class="fas fa-camera mr-1"></i> Alterar capa
-                                </button>
-                            </div>
-                            
-                            <!-- Profile Info -->
-                            <div class="relative px-6 pb-6">
-                                <!-- Avatar -->
-                                <div id="profileAvatar" class="w-32 h-32 rounded-full border-4 border-white -mt-16 bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white text-4xl font-bold cursor-pointer relative" onclick="openAvatarUpload()">
-                                    <i class="fas fa-user"></i>
-                                    <div class="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                                        <i class="fas fa-camera text-white text-2xl"></i>
-                                    </div>
-                                </div>
-                                
-                                <!-- Info -->
-                                <div class="mt-4">
-                                    <div class="flex justify-between items-start">
-                                        <div>
-                                            <h2 id="profileDisplayName" class="text-3xl font-bold text-gray-800">Carregando...</h2>
-                                            <p id="profileEmail" class="text-gray-500">carregando...</p>
-                                            <div class="flex items-center mt-2 space-x-2">
-                                                <span class="flex items-center text-sm text-gray-600">
-                                                    <i class="fas fa-map-marker-alt mr-1"></i>
-                                                    <span id="profileLocation">Não informado</span>
-                                                </span>
-                                                <span class="flex items-center text-sm text-gray-600">
-                                                    <i class="fas fa-briefcase mr-1"></i>
-                                                    <span id="profileWork">Não informado</span>
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <button onclick="editProfile()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-all">
-                                            <i class="fas fa-edit mr-1"></i> Editar Perfil
-                                        </button>
-                                    </div>
-                                    
-                                    <p id="profileBio" class="mt-4 text-gray-700 bg-gray-50 p-4 rounded-lg"></p>
-                                    
-                                    <!-- Profile Details -->
-                                    <div class="mt-6 grid grid-cols-2 gap-4">
-                                        <div class="flex items-center">
-                                            <i class="fas fa-calendar-alt text-gray-500 mr-2"></i>
-                                            <div>
-                                                <p class="text-sm text-gray-500">Membro desde</p>
-                                                <p id="profileJoinDate" class="font-medium">-</p>
-                                            </div>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <i class="fas fa-globe text-gray-500 mr-2"></i>
-                                            <div>
-                                                <p class="text-sm text-gray-500">Website</p>
-                                                <p id="profileWebsite" class="font-medium">-</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Stats -->
-                                <div class="flex justify-between mt-8 pt-6 border-t border-gray-200">
-                                    <div class="text-center cursor-pointer hover:text-blue-600 transition-colors" onclick="showProfileTab('posts')">
-                                        <div id="profilePostCount" class="text-2xl font-bold text-gray-800">0</div>
-                                        <div class="text-sm text-gray-500">Posts</div>
-                                    </div>
-                                    <div class="text-center cursor-pointer hover:text-blue-600 transition-colors">
-                                        <div id="profileFriendCount" class="text-2xl font-bold text-gray-800">0</div>
-                                        <div class="text-sm text-gray-500">Amigos</div>
-                                    </div>
-                                    <div class="text-center cursor-pointer hover:text-blue-600 transition-colors">
-                                        <div id="profileLikesCount" class="text-2xl font-bold text-gray-800">0</div>
-                                        <div class="text-sm text-gray-500">Curtidas</div>
-                                    </div>
-                                    <div class="text-center cursor-pointer hover:text-blue-600 transition-colors">
-                                        <div id="profileCommentsCount" class="text-2xl font-bold text-gray-800">0</div>
-                                        <div class="text-sm text-gray-500">Comentários</div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Action Buttons -->
-                                <div id="profileActionButtons" class="mt-6 flex space-x-3">
-                                    <!-- Buttons will be loaded based on profile ownership -->
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Tabs -->
-                        <div class="flex space-x-2 mb-6 bg-gray-100 p-1 rounded-xl">
-                            <button onclick="showProfileTab('posts')" class="flex-1 py-2 px-4 rounded-lg font-medium transition-colors tab-active" id="profileTabPosts">
-                                <i class="fas fa-newspaper mr-2"></i> Publicações
-                            </button>
-                            <button onclick="showProfileTab('photos')" class="flex-1 py-2 px-4 rounded-lg font-medium transition-colors" id="profileTabPhotos">
-                                <i class="fas fa-images mr-2"></i> Fotos
-                            </button>
-                            <button onclick="showProfileTab('videos')" class="flex-1 py-2 px-4 rounded-lg font-medium transition-colors" id="profileTabVideos">
-                                <i class="fas fa-video mr-2"></i> Vídeos
-                            </button>
-                            <button onclick="showProfileTab('friends')" class="flex-1 py-2 px-4 rounded-lg font-medium transition-colors" id="profileTabFriends">
-                                <i class="fas fa-users mr-2"></i> Amigos
-                            </button>
-                        </div>
-
-                        <!-- Posts Tab -->
-                        <div id="profilePostsTab" class="space-y-4">
-                            <!-- User posts will be loaded here -->
-                        </div>
-
-                        <!-- Photos Tab -->
-                        <div id="profilePhotosTab" class="hidden">
-                            <div class="grid grid-cols-3 gap-2">
-                                <!-- Photos will be loaded here -->
-                            </div>
-                        </div>
-
-                        <!-- Videos Tab -->
-                        <div id="profileVideosTab" class="hidden">
-                            <div class="grid grid-cols-2 gap-4">
-                                <!-- Videos will be loaded here -->
-                            </div>
-                        </div>
-
-                        <!-- Friends Tab -->
-                        <div id="profileFriendsTab" class="hidden">
-                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                <!-- Friends will be loaded here -->
-                            </div>
-                        </div>
-                    </div>
-                </main>
-
-                <!-- Right Sidebar (Trends) -->
-                <aside id="trends-sidebar" class="hidden md:flex flex-col w-80 p-6 sticky top-0 h-screen overflow-y-auto no-scrollbar border-l border-gray-200">
-                    <!-- User Profile -->
-                    <div class="bg-white p-4 rounded-xl shadow-md mb-6 border border-gray-200">
-                        <h3 class="font-bold text-gray-800 mb-3 flex items-center">
-                            <i class="fas fa-user-circle mr-2"></i> Seu Perfil
-                        </h3>
-                        <div class="flex items-center space-x-3 mb-4">
-                            <div id="sidebarAvatar" class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold cursor-pointer" onclick="switchView('profile')">
-                                <i class="fas fa-user"></i>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p id="sidebarDisplayName" class="font-bold text-gray-900 truncate cursor-pointer hover:text-blue-600" onclick="switchView('profile')">Carregando...</p>
-                                <p id="sidebarUserEmail" class="text-sm text-gray-500 truncate">carregando...</p>
-                            </div>
-                        </div>
-                        <div class="flex justify-between text-sm">
-                            <div class="text-center cursor-pointer hover:text-blue-600" onclick="switchView('profile')">
-                                <p id="sidebarFriendsCount" class="font-bold text-gray-900">0</p>
-                                <p class="text-gray-500">Amigos</p>
-                            </div>
-                            <div class="text-center cursor-pointer hover:text-blue-600" onclick="switchView('profile')">
-                                <p id="sidebarPostsCount" class="font-bold text-gray-900">0</p>
-                                <p class="text-gray-500">Posts</p>
-                            </div>
-                            <div class="text-center cursor-pointer hover:text-blue-600" onclick="switchView('notifications')">
-                                <p id="sidebarNotificationsCount" class="font-bold text-gray-900">0</p>
-                                <p class="text-gray-500">Notif.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Quick Links -->
-                    <div class="bg-white p-4 rounded-xl shadow-md mb-6 border border-gray-200">
-                        <h3 class="font-bold text-gray-800 mb-3 flex items-center">
-                            <i class="fas fa-link mr-2"></i> Navegação Rápida
-                        </h3>
-                        <div class="space-y-2">
-                            <a href="amigos.html" class="w-full flex items-center justify-center space-x-2 bg-blue-50 text-blue-600 font-medium py-2 rounded-lg hover:bg-blue-100 transition-all">
-                                <i class="fas fa-users"></i>
-                                <span>Amigos</span>
-                            </a>
-                            <a href="chat.html" class="w-full flex items-center justify-center space-x-2 bg-green-50 text-green-600 font-medium py-2 rounded-lg hover:bg-green-100 transition-all">
-                                <i class="fas fa-comments"></i>
-                                <span>Chat</span>
-                            </a>
-                            <a href="live.html" class="w-full flex items-center justify-center space-x-2 bg-red-50 text-red-600 font-medium py-2 rounded-lg hover:bg-red-100 transition-all">
-                                <i class="fas fa-broadcast-tower"></i>
-                                <span>Live</span>
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Trends -->
-                    <div class="bg-white p-4 rounded-xl shadow-md border border-gray-200">
-                        <h3 class="font-bold text-gray-800 mb-3 flex items-center">
-                            <i class="fas fa-fire mr-2"></i> Tendências
-                        </h3>
-                        <ul class="space-y-3" id="trendsList">
-                            <!-- Trends will be loaded here -->
-                        </ul>
-                        <button onclick="loadMoreTrends()" class="text-blue-600 hover:text-blue-800 text-sm font-medium mt-3 block transition-colors w-full text-center py-2">
-                            <i class="fas fa-sync-alt mr-1"></i> Carregar mais
-                        </button>
-                    </div>
-
-                    <!-- Quick Actions -->
-                    <div class="bg-white p-4 rounded-xl shadow-md mt-6 border border-gray-200">
-                        <h3 class="font-bold text-gray-800 mb-3 flex items-center">
-                            <i class="fas fa-bolt mr-2"></i> Ações Rápidas
-                        </h3>
-                        <div class="space-y-2">
-                            <button onclick="openPostModal()" class="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-medium py-2 rounded-lg transition-all">
-                                <i class="fas fa-plus"></i>
-                                <span>Criar Post</span>
-                            </button>
-                            <button onclick="openCreateStoryModal()" class="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-medium py-2 rounded-lg transition-all">
-                                <i class="fas fa-camera"></i>
-                                <span>Criar Story</span>
-                            </button>
-                        </div>
-                    </div>
-                </aside>
-            </div>
-
-            <!-- Mobile Navigation -->
-            <nav id="mobileNav" class="fixed bottom-0 left-0 right-0 lg:hidden bg-white border-t border-gray-200 flex justify-around items-center h-16 shadow-2xl z-30">
-                <button onclick="switchView('home')" class="flex flex-col items-center p-2 text-blue-600 hover:text-blue-700 transition-colors">
-                    <i class="fas fa-home w-6 h-6"></i>
-                    <span class="text-xs mt-1">Início</span>
-                </button>
-                <a href="amigos.html" class="flex flex-col items-center p-2 text-gray-500 hover:text-blue-600 transition-colors">
-                    <i class="fas fa-users w-6 h-6"></i>
-                    <span class="text-xs mt-1">Amigos</span>
-                </a>
-                <a href="live.html" class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full p-4 shadow-lg transform -translate-y-2 ring-4 ring-blue-100 transition-all hover:shadow-xl flex items-center justify-center">
-                    <i class="fas fa-broadcast-tower w-6 h-6"></i>
-                </a>
-                <a href="chat.html" class="flex flex-col items-center p-2 text-gray-500 hover:text-blue-600 transition-colors">
-                    <i class="fas fa-comments w-6 h-6"></i>
-                    <span class="text-xs mt-1">Chat</span>
-                </a>
-                <button onclick="switchView('profile')" class="flex flex-col items-center p-2 text-gray-500 hover:text-blue-600 transition-colors">
-                    <i class="fas fa-user w-6 h-6"></i>
-                    <span class="text-xs mt-1">Perfil</span>
-                </button>
-            </nav>
-        </div>
-    </div>
-
-    <!-- Modals -->
-    <!-- Post Modal -->
-    <div id="postModal" class="fixed inset-0 modal-overlay hidden items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden slide-up modal-content">
-            <div class="p-5 border-b border-gray-200 flex justify-between items-center">
-                <h3 class="text-xl font-bold text-gray-800">Criar Nova Publicação</h3>
-                <button onclick="closePostModal()" class="text-gray-500 hover:text-gray-800 transition-colors">
-                    <i class="fas fa-times w-6 h-6"></i>
-                </button>
-            </div>
-            <div class="p-5 overflow-y-auto max-h-[70vh] post-modal-content">
-                <div class="flex items-center space-x-3 mb-4">
-                    <div id="modalUserAvatar" class="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div>
-                        <p id="modalUserName" class="font-bold text-gray-800">Carregando...</p>
-                        <div class="flex items-center space-x-2 mt-1">
-                            <select id="postPrivacy" class="text-xs border border-gray-300 rounded px-2 py-1 bg-white">
-                                <option value="public">🌍 Público</option>
-                                <option value="friends">👥 Amigos</option>
-                                <option value="private">🔒 Privado</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <textarea id="postContent" 
-                          class="w-full h-40 p-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4 bg-white text-gray-800 post-modal-textarea"
-                          placeholder="O que você está pensando hoje? (Máx. 5000 caracteres)" 
-                          maxlength="5000" 
-                          oninput="updateCharCount()"></textarea>
-                <div id="postFeelingSection" class="mb-4 hidden">
-                    <div class="flex items-center space-x-2 mb-2">
-                        <i class="fas fa-smile text-yellow-500"></i>
-                        <span class="text-sm font-medium text-gray-700">Sentindo</span>
-                        <button onclick="clearFeeling()" class="ml-auto text-xs text-red-500 hover:text-red-700">Remover</button>
-                    </div>
-                    <div id="feelingTags" class="flex flex-wrap gap-2"></div>
-                </div>
-                <div id="postTagsSection" class="mb-4 hidden">
-                    <div class="flex items-center space-x-2 mb-2">
-                        <i class="fas fa-tag text-blue-500"></i>
-                        <span class="text-sm font-medium text-gray-700">Pessoas marcadas</span>
-                        <button onclick="clearTags()" class="ml-auto text-xs text-red-500 hover:text-red-700">Remover todas</button>
-                    </div>
-                    <div id="taggedPeople" class="flex flex-wrap gap-2"></div>
-                </div>
-                <div id="postLocationSection" class="mb-4 hidden">
-                    <div class="flex items-center space-x-2 mb-2">
-                        <i class="fas fa-map-marker-alt text-red-500"></i>
-                        <span class="text-sm font-medium text-gray-700">Localização</span>
-                        <button onclick="clearLocation()" class="ml-auto text-xs text-red-500 hover:text-red-700">Remover</button>
-                    </div>
-                    <p id="postLocationText" class="text-sm text-gray-600"></p>
-                </div>
-                <div id="modalMediaPreview" class="mb-4"></div>
-                <div class="flex items-center justify-between border-t border-gray-200 pt-4">
-                    <div class="flex space-x-2">
-                        <button onclick="handleModalMediaSelection('photo')" class="p-2 text-gray-500 hover:text-green-600 rounded-full hover:bg-gray-100 transition-all" title="Adicionar foto/vídeo">
-                            <i class="fas fa-image w-5 h-5"></i>
-                        </button>
-                        <button onclick="openFeelingPicker()" class="p-2 text-gray-500 hover:text-yellow-600 rounded-full hover:bg-gray-100 transition-all" title="Adicionar feeling">
-                            <i class="fas fa-smile w-5 h-5"></i>
-                        </button>
-                        <button onclick="openTagPeople()" class="p-2 text-gray-500 hover:text-blue-600 rounded-full hover:bg-gray-100 transition-all" title="Marcar pessoas">
-                            <i class="fas fa-tag w-5 h-5"></i>
-                        </button>
-                        <button onclick="openLocationPicker()" class="p-2 text-gray-500 hover:text-red-600 rounded-full hover:bg-gray-100 transition-all" title="Adicionar localização">
-                            <i class="fas fa-map-marker-alt w-5 h-5"></i>
-                        </button>
-                        <button onclick="addEmoji()" class="p-2 text-gray-500 hover:text-purple-600 rounded-full hover:bg-gray-100 transition-all" title="Adicionar emoji">
-                            <i class="fas fa-face-grin w-5 h-5"></i>
-                        </button>
-                    </div>
-                    <div class="flex items-center space-x-4">
-                        <div class="text-sm text-gray-500">
-                            <span id="modalCharCount">5000</span> caracteres
-                        </div>
-                        <button onclick="publishPost()" class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-2 px-6 rounded-full shadow-md transition-all hover:shadow-lg">
-                            Publicar
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Story Creator Modal -->
-    <div id="storyCreatorModal" class="fixed inset-0 modal-overlay hidden items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md slide-up modal-content">
-            <div class="p-5 border-b border-gray-200 flex justify-between items-center">
-                <h3 class="text-xl font-bold text-gray-800">Criar Story</h3>
-                <button onclick="closeStoryCreatorModal()" class="text-gray-500 hover:text-gray-800 transition-colors">
-                    <i class="fas fa-times w-6 h-6"></i>
-                </button>
-            </div>
-            <div class="p-5">
-                <div id="storyPreview" class="h-64 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg mb-4 flex items-center justify-center transition-all relative">
-                    <div id="storyTextPreview" class="text-white text-center text-2xl font-bold p-4"></div>
-                    <div id="storyImagePreview" class="absolute inset-0 rounded-lg overflow-hidden hidden">
-                        <img id="storyPreviewImage" class="w-full h-full object-cover" loading="lazy">
-                    </div>
-                    <input type="file" id="storyImageUpload" accept="image/*" class="hidden" onchange="handleStoryImageUpload(event)">
-                </div>
-                <div class="grid grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Cor de Fundo</label>
-                        <input type="color" id="storyBgColor" value="#3b82f6" class="w-full h-10 rounded cursor-pointer border border-gray-300" oninput="updateStoryPreview()">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Cor do Texto</label>
-                        <input type="color" id="storyTextColor" value="#ffffff" class="w-full h-10 rounded cursor-pointer border border-gray-300" oninput="updateStoryPreview()">
-                    </div>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Texto do Story</label>
-                    <textarea id="storyCreatorText" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-800" placeholder="Digite algo para seu story..." rows="2" oninput="updateStoryPreview()"></textarea>
-                </div>
-                <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Ou faça upload de uma imagem</label>
-                    <button onclick="document.getElementById('storyImageUpload').click()" class="w-full border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:bg-gray-50 transition-all">
-                        <i class="fas fa-cloud-upload-alt text-2xl text-gray-400 mb-2"></i>
-                        <p class="text-sm text-gray-600">Clique para selecionar uma imagem</p>
-                    </button>
-                </div>
-                <div class="flex space-x-2">
-                    <button onclick="closeStoryCreatorModal()" class="flex-1 border border-gray-300 text-gray-700 hover:bg-gray-50 font-semibold py-3 rounded-lg transition-all">
-                        Cancelar
-                    </button>
-                    <button onclick="postStory()" class="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold py-3 rounded-lg shadow-md transition-all hover:shadow-lg">
-                        Publicar Story
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Search Modal -->
-    <div id="searchModal" class="fixed inset-0 modal-overlay hidden items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg slide-up modal-content">
-            <div class="p-5 border-b border-gray-200 flex justify-between items-center">
-                <h3 class="text-xl font-bold text-gray-800">Pesquisar</h3>
-                <button onclick="closeSearchModal()" class="text-gray-500 hover:text-gray-800 transition-colors">
-                    <i class="fas fa-times w-6 h-6"></i>
-                </button>
-            </div>
-            <div class="p-5">
-                <div class="relative mb-4">
-                    <input type="text" id="searchInput" placeholder="Pesquisar por pessoas, posts ou hashtags..." class="w-full border border-gray-300 rounded-full px-4 py-3 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-800" oninput="performSearch()">
-                    <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                </div>
-                <div class="flex space-x-2 mb-4">
-                    <button onclick="setSearchFilter('all')" class="search-filter active px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">Tudo</button>
-                    <button onclick="setSearchFilter('people')" class="search-filter px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">Pessoas</button>
-                    <button onclick="setSearchFilter('posts')" class="search-filter px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">Posts</button>
-                    <button onclick="setSearchFilter('hashtags')" class="search-filter px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">Hashtags</button>
-                </div>
-                <div id="searchResults" class="space-y-3 max-h-96 overflow-y-auto"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Story Viewer Modal -->
-    <div id="storyViewerModal" class="fixed inset-0 bg-black hidden items-center justify-center z-50">
-        <div class="relative w-full max-w-md h-[80vh] modal-content">
-            <button onclick="closeStoryViewer()" class="absolute top-4 right-4 text-white z-10 bg-black bg-opacity-30 rounded-full w-10 h-10 flex items-center justify-center hover:bg-opacity-50 transition-all">
-                <i class="fas fa-times w-5 h-5"></i>
+        <div class="header-actions">
+            <button id="btnNotifications" title="Notificações">
+                <i class="fas fa-bell"></i>
+                <span class="badge-dot" id="notifBadge"></span>
             </button>
-            <div class="absolute top-4 left-4 z-10">
-                <div class="flex items-center space-x-2">
-                    <div id="storyViewerAvatar" class="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold"></div>
-                    <div>
-                        <p id="storyViewerName" class="text-white font-bold"></p>
-                        <p id="storyViewerTime" class="text-white text-xs opacity-75"></p>
-                    </div>
-                </div>
-            </div>
-            <div id="storyProgressBars" class="absolute top-4 left-4 right-4 flex space-x-1 z-10 mt-14"></div>
-            <div id="storyContentDisplay" class="w-full h-full rounded-xl overflow-hidden flex items-center justify-center"></div>
-            <div class="absolute bottom-4 left-0 right-0 flex justify-center space-x-6">
-                <button onclick="reactToStory('❤️')" class="text-white hover:scale-110 transition-transform bg-black bg-opacity-20 rounded-full w-12 h-12 flex items-center justify-center">
-                    <i class="fas fa-heart w-6 h-6"></i>
-                </button>
-                <button onclick="reactToStory('😂')" class="text-white hover:scale-110 transition-transform bg-black bg-opacity-20 rounded-full w-12 h-12 flex items-center justify-center">
-                    <i class="fas fa-laugh-squint w-6 h-6"></i>
-                </button>
-                <button onclick="reactToStory('😮')" class="text-white hover:scale-110 transition-transform bg-black bg-opacity-20 rounded-full w-12 h-12 flex items-center justify-center">
-                    <i class="fas fa-surprise w-6 h-6"></i>
-                </button>
-                <button onclick="sendStoryMessage()" class="text-white hover:scale-110 transition-transform bg-black bg-opacity-20 rounded-full w-12 h-12 flex items-center justify-center">
-                    <i class="fas fa-comment w-6 h-6"></i>
-                </button>
-            </div>
-            <div id="storyMessageInput" class="absolute bottom-20 left-4 right-4 hidden">
-                <div class="flex space-x-2">
-                    <input type="text" id="storyMessageText" placeholder="Enviar mensagem..." class="flex-1 border border-gray-300 rounded-full px-4 py-2 bg-white text-gray-800" onkeypress="if(event.key === 'Enter') sendStoryMessageText()">
-                    <button onclick="sendStoryMessageText()" class="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2">
-                        <i class="fas fa-paper-plane w-5 h-5"></i>
-                    </button>
-                </div>
+            <button id="btnLogout" title="Sair">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+            <div class="user-avatar-mini" id="userAvatarMini">
+                <i class="fas fa-user"></i>
             </div>
         </div>
     </div>
 
-    <!-- Avatar Upload Modal -->
-    <div id="avatarUploadModal" class="fixed inset-0 modal-overlay hidden items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md slide-up modal-content">
-            <div class="p-5 border-b border-gray-200 flex justify-between items-center">
-                <h3 class="text-xl font-bold text-gray-800">Alterar Foto de Perfil</h3>
-                <button onclick="closeAvatarUploadModal()" class="text-gray-500 hover:text-gray-800 transition-colors">
-                    <i class="fas fa-times w-6 h-6"></i>
-                </button>
+    <!-- FEED -->
+    <div class="feed-container" id="feedContainer">
+        <div class="loading-container"><div class="spinner"></div></div>
+    </div>
+
+    <!-- BOTÃO PUBLICAR FLUTUANTE -->
+    <button class="fab-publish" id="fabPublish">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <!-- BARRA INFERIOR -->
+    <div class="bottom-nav">
+        <a class="nav-item active" href="social.html">
+            <i class="fas fa-home"></i>
+            <span>Feed</span>
+        </a>
+        <a class="nav-item" href="amigos.html">
+            <i class="fas fa-user-friends"></i>
+            <span>Amigos</span>
+            <span class="badge-nav" id="friendsBadge">0</span>
+        </a>
+        <a class="nav-item" href="chat.html">
+            <i class="fas fa-comment-dots"></i>
+            <span>Chat</span>
+            <span class="badge-nav" id="chatBadge">0</span>
+        </a>
+        <a class="nav-item" href="live.html">
+            <i class="fas fa-broadcast-tower"></i>
+            <span>Live</span>
+        </a>
+        <a class="nav-item" href="perfil.html">
+            <i class="fas fa-user"></i>
+            <span>Perfil</span>
+        </a>
+    </div>
+
+    <!-- MODAL PUBLICAR -->
+    <div class="modal-publish" id="modalPublish">
+        <div class="modal-publish-content">
+            <div class="modal-publish-header">
+                <h5><i class="fas fa-edit"></i> <span id="publishTitle">Nova Publicação</span></h5>
+                <button id="closePublishModal">&times;</button>
             </div>
-            <div class="p-5">
-                <div class="flex justify-center mb-6">
-                    <div id="avatarPreview" class="w-48 h-48 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white text-4xl font-bold overflow-hidden">
-                        <img id="avatarPreviewImage" class="w-full h-full object-cover hidden" loading="lazy">
-                        <i class="fas fa-user" id="avatarPreviewIcon"></i>
-                    </div>
-                </div>
-                <div class="space-y-3 mb-6">
-                    <button onclick="openCameraForAvatar()" class="w-full border border-gray-300 rounded-lg p-4 text-center hover:bg-gray-50 transition-all flex items-center justify-center space-x-2">
-                        <i class="fas fa-camera text-blue-500"></i>
-                        <span>Tirar Foto</span>
-                    </button>
-                    <button onclick="document.getElementById('avatarFileInput').click()" class="w-full border border-gray-300 rounded-lg p-4 text-center hover:bg-gray-50 transition-all flex items-center justify-center space-x-2">
-                        <i class="fas fa-image text-green-500"></i>
-                        <span>Escolher da Galeria</span>
-                    </button>
-                    <input type="file" id="avatarFileInput" accept="image/*" class="hidden" onchange="handleAvatarUpload(event)">
-                </div>
-                <div class="flex space-x-2">
-                    <button onclick="closeAvatarUploadModal()" class="flex-1 border border-gray-300 text-gray-700 hover:bg-gray-50 font-semibold py-3 rounded-lg transition-all">
-                        Cancelar
-                    </button>
-                    <button onclick="saveAvatar()" class="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 rounded-lg transition-all" id="saveAvatarButton" disabled>
-                        Salvar
-                    </button>
+            
+            <textarea class="publish-textarea" id="publishText" placeholder="O que você está pensando?"></textarea>
+            
+            <div class="publish-tools">
+                <button id="btnFeeling"><i class="fas fa-smile"></i> Sentimento</button>
+                <button id="btnLocation"><i class="fas fa-map-marker-alt"></i> Local</button>
+                <button id="btnMention"><i class="fas fa-at"></i> Marcar</button>
+                <button id="btnHashtag"><i class="fas fa-hashtag"></i> Hashtag</button>
+                <button id="btnPhoto"><i class="fas fa-image"></i> Foto</button>
+            </div>
+            
+            <div class="publish-extras" id="feelingExtras">
+                <div class="feelings-grid" id="feelingsGrid">
+                    <button data-feeling="😊 Feliz"><span class="emoji">😊</span><span class="label">Feliz</span></button>
+                    <button data-feeling="😂 Engraçado"><span class="emoji">😂</span><span class="label">Engraçado</span></button>
+                    <button data-feeling="😢 Triste"><span class="emoji">😢</span><span class="label">Triste</span></button>
+                    <button data-feeling="😡 Bravo"><span class="emoji">😡</span><span class="label">Bravo</span></button>
+                    <button data-feeling="😍 Apaixonado"><span class="emoji">😍</span><span class="label">Apaixonado</span></button>
+                    <button data-feeling="🤔 Pensativo"><span class="emoji">🤔</span><span class="label">Pensativo</span></button>
+                    <button data-feeling="🥳 Comemorando"><span class="emoji">🥳</span><span class="label">Comemorando</span></button>
+                    <button data-feeling="😴 Cansado"><span class="emoji">😴</span><span class="label">Cansado</span></button>
+                    <button data-feeling="🙏 Agradecido"><span class="emoji">🙏</span><span class="label">Agradecido</span></button>
+                    <button data-feeling="🔥 Fogo"><span class="emoji">🔥</span><span class="label">Fogo</span></button>
+                    <button data-feeling="❤️ Amor"><span class="emoji">❤️</span><span class="label">Amor</span></button>
+                    <button data-feeling="💪 Força"><span class="emoji">💪</span><span class="label">Força</span></button>
                 </div>
             </div>
+            
+            <div class="publish-extras" id="locationExtras">
+                <input type="text" id="locationText" placeholder="Digite sua localização" />
+            </div>
+            
+            <div class="publish-extras" id="mentionExtras">
+                <div style="display:flex;gap:8px;">
+                    <input type="text" id="mentionText" placeholder="@nome do amigo" style="flex:1;" />
+                    <button id="btnSelectFriend" style="background:#f0f7ff;border:1px solid #e8f0fe;border-radius:8px;padding:6px 12px;color:#1a73e8;cursor:pointer;white-space:nowrap;">
+                        <i class="fas fa-user-plus"></i> Selecionar
+                    </button>
+                </div>
+                <div id="selectedFriendDisplay" style="margin-top:4px;font-size:13px;color:#1a73e8;"></div>
+            </div>
+            
+            <div class="publish-extras" id="hashtagExtras">
+                <input type="text" id="hashtagText" placeholder="#hashtag" />
+            </div>
+            
+            <div class="publish-preview-img" id="previewImg">
+                <img id="previewImgSrc" src="" alt="Preview" />
+                <button class="remove-img" id="removeImg">&times;</button>
+            </div>
+            
+            <button class="publish-btn" id="publishBtn">
+                <i class="fas fa-paper-plane"></i> Publicar
+            </button>
         </div>
     </div>
 
-    <!-- Feeling Picker Modal -->
-    <div id="feelingPickerModal" class="fixed inset-0 modal-overlay hidden items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md slide-up modal-content">
-            <div class="p-5 border-b border-gray-200 flex justify-between items-center">
-                <h3 class="text-xl font-bold text-gray-800">Como você está se sentindo?</h3>
-                <button onclick="closeFeelingPickerModal()" class="text-gray-500 hover:text-gray-800 transition-colors">
-                    <i class="fas fa-times w-6 h-6"></i>
-                </button>
-            </div>
-            <div class="p-5 max-h-96 overflow-y-auto">
-                <div class="grid grid-cols-3 gap-3" id="feelingGrid"></div>
-            </div>
+    <!-- PÁGINA DE COMENTÁRIOS -->
+    <div class="comments-page" id="commentsPage">
+        <div class="comments-header">
+            <button id="closeComments"><i class="fas fa-arrow-left"></i></button>
+            <h5>Comentários</h5>
+        </div>
+        <div class="comments-list" id="commentsList">
+            <div class="loading-container"><div class="spinner"></div></div>
+        </div>
+        <div class="comment-input-area">
+            <input type="text" id="commentInput" placeholder="Digite um comentário..." />
+            <button id="sendComment"><i class="fas fa-paper-plane"></i></button>
         </div>
     </div>
 
-    <!-- Tag People Modal -->
-    <div id="tagPeopleModal" class="fixed inset-0 modal-overlay hidden items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md slide-up modal-content">
-            <div class="p-5 border-b border-gray-200 flex justify-between items-center">
-                <h3 class="text-xl font-bold text-gray-800">Marcar Pessoas</h3>
-                <button onclick="closeTagPeopleModal()" class="text-gray-500 hover:text-gray-800 transition-colors">
-                    <i class="fas fa-times w-5 h-5"></i>
-                </button>
-            </div>
-            <div class="p-5">
-                <div class="relative mb-4">
-                    <input type="text" id="tagSearchInput" placeholder="Pesquisar amigos..." class="w-full border border-gray-300 rounded-full px-4 py-2 pl-10 bg-white text-gray-800" oninput="searchFriendsForTag()">
-                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                </div>
-                <div id="selectedPeopleTags" class="mb-4 flex flex-wrap gap-2"></div>
-                <div id="tagFriendsList" class="space-y-2 max-h-64 overflow-y-auto"></div>
-                <div class="flex space-x-2 mt-6">
-                    <button onclick="closeTagPeopleModal()" class="flex-1 border border-gray-300 text-gray-700 hover:bg-gray-50 font-semibold py-3 rounded-lg transition-all">
-                        Cancelar
-                    </button>
-                    <button onclick="saveTags()" class="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 rounded-lg transition-all">
-                        Salvar
-                    </button>
-                </div>
+    <!-- PÁGINA DE NOTIFICAÇÕES -->
+    <div class="notifications-page" id="notificationsPage">
+        <div class="notifications-header">
+            <button id="closeNotifications"><i class="fas fa-arrow-left"></i></button>
+            <h5>Notificações</h5>
+        </div>
+        <div class="notifications-list" id="notificationsList">
+            <div class="empty-state">
+                <i class="fas fa-bell-slash"></i>
+                <h5>Sem notificações</h5>
+                <p>Você está em dia!</p>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Delete Account Modal -->
-    <div id="deleteAccountModal" class="fixed inset-0 modal-overlay hidden items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md slide-up modal-content">
-            <div class="p-5 border-b border-gray-200 flex justify-between items-center">
-                <h3 class="text-xl font-bold text-gray-800 text-red-600">Excluir Conta</h3>
-                <button onclick="closeDeleteAccountModal()" class="text-gray-500 hover:text-gray-800 transition-colors">
-                    <i class="fas fa-times w-6 h-6"></i>
-                </button>
-            </div>
-            <div class="p-5">
-                <div class="text-center mb-6">
-                    <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
-                    </div>
-                    <h4 class="text-lg font-bold text-gray-800 mb-2">Atenção!</h4>
-                    <p class="text-gray-600">Esta ação é irreversível. Todos os seus dados serão permanentemente excluídos.</p>
-                </div>
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Digite sua senha para confirmar</label>
-                        <input type="password" id="deleteAccountPassword" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 bg-white text-gray-800" placeholder="Sua senha atual" oninput="updateDeleteAccountButton()">
-                    </div>
-                    <div class="flex items-start space-x-2">
-                        <input type="checkbox" id="deleteAccountConfirm" class="mt-1" onchange="updateDeleteAccountButton()">
-                        <label for="deleteAccountConfirm" class="text-sm text-gray-600">Eu entendo que esta ação não pode ser desfeita.</label>
-                    </div>
-                </div>
-                <div class="flex space-x-2 mt-6">
-                    <button onclick="closeDeleteAccountModal()" class="flex-1 border border-gray-300 text-gray-700 hover:bg-gray-50 font-semibold py-3 rounded-lg transition-all">
-                        Cancelar
-                    </button>
-                    <button onclick="deleteAccount()" class="flex-1 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold py-3 rounded-lg transition-all" id="deleteAccountButton" disabled>
-                        Excluir Conta
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+<!-- FIREBASE COM IMPORTS -->
+<script type="importmap">
+{
+    "imports": {
+        "firebase/app": "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js",
+        "firebase/auth": "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js",
+        "firebase/database": "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"
+    }
+}
+</script>
 
-    <!-- Toast Container -->
-    <div id="toastContainer" class="fixed top-4 right-4 z-50 space-y-2"></div>
+<script type="module">
+import { initializeApp } from 'firebase/app';
+import { getAuth, signOut, onAuthStateChanged } from 'firebase/auth';
+import { 
+    getDatabase, ref, set, push, onChildAdded, onValue, update, get, 
+    serverTimestamp, query, orderByChild, limitToLast, remove 
+} from 'firebase/database';
 
-    <!-- File Inputs (Hidden) -->
-    <input type="file" id="mediaFileInput" accept="image/*,video/*" class="hidden" multiple onchange="handleMediaFileUpload(event)">
-    <input type="file" id="coverFileInput" accept="image/*" class="hidden" onchange="handleCoverUpload(event)">
-
-    <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, set, push, onValue, update, get, remove, query, orderByChild, equalTo, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile, updatePassword, EmailAuthProvider, reauthenticateWithCredential, sendPasswordResetEmail, deleteUser } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
+// ============================================
+// CONFIGURAÇÃO FIREBASE
+// ============================================
 const firebaseConfig = {
-    apiKey: "AIzaSyBkS3OI-pDr30aqp8GHjeuWd1J2HUmdqcg",
-    authDomain: "shelio.firebaseapp.com",
-    databaseURL: "https://shelio-default-rtdb.firebaseio.com",
-    projectId: "shelio",
-    storageBucket: "shelio.firebasestorage.app",
-    messagingSenderId: "92498333116",
-    appId: "1:92498333116:web:a8a117e2b126caab93efb9"
+    apiKey: "AIzaSyAZsQVXCSr8NO4PynoMPKTQyx45Bpeh0vI",
+    authDomain: "social-media-d8ea8.firebaseapp.com",
+    databaseURL: "https://social-media-d8ea8-default-rtdb.firebaseio.com",
+    projectId: "social-media-d8ea8",
+    storageBucket: "social-media-d8ea8.firebasestorage.app",
+    messagingSenderId: "189544295",
+    appId: "1:189544295:web:369c23d5026b1848caf852"
 };
 
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
-        const auth = getAuth(app);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const database = getDatabase(app);
 
-        window.firebase = {
-            app, database, auth,
-            dbFunctions: { ref, set, push, onValue, update, get, remove, query, orderByChild, equalTo, limitToLast },
-            authFunctions: { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile, updatePassword, EmailAuthProvider, reauthenticateWithCredential, sendPasswordResetEmail, deleteUser }
+console.log('🔥 Firebase iniciado!');
+
+// ============================================
+// VARIÁVEIS
+// ============================================
+let currentUser = null;
+let currentUserData = null;
+let allPosts = [];
+let allUsers = {};
+let selectedImage = null;
+let currentPostId = null;
+let isEditing = false;
+let editPostId = null;
+let isSharing = false;
+let sharePostId = null;
+let selectedFriend = null;
+let currentComments = [];
+
+// ============================================
+// DOM
+// ============================================
+const feedContainer = document.getElementById('feedContainer');
+const modalPublish = document.getElementById('modalPublish');
+const publishText = document.getElementById('publishText');
+const publishBtn = document.getElementById('publishBtn');
+const publishTitle = document.getElementById('publishTitle');
+const closePublishModal = document.getElementById('closePublishModal');
+const fabPublish = document.getElementById('fabPublish');
+const btnLogout = document.getElementById('btnLogout');
+const userAvatarMini = document.getElementById('userAvatarMini');
+const commentsPage = document.getElementById('commentsPage');
+const commentsList = document.getElementById('commentsList');
+const commentInput = document.getElementById('commentInput');
+const sendComment = document.getElementById('sendComment');
+const closeComments = document.getElementById('closeComments');
+const notificationsPage = document.getElementById('notificationsPage');
+const notificationsList = document.getElementById('notificationsList');
+const closeNotifications = document.getElementById('closeNotifications');
+const btnNotifications = document.getElementById('btnNotifications');
+const notifBadge = document.getElementById('notifBadge');
+const btnSelectFriend = document.getElementById('btnSelectFriend');
+const selectedFriendDisplay = document.getElementById('selectedFriendDisplay');
+const feelingsGrid = document.getElementById('feelingsGrid');
+
+// Ferramentas
+const btnFeeling = document.getElementById('btnFeeling');
+const btnLocation = document.getElementById('btnLocation');
+const btnMention = document.getElementById('btnMention');
+const btnHashtag = document.getElementById('btnHashtag');
+const btnPhoto = document.getElementById('btnPhoto');
+const feelingExtras = document.getElementById('feelingExtras');
+const locationExtras = document.getElementById('locationExtras');
+const mentionExtras = document.getElementById('mentionExtras');
+const hashtagExtras = document.getElementById('hashtagExtras');
+const previewImg = document.getElementById('previewImg');
+const previewImgSrc = document.getElementById('previewImgSrc');
+const removeImg = document.getElementById('removeImg');
+const locationText = document.getElementById('locationText');
+const mentionText = document.getElementById('mentionText');
+const hashtagText = document.getElementById('hashtagText');
+
+// ============================================
+// CARREGAR USUÁRIOS
+// ============================================
+async function loadUsers() {
+    const usersRef = ref(database, 'users');
+    const snapshot = await get(usersRef);
+    if (snapshot.exists()) {
+        allUsers = snapshot.val();
+    }
+}
+
+// ============================================
+// SENTIMENTOS - ESTILO VISUAL
+// ============================================
+feelingsGrid.addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    
+    const feeling = btn.dataset.feeling;
+    if (!feeling) return;
+    
+    // Remover seleção anterior
+    feelingsGrid.querySelectorAll('button.active').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    // Armazenar o sentimento selecionado
+    btn.dataset.selected = 'true';
+    
+    // Fechar o grid após selecionar
+    setTimeout(() => {
+        feelingExtras.classList.remove('active');
+        btnFeeling.classList.remove('active');
+    }, 500);
+});
+
+// ============================================
+// MODAL PUBLICAR
+// ============================================
+function openPublishModal() {
+    // Resetar tudo
+    isEditing = false;
+    editPostId = null;
+    isSharing = false;
+    sharePostId = null;
+    selectedFriend = null;
+    selectedFriendDisplay.textContent = '';
+    publishTitle.textContent = 'Nova Publicação';
+    publishText.value = '';
+    selectedImage = null;
+    previewImg.classList.remove('active');
+    previewImgSrc.src = '';
+    locationText.value = '';
+    mentionText.value = '';
+    hashtagText.value = '';
+    feelingExtras.classList.remove('active');
+    locationExtras.classList.remove('active');
+    mentionExtras.classList.remove('active');
+    hashtagExtras.classList.remove('active');
+    btnFeeling.classList.remove('active');
+    btnLocation.classList.remove('active');
+    btnMention.classList.remove('active');
+    btnHashtag.classList.remove('active');
+    btnPhoto.classList.remove('active');
+    feelingsGrid.querySelectorAll('button.active').forEach(b => b.classList.remove('active'));
+    
+    // Remover share preview
+    const sharePreview = document.querySelector('.share-info-preview');
+    if (sharePreview) sharePreview.remove();
+    
+    modalPublish.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+fabPublish.addEventListener('click', openPublishModal);
+
+closePublishModal.addEventListener('click', () => {
+    modalPublish.classList.remove('active');
+    document.body.style.overflow = 'auto';
+});
+
+modalPublish.addEventListener('click', (e) => {
+    if (e.target === modalPublish) {
+        modalPublish.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+});
+
+// ============================================
+// FERRAMENTAS
+// ============================================
+btnFeeling.addEventListener('click', () => {
+    feelingExtras.classList.toggle('active');
+    btnFeeling.classList.toggle('active');
+});
+btnLocation.addEventListener('click', () => {
+    locationExtras.classList.toggle('active');
+    btnLocation.classList.toggle('active');
+});
+btnMention.addEventListener('click', () => {
+    mentionExtras.classList.toggle('active');
+    btnMention.classList.toggle('active');
+});
+btnHashtag.addEventListener('click', () => {
+    hashtagExtras.classList.toggle('active');
+    btnHashtag.classList.toggle('active');
+});
+
+btnPhoto.addEventListener('click', () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                selectedImage = ev.target.result;
+                previewImgSrc.src = selectedImage;
+                previewImg.classList.add('active');
+                btnPhoto.classList.add('active');
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+    input.click();
+});
+
+removeImg.addEventListener('click', () => {
+    selectedImage = null;
+    previewImg.classList.remove('active');
+    previewImgSrc.src = '';
+    btnPhoto.classList.remove('active');
+});
+
+// ============================================
+// SELECIONAR AMIGO
+// ============================================
+btnSelectFriend.addEventListener('click', async () => {
+    await loadUsers();
+    const friendsList = Object.keys(allUsers).filter(uid => uid !== currentUser.uid);
+    
+    if (friendsList.length === 0) {
+        // Mostrar alerta dentro da aba de publicação
+        const alertDiv = document.createElement('div');
+        alertDiv.className = 'alert alert-warning';
+        alertDiv.style.cssText = 'padding:10px 12px;border-radius:8px;background:#fff3cd;color:#856404;border:1px solid #ffc107;margin-bottom:8px;font-size:14px;';
+        alertDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Você não tem amigos para marcar';
+        
+        const existingAlert = document.querySelector('.friend-alert');
+        if (existingAlert) existingAlert.remove();
+        
+        const mentionContainer = document.getElementById('mentionExtras');
+        mentionContainer.insertBefore(alertDiv, mentionContainer.firstChild);
+        alertDiv.className = 'friend-alert';
+        
+        setTimeout(() => {
+            if (alertDiv.parentNode) alertDiv.remove();
+        }, 3000);
+        return;
+    }
+    
+    const options = friendsList.map(uid => {
+        const user = allUsers[uid];
+        return `<option value="${uid}">${user.fullName || 'Usuário'} (@${user.username || 'usuario'})</option>`;
+    }).join('');
+    
+    const result = await Swal.fire({
+        title: 'Marcar amigo',
+        html: `
+            <select class="form-control" id="friendSelect" style="border:2px solid #e8f0fe;border-radius:8px;padding:10px;width:100%;">
+                <option value="">Selecione um amigo</option>
+                ${options}
+            </select>
+        `,
+        confirmButtonText: 'Marcar',
+        confirmButtonColor: '#1a73e8',
+        showCancelButton: true,
+        cancelButtonText: 'Cancelar',
+        cancelButtonColor: '#5f6368',
+        preConfirm: () => {
+            const uid = document.getElementById('friendSelect').value;
+            if (!uid) {
+                Swal.showValidationMessage('Selecione um amigo');
+                return false;
+            }
+            return uid;
+        }
+    });
+    
+    if (result.isConfirmed && result.value) {
+        const uid = result.value;
+        const user = allUsers[uid];
+        selectedFriend = uid;
+        selectedFriendDisplay.textContent = `@${user.username || 'usuario'}`;
+        mentionText.value = `@${user.username || 'usuario'}`;
+        mentionExtras.classList.add('active');
+        btnMention.classList.add('active');
+    }
+});
+
+// ============================================
+// PUBLICAR
+// ============================================
+publishBtn.addEventListener('click', async function() {
+    const text = publishText.value.trim();
+    if (!text && !selectedImage) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Atenção',
+            text: 'Digite algo ou adicione uma imagem',
+            confirmButtonColor: '#1a73e8'
+        });
+        return;
+    }
+
+    this.disabled = true;
+    this.innerHTML = '<span class="spinner" style="width:20px;height:20px;display:inline-block;"></span> Publicando...';
+
+    try {
+        // Pegar sentimento selecionado
+        const feelingBtn = feelingsGrid.querySelector('button.active');
+        const feeling = feelingBtn ? feelingBtn.dataset.feeling : '';
+        const location = locationText.value.trim();
+        const mention = mentionText.value.trim();
+        const hashtag = hashtagText.value.trim();
+
+        // Se for edição
+        if (isEditing && editPostId) {
+            const updates = {
+                text: text,
+                feeling: feeling || '',
+                location: location || '',
+                mention: mention || '',
+                hashtag: hashtag || ''
+            };
+            if (selectedImage) updates.image = selectedImage;
+            
+            await update(ref(database, `posts/${editPostId}`), updates);
+            
+            Swal.fire({
+                icon: 'success',
+                title: 'Atualizado!',
+                timer: 1500,
+                showConfirmButton: false
+            });
+            modalPublish.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            this.disabled = false;
+            this.innerHTML = '<i class="fas fa-paper-plane"></i> Publicar';
+            return;
+        }
+
+        // Se for compartilhamento
+        if (isSharing && sharePostId) {
+            const originalPostRef = ref(database, `posts/${sharePostId}`);
+            const snapshot = await get(originalPostRef);
+            if (!snapshot.exists()) {
+                throw new Error('Publicação original não encontrada');
+            }
+            const originalPost = snapshot.val();
+            
+            const shareData = {
+                uid: currentUser.uid,
+                userName: currentUserData?.fullName || 'Usuário',
+                userUsername: currentUserData?.username || 'usuario',
+                userPhoto: currentUserData?.photo || null,
+                text: text || 'compartilhou uma publicação',
+                sharedPostId: sharePostId,
+                mention: mention || '',
+                feeling: feeling || '',
+                timestamp: serverTimestamp(),
+                likes: 0,
+                comments: 0,
+                shares: 0,
+                likedBy: {}
+            };
+            
+            const newShareRef = push(ref(database, 'posts'));
+            await set(newShareRef, shareData);
+            await update(originalPostRef, { shares: (originalPost.shares || 0) + 1 });
+            
+            Swal.fire({
+                icon: 'success',
+                title: 'Compartilhado!',
+                timer: 1500,
+                showConfirmButton: false
+            });
+            modalPublish.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            this.disabled = false;
+            this.innerHTML = '<i class="fas fa-paper-plane"></i> Publicar';
+            return;
+        }
+
+        // Nova publicação normal
+        const postData = {
+            uid: currentUser.uid,
+            userName: currentUserData?.fullName || 'Usuário',
+            userUsername: currentUserData?.username || 'usuario',
+            userPhoto: currentUserData?.photo || null,
+            text: text,
+            feeling: feeling || '',
+            location: location || '',
+            mention: mention || '',
+            hashtag: hashtag || '',
+            image: selectedImage || '',
+            timestamp: serverTimestamp(),
+            likes: 0,
+            comments: 0,
+            shares: 0,
+            likedBy: {}
         };
-    </script>
-<script src="script.js"></script>
+
+        const newPostRef = push(ref(database, 'posts'));
+        await set(newPostRef, postData);
+
+        await set(ref(database, `userPosts/${currentUser.uid}/${newPostRef.key}`), {
+            postId: newPostRef.key,
+            timestamp: serverTimestamp()
+        });
+
+        const userRef = ref(database, `users/${currentUser.uid}`);
+        const snapshot = await get(userRef);
+        if (snapshot.exists()) {
+            const userData = snapshot.val();
+            await update(userRef, { postsCount: (userData.postsCount || 0) + 1 });
+        }
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Publicado!',
+            timer: 1500,
+            showConfirmButton: false
+        });
+
+        modalPublish.classList.remove('active');
+        document.body.style.overflow = 'auto';
+
+    } catch (error) {
+        console.error('Erro:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Erro',
+            text: error.message,
+            confirmButtonColor: '#1a73e8'
+        });
+    }
+
+    this.disabled = false;
+    this.innerHTML = '<i class="fas fa-paper-plane"></i> Publicar';
+});
+
+// ============================================
+// FEED - TEMPO REAL
+// ============================================
+function loadFeed() {
+    const postsRef = query(ref(database, 'posts'), orderByChild('timestamp'), limitToLast(50));
+    
+    onChildAdded(postsRef, (snapshot) => {
+        const post = snapshot.val();
+        post.id = snapshot.key;
+        
+        const existingIndex = allPosts.findIndex(p => p.id === post.id);
+        if (existingIndex !== -1) {
+            allPosts[existingIndex] = post;
+        } else {
+            allPosts.push(post);
+        }
+        
+        allPosts.sort((a, b) => {
+            if (!a.timestamp) return 1;
+            if (!b.timestamp) return -1;
+            return b.timestamp - a.timestamp;
+        });
+        
+        renderFeed();
+    });
+    
+    // Atualização em tempo real para mudanças (likes, comentários, etc)
+    onValue(ref(database, 'posts'), (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            Object.keys(data).forEach(key => {
+                const post = data[key];
+                const index = allPosts.findIndex(p => p.id === key);
+                if (index !== -1) {
+                    allPosts[index] = { ...allPosts[index], ...post };
+                }
+            });
+            renderFeed();
+        }
+    });
+    
+    loadUsers();
+}
+
+function renderFeed() {
+    if (allPosts.length === 0) {
+        feedContainer.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-newspaper"></i>
+                <h5>Nenhuma publicação</h5>
+                <p>Seja o primeiro a publicar!</p>
+            </div>
+        `;
+        return;
+    }
+    
+    feedContainer.innerHTML = allPosts.map(post => createPostHTML(post)).join('');
+    attachPostEvents();
+}
+
+function createPostHTML(post) {
+    const isShared = post.sharedPostId;
+    let sharedHTML = '';
+    if (isShared) {
+        const sharedPost = allPosts.find(p => p.id === post.sharedPostId);
+        if (sharedPost) {
+            sharedHTML = `
+                <div class="post-shared-info">
+                    <div class="shared-label"><i class="fas fa-retweet"></i> ${post.userName} compartilhou</div>
+                    <div>
+                        <span class="shared-name">${sharedPost.userName}</span>
+                        <span style="font-size:13px;color:#5f6368;">@${sharedPost.userUsername}</span>
+                    </div>
+                    <div style="font-size:14px;color:#1a1a2e;margin-top:4px;white-space:pre-wrap;">${sharedPost.text}</div>
+                    ${sharedPost.image ? `<div class="post-media"><img src="${sharedPost.image}" alt="Imagem" loading="lazy" /></div>` : ''}
+                </div>
+            `;
+        }
+    }
+    
+    const userPhoto = post.userPhoto ? `<img src="${post.userPhoto}" alt="Foto" />` : 
+                     `<i class="fas fa-user" style="display:flex;align-items:center;justify-content:center;height:100%;font-size:20px;"></i>`;
+    
+    const user = allUsers[post.uid];
+    const isVerified = user?.verified || false;
+    const verifiedHTML = isVerified ? `<i class="fas fa-check-circle verified-badge"></i>` : '';
+    
+    // Remover quebras de linha extras do texto
+    const cleanText = post.text ? post.text.replace(/\n{3,}/g, '\n\n') : '';
+    
+    const feelingHTML = post.feeling ? `<div class="post-feeling">${post.feeling}</div>` : '';
+    const locationHTML = post.location ? `<div class="post-location"><i class="fas fa-map-marker-alt"></i> ${post.location}</div>` : '';
+    const mentionHTML = post.mention ? `<span class="mention">@${post.mention}</span> ` : '';
+    const hashtagHTML = post.hashtag ? `<span class="hashtag">#${post.hashtag}</span>` : '';
+    const imageHTML = post.image && !isShared ? `<div class="post-media"><img src="${post.image}" alt="Imagem" loading="lazy" /></div>` : '';
+    
+    const time = post.timestamp ? new Date(post.timestamp).toLocaleDateString('pt-BR', {
+        day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
+    }) : 'Agora';
+    
+    const isLiked = post.likedBy && post.likedBy[currentUser?.uid];
+    const isOwner = post.uid === currentUser?.uid;
+    
+    return `
+        <div class="post-card" data-post-id="${post.id}">
+            <div class="post-header">
+                <div class="post-avatar">${userPhoto}</div>
+                <div style="flex:1;">
+                    <div class="post-user-name">
+                        ${post.userName}
+                        ${verifiedHTML}
+                    </div>
+                    <div class="post-username">@${post.userUsername} · <span class="post-time">${time}</span></div>
+                </div>
+                <button class="post-more-btn" data-post-id="${post.id}" data-owner="${isOwner}">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+            </div>
+            
+            ${sharedHTML}
+            
+            <div class="post-content">
+                ${mentionHTML}
+                ${cleanText}
+                ${hashtagHTML}
+            </div>
+            ${feelingHTML}
+            ${locationHTML}
+            ${imageHTML}
+            
+            <div class="post-actions">
+                <button class="post-action-btn like-btn ${isLiked ? 'liked' : ''}" data-post-id="${post.id}">
+                    <i class="fas fa-heart"></i>
+                    <span class="count">${post.likes || 0}</span>
+                </button>
+                <button class="post-action-btn comment-btn" data-post-id="${post.id}">
+                    <i class="fas fa-comment"></i>
+                    <span class="count">${post.comments || 0}</span>
+                </button>
+                <button class="post-action-btn share-btn" data-post-id="${post.id}">
+                    <i class="fas fa-share"></i>
+                    <span class="count">${post.shares || 0}</span>
+                </button>
+            </div>
+            
+            <div class="post-options-menu" id="options-${post.id}">
+                ${isOwner ? `
+                    <button class="edit-option" data-post-id="${post.id}">
+                        <i class="fas fa-edit"></i> Editar
+                    </button>
+                    <button class="delete-option danger" data-post-id="${post.id}">
+                        <i class="fas fa-trash-alt"></i> Excluir
+                    </button>
+                ` : `
+                    <button class="report-option" data-post-id="${post.id}">
+                        <i class="fas fa-flag"></i> Denunciar
+                    </button>
+                `}
+                <button class="cancel-option">
+                    <i class="fas fa-times"></i> Cancelar
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+function attachPostEvents() {
+    // Likes
+    document.querySelectorAll('.like-btn').forEach(btn => {
+        btn.addEventListener('click', async function() {
+            const postId = this.dataset.postId;
+            await toggleLike(postId, this);
+        });
+    });
+    
+    // Comentar
+    document.querySelectorAll('.comment-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const postId = this.dataset.postId;
+            openComments(postId);
+        });
+    });
+    
+    // Compartilhar
+    document.querySelectorAll('.share-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const postId = this.dataset.postId;
+            openShareModal(postId);
+        });
+    });
+    
+    // Mais opções
+    document.querySelectorAll('.post-more-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const postId = this.dataset.postId;
+            const menu = document.getElementById(`options-${postId}`);
+            document.querySelectorAll('.post-options-menu.active').forEach(m => {
+                if (m.id !== `options-${postId}`) m.classList.remove('active');
+            });
+            menu.classList.toggle('active');
+        });
+    });
+    
+    // Fechar menu
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.post-card')) {
+            document.querySelectorAll('.post-options-menu.active').forEach(m => m.classList.remove('active'));
+        }
+    });
+    
+    // Opções do menu
+    document.querySelectorAll('.edit-option').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const postId = this.dataset.postId;
+            closeMenu(postId);
+            openEditPost(postId);
+        });
+    });
+    
+    document.querySelectorAll('.delete-option').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const postId = this.dataset.postId;
+            closeMenu(postId);
+            deletePost(postId);
+        });
+    });
+    
+    document.querySelectorAll('.report-option').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const postId = this.dataset.postId;
+            closeMenu(postId);
+            Swal.fire({
+                icon: 'info',
+                title: 'Denúncia enviada',
+                text: 'Analisaremos a publicação',
+                confirmButtonColor: '#1a73e8'
+            });
+        });
+    });
+    
+    document.querySelectorAll('.cancel-option').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const menu = this.closest('.post-options-menu');
+            if (menu) menu.classList.remove('active');
+        });
+    });
+}
+
+function closeMenu(postId) {
+    const menu = document.getElementById(`options-${postId}`);
+    if (menu) menu.classList.remove('active');
+}
+
+// ============================================
+// LIKE
+// ============================================
+async function toggleLike(postId, btn) {
+    if (!currentUser) return;
+    
+    try {
+        const postRef = ref(database, `posts/${postId}`);
+        const snapshot = await get(postRef);
+        if (!snapshot.exists()) return;
+        
+        const post = snapshot.val();
+        const likedBy = post.likedBy || {};
+        const userLiked = likedBy[currentUser.uid] || false;
+        
+        const updates = {};
+        if (userLiked) {
+            updates[`likedBy/${currentUser.uid}`] = null;
+            updates.likes = (post.likes || 0) - 1;
+        } else {
+            updates[`likedBy/${currentUser.uid}`] = true;
+            updates.likes = (post.likes || 0) + 1;
+        }
+        
+        await update(postRef, updates);
+        
+        const countSpan = btn.querySelector('.count');
+        const currentCount = parseInt(countSpan.textContent);
+        countSpan.textContent = userLiked ? currentCount - 1 : currentCount + 1;
+        btn.classList.toggle('liked');
+        
+    } catch (error) {
+        console.error('Erro ao dar like:', error);
+    }
+}
+
+// ============================================
+// EDITAR
+// ============================================
+function openEditPost(postId) {
+    const post = allPosts.find(p => p.id === postId);
+    if (!post) return;
+    
+    isEditing = true;
+    editPostId = postId;
+    isSharing = false;
+    sharePostId = null;
+    publishTitle.textContent = 'Editar Publicação';
+    publishText.value = post.text || '';
+    
+    // Preencher ferramentas
+    if (post.feeling) {
+        const btn = feelingsGrid.querySelector(`[data-feeling="${post.feeling}"]`);
+        if (btn) {
+            feelingsGrid.querySelectorAll('button.active').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+        feelingExtras.classList.add('active');
+        btnFeeling.classList.add('active');
+    }
+    if (post.location) {
+        locationText.value = post.location;
+        locationExtras.classList.add('active');
+        btnLocation.classList.add('active');
+    }
+    if (post.mention) {
+        mentionText.value = post.mention;
+        mentionExtras.classList.add('active');
+        btnMention.classList.add('active');
+        selectedFriendDisplay.textContent = `@${post.mention}`;
+    }
+    if (post.hashtag) {
+        hashtagText.value = post.hashtag;
+        hashtagExtras.classList.add('active');
+        btnHashtag.classList.add('active');
+    }
+    if (post.image) {
+        selectedImage = post.image;
+        previewImgSrc.src = post.image;
+        previewImg.classList.add('active');
+        btnPhoto.classList.add('active');
+    }
+    
+    // Remover share preview
+    const sharePreview = document.querySelector('.share-info-preview');
+    if (sharePreview) sharePreview.remove();
+    
+    modalPublish.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+// ============================================
+// EXCLUIR
+// ============================================
+async function deletePost(postId) {
+    const result = await Swal.fire({
+        title: 'Excluir publicação?',
+        text: 'Esta ação não pode ser desfeita',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ea4335',
+        cancelButtonColor: '#5f6368',
+        confirmButtonText: 'Excluir',
+        cancelButtonText: 'Cancelar'
+    });
+    
+    if (result.isConfirmed) {
+        try {
+            await remove(ref(database, `posts/${postId}`));
+            await remove(ref(database, `userPosts/${currentUser.uid}/${postId}`));
+            
+            allPosts = allPosts.filter(p => p.id !== postId);
+            renderFeed();
+            
+            Swal.fire({
+                icon: 'success',
+                title: 'Excluído!',
+                timer: 1500,
+                showConfirmButton: false
+            });
+        } catch (error) {
+            console.error('Erro ao excluir:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro',
+                text: error.message,
+                confirmButtonColor: '#1a73e8'
+            });
+        }
+    }
+}
+
+// ============================================
+// COMPARTILHAR
+// ============================================
+function openShareModal(postId) {
+    const post = allPosts.find(p => p.id === postId);
+    if (!post) return;
+    
+    isSharing = true;
+    sharePostId = postId;
+    isEditing = false;
+    editPostId = null;
+    publishTitle.textContent = 'Compartilhar Publicação';
+    publishText.value = '';
+    selectedFriend = null;
+    selectedFriendDisplay.textContent = '';
+    mentionText.value = '';
+    
+    // Resetar sentimentos
+    feelingsGrid.querySelectorAll('button.active').forEach(b => b.classList.remove('active'));
+    feelingExtras.classList.remove('active');
+    btnFeeling.classList.remove('active');
+    locationExtras.classList.remove('active');
+    btnLocation.classList.remove('active');
+    mentionExtras.classList.remove('active');
+    btnMention.classList.remove('active');
+    hashtagExtras.classList.remove('active');
+    btnHashtag.classList.remove('active');
+    previewImg.classList.remove('active');
+    previewImgSrc.src = '';
+    btnPhoto.classList.remove('active');
+    locationText.value = '';
+    hashtagText.value = '';
+    
+    // Mostrar informações da publicação original
+    const shareInfo = document.createElement('div');
+    shareInfo.className = 'share-info-preview';
+    shareInfo.innerHTML = `
+        <div class="label">Compartilhando publicação de <strong>${post.userName}</strong></div>
+        <div class="text">${post.text.substring(0, 150)}${post.text.length > 150 ? '...' : ''}</div>
+    `;
+    
+    const existingInfo = document.querySelector('.share-info-preview');
+    if (existingInfo) existingInfo.remove();
+    
+    const textarea = document.querySelector('.publish-textarea');
+    textarea.parentNode.insertBefore(shareInfo, textarea);
+    
+    modalPublish.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+// ============================================
+// COMENTÁRIOS - TEMPO REAL
+// ============================================
+function openComments(postId) {
+    currentPostId = postId;
+    commentsPage.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    loadComments(postId);
+}
+
+function closeCommentsPage() {
+    commentsPage.classList.remove('active');
+    document.body.style.overflow = 'auto';
+    currentPostId = null;
+    currentComments = [];
+}
+
+closeComments.addEventListener('click', closeCommentsPage);
+
+async function loadComments(postId) {
+    // Mostrar post original
+    const post = allPosts.find(p => p.id === postId);
+    if (post) {
+        const postHTML = createPostHTML(post);
+        const postDiv = document.createElement('div');
+        postDiv.className = 'comment-original-post';
+        postDiv.innerHTML = postHTML;
+        
+        commentsList.innerHTML = '';
+        commentsList.appendChild(postDiv);
+    }
+    
+    // Carregar comentários em tempo real
+    const commentsRef = ref(database, `comments/${postId}`);
+    onValue(commentsRef, (snapshot) => {
+        const data = snapshot.val();
+        currentComments = [];
+        
+        if (data) {
+            const keys = Object.keys(data);
+            currentComments = keys.map(key => ({ id: key, ...data[key] }));
+            currentComments.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+        }
+        
+        renderComments();
+    });
+}
+
+function renderComments() {
+    const originalPost = commentsList.querySelector('.comment-original-post');
+    commentsList.innerHTML = '';
+    if (originalPost) commentsList.appendChild(originalPost);
+    
+    if (currentComments.length === 0) {
+        const emptyDiv = document.createElement('div');
+        emptyDiv.style.cssText = 'text-align:center;padding:20px;color:#9aa0a6;';
+        emptyDiv.innerHTML = `
+            <i class="fas fa-comment" style="font-size:32px;display:block;margin-bottom:12px;color:#e8f0fe;"></i>
+            <p>Nenhum comentário ainda</p>
+            <p style="font-size:13px;">Seja o primeiro a comentar</p>
+        `;
+        commentsList.appendChild(emptyDiv);
+        return;
+    }
+    
+    currentComments.forEach(comment => {
+        const photo = comment.userPhoto ? `<img src="${comment.userPhoto}" alt="" />` : 
+                     `<i class="fas fa-user"></i>`;
+        const time = comment.timestamp ? new Date(comment.timestamp).toLocaleDateString('pt-BR', {
+            day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
+        }) : '';
+        
+        const div = document.createElement('div');
+        div.className = 'comment-item';
+        div.innerHTML = `
+            <div class="comment-avatar">${photo}</div>
+            <div class="comment-body">
+                <div class="comment-name">${comment.userName || 'Usuário'}</div>
+                <div class="comment-text">${comment.text}</div>
+                <div class="comment-time">${time}</div>
+            </div>
+        `;
+        commentsList.appendChild(div);
+    });
+}
+
+// Enviar comentário
+sendComment.addEventListener('click', () => {
+    const text = commentInput.value.trim();
+    if (text && currentPostId) {
+        addComment(currentPostId, text);
+        commentInput.value = '';
+    }
+});
+
+commentInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        sendComment.click();
+    }
+});
+
+async function addComment(postId, text) {
+    if (!currentUser) return;
+    
+    try {
+        const commentsRef = ref(database, `comments/${postId}`);
+        const newCommentRef = push(commentsRef);
+        await set(newCommentRef, {
+            uid: currentUser.uid,
+            userName: currentUserData?.fullName || 'Usuário',
+            userPhoto: currentUserData?.photo || null,
+            text: text,
+            timestamp: serverTimestamp()
+        });
+        
+        const postRef = ref(database, `posts/${postId}`);
+        const snapshot = await get(postRef);
+        if (snapshot.exists()) {
+            const post = snapshot.val();
+            await update(postRef, { comments: (post.comments || 0) + 1 });
+        }
+        
+    } catch (error) {
+        console.error('Erro ao comentar:', error);
+    }
+}
+
+// ============================================
+// NOTIFICAÇÕES
+// ============================================
+btnNotifications.addEventListener('click', () => {
+    notificationsPage.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    loadNotifications();
+});
+
+closeNotifications.addEventListener('click', () => {
+    notificationsPage.classList.remove('active');
+    document.body.style.overflow = 'auto';
+});
+
+async function loadNotifications() {
+    if (!currentUser) return;
+    
+    try {
+        const notifRef = ref(database, `notifications/${currentUser.uid}`);
+        const snapshot = await get(notifRef);
+        
+        if (!snapshot.exists()) {
+            notificationsList.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-bell-slash"></i>
+                    <h5>Sem notificações</h5>
+                    <p>Você está em dia!</p>
+                </div>
+            `;
+            return;
+        }
+        
+        const data = snapshot.val();
+        const keys = Object.keys(data).sort((a, b) => (data[b].timestamp || 0) - (data[a].timestamp || 0));
+        
+        let html = '';
+        for (const key of keys) {
+            const notif = data[key];
+            const time = notif.timestamp ? new Date(notif.timestamp).toLocaleDateString('pt-BR', {
+                day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
+            }) : '';
+            
+            const iconMap = {
+                'like': 'fas fa-heart',
+                'comment': 'fas fa-comment',
+                'share': 'fas fa-share',
+                'follow': 'fas fa-user-plus'
+            };
+            
+            html += `
+                <div class="notification-item">
+                    <div class="notif-icon"><i class="${iconMap[notif.type] || 'fas fa-bell'}"></i></div>
+                    <div class="notif-text">
+                        <strong>${notif.fromName || 'Alguém'}</strong> ${notif.message || 'interagiu com você'}
+                    </div>
+                    <div class="notif-time">${time}</div>
+                </div>
+            `;
+        }
+        
+        notificationsList.innerHTML = html;
+        notifBadge.style.display = 'none';
+        
+    } catch (error) {
+        console.error('Erro ao carregar notificações:', error);
+    }
+}
+
+// ============================================
+// LOGOUT
+// ============================================
+btnLogout.addEventListener('click', async function() {
+    const result = await Swal.fire({
+        title: 'Sair?',
+        text: 'Tem certeza que deseja sair?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#ea4335',
+        cancelButtonColor: '#5f6368',
+        confirmButtonText: 'Sair',
+        cancelButtonText: 'Cancelar'
+    });
+    
+    if (result.isConfirmed) {
+        try {
+            await signOut(auth);
+            window.location.reload();
+        } catch (error) {
+            console.error('Erro ao sair:', error);
+        }
+    }
+});
+
+// ============================================
+// AUTENTICAÇÃO
+// ============================================
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        currentUser = user;
+        console.log('👤 Usuário logado:', user.email);
+        
+        const userRef = ref(database, `users/${user.uid}`);
+        const snapshot = await get(userRef);
+        if (snapshot.exists()) {
+            currentUserData = snapshot.val();
+            console.log('📦 Dados carregados');
+            
+            if (currentUserData.photo) {
+                userAvatarMini.innerHTML = `<img src="${currentUserData.photo}" alt="Foto" />`;
+            }
+            
+            await loadUsers();
+            loadFeed();
+            loadNotifications();
+        } else {
+            window.location.reload();
+        }
+    } else {
+        console.log('👤 Nenhum usuário logado');
+        window.location.href = window.location.origin + window.location.pathname;
+    }
+});
+
+// ============================================
+// INICIALIZAÇÃO
+// ============================================
+console.log('🚀 Zonne - Feed');
+console.log('✅ Sistema pronto!');
+</script>
 </body>
 </html>
