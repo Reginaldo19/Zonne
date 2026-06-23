@@ -16,17 +16,11 @@
             color: #1a1a2e;
             height: 100vh;
             overflow: hidden;
-            position: relative;
         }
-        
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #f0f4f8; }
-        ::-webkit-scrollbar-thumb { background: #1a73e8; border-radius: 2px; }
         
         .container-custom {
             max-width: 480px;
             margin: 0 auto;
-            padding: 0;
             height: 100vh;
             background: #f0f4f8;
             display: flex;
@@ -43,12 +37,11 @@
             justify-content: space-between;
             border-bottom: 1px solid #e8f0fe;
             flex-shrink: 0;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
             z-index: 10;
         }
         
         .logo-feed {
-            font-size: clamp(18px, 4vw, 22px);
+            font-size: 22px;
             font-weight: 900;
             color: #1a73e8;
             display: flex;
@@ -68,7 +61,7 @@
             background: none;
             border: none;
             color: #5f6368;
-            font-size: clamp(16px, 3.5vw, 18px);
+            font-size: 18px;
             cursor: pointer;
             padding: 6px 8px;
             border-radius: 8px;
@@ -76,19 +69,10 @@
             position: relative;
         }
         .header-actions button:hover { background: #f0f7ff; color: #1a73e8; }
-        .header-actions .badge-dot {
-            position: absolute;
-            top: 4px;
-            right: 4px;
-            width: 8px;
-            height: 8px;
-            background: #ea4335;
-            border-radius: 50%;
-        }
         
         .user-avatar-mini {
-            width: clamp(30px, 6.5vw, 34px);
-            height: clamp(30px, 6.5vw, 34px);
+            width: 34px;
+            height: 34px;
             border-radius: 50%;
             overflow: hidden;
             border: 2px solid #1a73e8;
@@ -97,12 +81,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: clamp(14px, 3vw, 16px);
+            font-size: 16px;
             color: #1a73e8;
         }
         .user-avatar-mini img { width: 100%; height: 100%; object-fit: cover; }
         
-        /* TÍTULO DO CHAT */
+        /* TÍTULO */
         .chat-title {
             background: #ffffff;
             padding: 10px 18px;
@@ -126,7 +110,7 @@
             margin: 0;
             font-weight: 700;
             color: #1a1a2e;
-            font-size: clamp(16px, 3.5vw, 18px);
+            font-size: 18px;
         }
         .chat-title .chat-count {
             font-size: 12px;
@@ -134,12 +118,12 @@
             margin-left: auto;
         }
         
-        /* LISTA DE CONVERSAS */
+        /* LISTA DE CONVERSAS - COM ESPAÇO PARA A BARRA */
         .chat-list {
             flex: 1;
             overflow-y: auto;
             padding: 8px 12px;
-            padding-bottom: 12px;
+            padding-bottom: 75px;
         }
         
         .chat-item {
@@ -153,21 +137,15 @@
             border: 1px solid #e8f0fe;
             cursor: pointer;
             transition: all 0.3s;
-            position: relative;
         }
         .chat-item:hover {
             border-color: #1a73e8;
             box-shadow: 0 2px 8px rgba(26,115,232,0.06);
-            transform: translateX(2px);
-        }
-        .chat-item.active {
-            border-color: #1a73e8;
-            background: #f0f7ff;
         }
         
         .chat-avatar {
-            width: clamp(44px, 9vw, 50px);
-            height: clamp(44px, 9vw, 50px);
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             overflow: hidden;
             flex-shrink: 0;
@@ -175,7 +153,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: clamp(18px, 4vw, 22px);
+            font-size: 20px;
             color: #1a73e8;
             position: relative;
         }
@@ -199,25 +177,21 @@
         .chat-name {
             font-weight: 600;
             color: #1a1a2e;
-            font-size: clamp(14px, 3vw, 15px);
+            font-size: 15px;
             display: flex;
             align-items: center;
             gap: 4px;
         }
         .chat-name .verified-badge {
             color: #1a73e8;
-            font-size: clamp(12px, 2.5vw, 14px);
+            font-size: 14px;
         }
         .chat-last {
-            font-size: clamp(12px, 2.5vw, 13px);
+            font-size: 13px;
             color: #5f6368;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-        }
-        .chat-last .typing {
-            color: #1a73e8;
-            font-style: italic;
         }
         
         .chat-meta {
@@ -248,20 +222,13 @@
             color: #5f6368;
         }
         .empty-chat i {
-            font-size: clamp(48px, 12vw, 64px);
+            font-size: 48px;
             color: #e8f0fe;
             display: block;
             margin-bottom: 16px;
         }
-        .empty-chat h5 {
-            color: #1a1a2e;
-            margin-bottom: 6px;
-            font-size: clamp(16px, 4vw, 18px);
-        }
-        .empty-chat p {
-            font-size: clamp(13px, 2.8vw, 14px);
-            color: #9aa0a6;
-        }
+        .empty-chat h5 { color: #1a1a2e; margin-bottom: 6px; font-size: 18px; }
+        .empty-chat p { font-size: 13px; color: #9aa0a6; }
         .empty-chat .btn-start {
             margin-top: 16px;
             padding: 10px 30px;
@@ -293,15 +260,9 @@
             max-width: 480px;
             margin: 0 auto;
             flex-direction: column;
-            animation: slideIn 0.3s ease;
         }
         .conversation-view.active {
             display: flex;
-        }
-        
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
         }
         
         .conv-header {
@@ -312,7 +273,6 @@
             gap: 10px;
             border-bottom: 1px solid #e8f0fe;
             flex-shrink: 0;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
             z-index: 10;
         }
         .conv-header .back-btn {
@@ -323,7 +283,6 @@
             cursor: pointer;
             padding: 4px 8px;
             border-radius: 8px;
-            transition: all 0.3s;
         }
         .conv-header .back-btn:hover { background: #f0f7ff; }
         .conv-header .conv-avatar {
@@ -340,14 +299,11 @@
             color: #1a73e8;
         }
         .conv-header .conv-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .conv-header .conv-info {
-            flex: 1;
-            min-width: 0;
-        }
+        .conv-header .conv-info { flex: 1; min-width: 0; }
         .conv-header .conv-name {
             font-weight: 600;
             color: #1a1a2e;
-            font-size: clamp(14px, 3vw, 16px);
+            font-size: 16px;
             display: flex;
             align-items: center;
             gap: 4px;
@@ -365,7 +321,7 @@
             background: none;
             border: none;
             color: #5f6368;
-            font-size: clamp(16px, 3.5vw, 18px);
+            font-size: 18px;
             cursor: pointer;
             padding: 6px 8px;
             border-radius: 8px;
@@ -385,14 +341,14 @@
             flex-direction: column;
             gap: 4px;
             background: #f0f4f8;
-            padding-bottom: 16px;
+            padding-bottom: 12px;
         }
         
         .message {
             max-width: 80%;
             padding: 10px 14px;
             border-radius: 16px;
-            font-size: clamp(14px, 3vw, 15px);
+            font-size: 15px;
             line-height: 1.5;
             word-wrap: break-word;
             position: relative;
@@ -409,9 +365,7 @@
             color: white;
             border-bottom-right-radius: 4px;
         }
-        .message.sent .msg-time {
-            color: rgba(255,255,255,0.7);
-        }
+        .message.sent .msg-time { color: rgba(255,255,255,0.7); }
         .message.received {
             align-self: flex-start;
             background: #ffffff;
@@ -419,9 +373,7 @@
             border-bottom-left-radius: 4px;
             border: 1px solid #e8f0fe;
         }
-        .message.received .msg-time {
-            color: #9aa0a6;
-        }
+        .message.received .msg-time { color: #9aa0a6; }
         
         .message .msg-time {
             font-size: 10px;
@@ -429,135 +381,11 @@
             display: block;
             text-align: right;
         }
-        
-        .message .msg-status {
-            font-size: 12px;
-            margin-left: 4px;
-        }
+        .message .msg-status { font-size: 12px; margin-left: 4px; }
         .message .msg-status.read { color: #2ed573; }
         .message .msg-status.delivered { color: #f9ab00; }
         
-        /* CHAMADA - OVERLAY */
-        .call-overlay {
-            display: none;
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 600;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            padding: 40px 20px;
-            background-size: cover;
-            background-position: center;
-            background-color: #0d47a1;
-        }
-        .call-overlay.active {
-            display: flex;
-        }
-        .call-overlay::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 1;
-        }
-        .call-overlay > * {
-            position: relative;
-            z-index: 2;
-        }
-        
-        .call-overlay .call-avatar {
-            width: clamp(100px, 25vw, 160px);
-            height: clamp(100px, 25vw, 160px);
-            border-radius: 50%;
-            overflow: hidden;
-            border: 4px solid rgba(255,255,255,0.3);
-            background: rgba(255,255,255,0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: clamp(50px, 12vw, 70px);
-            margin-bottom: 20px;
-        }
-        .call-overlay .call-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .call-overlay .call-name {
-            font-size: clamp(24px, 5vw, 32px);
-            font-weight: 700;
-            margin-bottom: 4px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-        .call-overlay .call-status {
-            font-size: clamp(14px, 3vw, 18px);
-            opacity: 0.9;
-            margin-bottom: 30px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-        .call-overlay .call-timer {
-            font-size: clamp(32px, 7vw, 48px);
-            font-weight: 300;
-            margin-bottom: 30px;
-            font-variant-numeric: tabular-nums;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-        .call-overlay .call-actions {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .call-overlay .call-actions button {
-            width: clamp(56px, 12vw, 72px);
-            height: clamp(56px, 12vw, 72px);
-            border-radius: 50%;
-            border: none;
-            font-size: clamp(22px, 5vw, 28px);
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .call-overlay .call-actions button:hover {
-            transform: scale(1.08);
-        }
-        .call-overlay .call-actions .btn-end-call {
-            background: #ea4335;
-            color: white;
-        }
-        .call-overlay .call-actions .btn-end-call:hover {
-            background: #d33426;
-        }
-        .call-overlay .call-actions .btn-mute {
-            background: rgba(255,255,255,0.2);
-            color: white;
-        }
-        .call-overlay .call-actions .btn-mute:hover {
-            background: rgba(255,255,255,0.3);
-        }
-        .call-overlay .call-actions .btn-speaker {
-            background: rgba(255,255,255,0.2);
-            color: white;
-        }
-        .call-overlay .call-actions .btn-speaker:hover {
-            background: rgba(255,255,255,0.3);
-        }
-        .call-overlay .call-actions .btn-mute.active {
-            background: #f9ab00;
-            color: #1a1a2e;
-        }
-        .call-overlay .call-actions .btn-speaker.active {
-            background: #2ed573;
-            color: #1a1a2e;
-        }
-        
-        /* TYPING INDICATOR */
+        /* TYPING */
         .typing-indicator {
             display: none;
             align-self: flex-start;
@@ -569,9 +397,7 @@
             color: #5f6368;
             margin-bottom: 4px;
         }
-        .typing-indicator.active {
-            display: inline-block;
-        }
+        .typing-indicator.active { display: inline-block; }
         .typing-indicator .dots {
             display: inline-flex;
             gap: 3px;
@@ -590,17 +416,17 @@
             30% { opacity: 1; transform: scale(1); }
         }
         
-        /* INPUT DE MENSAGEM - FIXO ACIMA DA BARRA */
+        /* INPUT - COM ESPAÇO DA BARRA */
         .message-input-area {
             background: #ffffff;
-            padding: 8px 12px 12px;
+            padding: 8px 12px;
             border-top: 1px solid #e8f0fe;
             display: flex;
             gap: 8px;
             align-items: flex-end;
             flex-shrink: 0;
-            position: relative;
             z-index: 10;
+            padding-bottom: 12px;
         }
         .message-input-area .input-wrapper {
             flex: 1;
@@ -621,7 +447,7 @@
             border: none;
             background: none;
             padding: 8px 4px;
-            font-size: clamp(14px, 3vw, 15px);
+            font-size: 15px;
             outline: none;
             color: #1a1a2e;
             min-height: 40px;
@@ -668,7 +494,7 @@
             transform: none;
         }
         
-        /* BARRA INFERIOR - FIXA NO FUNDO */
+        /* BARRA INFERIOR - FIXA */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -692,7 +518,7 @@
             flex-direction: column;
             align-items: center;
             color: #5f6368;
-            font-size: clamp(8px, 2vw, 10px);
+            font-size: 10px;
             cursor: pointer;
             padding: 2px 8px;
             transition: all 0.3s;
@@ -701,14 +527,11 @@
             text-decoration: none;
         }
         .nav-item i {
-            font-size: clamp(18px, 4.5vw, 20px);
+            font-size: 20px;
             margin-bottom: 2px;
             transition: all 0.3s;
         }
-        .nav-item span { 
-            font-size: clamp(7px, 1.8vw, 9px); 
-            margin-top: 0px; 
-        }
+        .nav-item span { font-size: 9px; margin-top: 0px; }
         .nav-item.active { color: #1a73e8; }
         .nav-item.active i { transform: scale(1.05); }
         .nav-item:hover { color: #1a73e8; }
@@ -744,7 +567,112 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
         
-        /* LISTA DE AMIGOS PARA NOVA CONVERSA */
+        /* CALL OVERLAY */
+        .call-overlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 600;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            padding: 40px 20px;
+            background-size: cover;
+            background-position: center;
+            background-color: #0d47a1;
+        }
+        .call-overlay.active { display: flex; }
+        .call-overlay::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1;
+        }
+        .call-overlay > * { position: relative; z-index: 2; }
+        
+        .call-overlay .call-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            margin-bottom: 20px;
+        }
+        .call-overlay .call-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .call-overlay .call-name {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .call-overlay .call-status {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 30px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .call-overlay .call-timer {
+            font-size: 40px;
+            font-weight: 300;
+            margin-bottom: 30px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .call-overlay .call-actions {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .call-overlay .call-actions button {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .call-overlay .call-actions button:hover { transform: scale(1.08); }
+        .call-overlay .call-actions .btn-end-call {
+            background: #ea4335;
+            color: white;
+        }
+        .call-overlay .call-actions .btn-end-call:hover { background: #d33426; }
+        .call-overlay .call-actions .btn-mute {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+        .call-overlay .call-actions .btn-mute:hover { background: rgba(255,255,255,0.3); }
+        .call-overlay .call-actions .btn-speaker {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+        .call-overlay .call-actions .btn-speaker:hover { background: rgba(255,255,255,0.3); }
+        .call-overlay .call-actions .btn-mute.active {
+            background: #f9ab00;
+            color: #1a1a2e;
+        }
+        .call-overlay .call-actions .btn-speaker.active {
+            background: #2ed573;
+            color: #1a1a2e;
+        }
+        
         .friends-list-page {
             display: none;
             position: fixed;
@@ -757,11 +685,8 @@
             max-width: 480px;
             margin: 0 auto;
             flex-direction: column;
-            animation: slideIn 0.3s ease;
         }
-        .friends-list-page.active {
-            display: flex;
-        }
+        .friends-list-page.active { display: flex; }
         
         .friends-list-header {
             background: #ffffff;
@@ -839,7 +764,6 @@
         .friend-select-item .fs-status.online { color: #2ed573; }
         .friend-select-item .fs-status.offline { color: #9aa0a6; }
         
-        /* RESPONSIVO */
         @media (min-width: 481px) {
             .container-custom {
                 box-shadow: 0 0 20px rgba(0,0,0,0.05);
@@ -851,20 +775,10 @@
                 left: 50%;
                 transform: translateX(-50%);
             }
-            .conversation-view.active {
-                animation: slideInDesktop 0.3s ease;
-            }
             .friends-list-page {
                 max-width: 480px;
                 left: 50%;
                 transform: translateX(-50%);
-            }
-            .friends-list-page.active {
-                animation: slideInDesktop 0.3s ease;
-            }
-            @keyframes slideInDesktop {
-                from { transform: translateX(-50%) translateX(100%); opacity: 0; }
-                to { transform: translateX(-50%) translateX(0); opacity: 1; }
             }
         }
         
@@ -873,32 +787,6 @@
             .chat-item { padding: 10px 12px; }
             .message { max-width: 90%; }
             .message-input-area .input-wrapper { padding: 2px 2px 2px 10px; }
-            .conv-header .conv-actions button { padding: 4px 6px; font-size: 14px; }
-            .call-overlay .call-actions button { width: 48px; height: 48px; font-size: 18px; }
-        }
-        
-        @media (max-width: 360px) {
-            .chat-title h5 { font-size: 14px; }
-            .chat-title .chat-count { font-size: 10px; }
-            .message-input-area .input-wrapper input { font-size: 13px; min-height: 32px; }
-            .message-input-area .send-btn { width: 36px; height: 36px; font-size: 14px; }
-        }
-        
-        @media (orientation: landscape) and (max-height: 500px) {
-            .header-feed { padding: 6px 14px; }
-            .chat-title { padding: 6px 14px; }
-            .chat-list { padding: 4px 10px; }
-            .chat-item { padding: 8px 12px; }
-            .messages-container { padding: 8px 12px; }
-            .message-input-area { padding: 4px 10px 8px; }
-            .message-input-area .input-wrapper input { min-height: 30px; padding: 4px; }
-            .message-input-area .send-btn { width: 34px; height: 34px; font-size: 14px; }
-            .conv-header { padding: 6px 10px; }
-            .conv-header .conv-avatar { width: 30px; height: 30px; font-size: 12px; }
-            .call-overlay .call-avatar { width: 60px; height: 60px; font-size: 24px; }
-            .call-overlay .call-name { font-size: 18px; }
-            .call-overlay .call-timer { font-size: 24px; }
-            .call-overlay .call-actions button { width: 44px; height: 44px; font-size: 16px; }
         }
     </style>
 </head>
@@ -917,7 +805,6 @@
             </button>
             <button id="btnNotifications" title="Notificações">
                 <i class="fas fa-bell"></i>
-                <span class="badge-dot"></span>
             </button>
             <div class="user-avatar-mini" id="userAvatarMini">
                 <i class="fas fa-user"></i>
@@ -974,19 +861,16 @@
             </div>
         </div>
         
-        <div class="messages-container" id="messagesContainer">
-            <!-- Mensagens aparecem aqui -->
-        </div>
+        <div class="messages-container" id="messagesContainer"></div>
         
         <div class="typing-indicator" id="typingIndicator">
             <span>Digitando</span>
             <span class="dots">
-                <span></span>
-                <span></span>
-                <span></span>
+                <span></span><span></span><span></span>
             </span>
         </div>
         
+        <!-- INPUT COM ESPAÇO DA BARRA -->
         <div class="message-input-area">
             <div class="input-wrapper">
                 <input type="text" id="messageInput" placeholder="Digite uma mensagem..." />
@@ -997,7 +881,7 @@
         </div>
     </div>
 
-    <!-- LISTA DE AMIGOS PARA NOVA CONVERSA -->
+    <!-- LISTA DE AMIGOS -->
     <div class="friends-list-page" id="friendsListPage">
         <div class="friends-list-header">
             <button id="closeFriendsList"><i class="fas fa-arrow-left"></i></button>
@@ -1008,7 +892,7 @@
         </div>
     </div>
 
-    <!-- BARRA INFERIOR - FIXA -->
+    <!-- BARRA INFERIOR -->
     <div class="bottom-nav">
         <a class="nav-item" href="social.html">
             <i class="fas fa-home"></i>
@@ -1071,8 +955,6 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const database = getDatabase(app);
 
-console.log('🔥 Firebase iniciado!');
-
 // ============================================
 // VARIÁVEIS
 // ============================================
@@ -1080,20 +962,16 @@ let currentUser = null;
 let currentUserData = null;
 let allUsers = {};
 let chats = {};
-let currentChatId = null;
 let currentChatUser = null;
 let messageListener = null;
 let typingTimeout = null;
 let callTimerInterval = null;
 let callSeconds = 0;
-let isMuted = false;
-let isSpeaker = false;
 let isCallActive = false;
 let callAnswered = false;
-let callListeners = [];
 
 // ============================================
-// DOM ELEMENTOS
+// DOM
 // ============================================
 const chatList = document.getElementById('chatList');
 const chatCount = document.getElementById('chatCount');
@@ -1102,7 +980,6 @@ const messagesContainer = document.getElementById('messagesContainer');
 const messageInput = document.getElementById('messageInput');
 const sendBtn = document.getElementById('sendBtn');
 const convBack = document.getElementById('convBack');
-const chatListBack = document.getElementById('chatListBack');
 const convAvatar = document.getElementById('convAvatar');
 const convName = document.getElementById('convName');
 const convStatus = document.getElementById('convStatus');
@@ -1111,14 +988,10 @@ const userAvatarMini = document.getElementById('userAvatarMini');
 const btnLogout = document.getElementById('btnLogout');
 const btnNewChat = document.getElementById('btnNewChat');
 const chatBadge = document.getElementById('chatBadge');
-const btnNotifications = document.getElementById('btnNotifications');
-const attachBtn = document.getElementById('attachBtn');
-const emojiBtn = document.getElementById('emojiBtn');
 const convCall = document.getElementById('convCall');
 const convVideo = document.getElementById('convVideo');
-const convMore = document.getElementById('convMore');
 
-// Call elements
+// Call
 const callOverlay = document.getElementById('callOverlay');
 const callAvatar = document.getElementById('callAvatar');
 const callName = document.getElementById('callName');
@@ -1138,11 +1011,8 @@ const closeFriendsList = document.getElementById('closeFriendsList');
 // ============================================
 async function loadUsers() {
     try {
-        const usersRef = ref(database, 'users');
-        const snapshot = await get(usersRef);
-        if (snapshot.exists()) {
-            allUsers = snapshot.val();
-        }
+        const snapshot = await get(ref(database, 'users'));
+        if (snapshot.exists()) allUsers = snapshot.val();
     } catch (error) {
         console.error('Erro ao carregar usuários:', error);
     }
@@ -1154,9 +1024,7 @@ async function loadUsers() {
 function loadChats() {
     if (!currentUser) return;
     
-    const chatsRef = ref(database, `chats/${currentUser.uid}`);
-    
-    onValue(chatsRef, (snapshot) => {
+    onValue(ref(database, `chats/${currentUser.uid}`), (snapshot) => {
         const data = snapshot.val();
         chats = data || {};
         
@@ -1165,29 +1033,20 @@ function loadChats() {
         if (chatBadge) chatBadge.textContent = count;
         
         if (count === 0) {
-            if (chatList) {
-                chatList.innerHTML = `
-                    <div class="empty-chat">
-                        <i class="fas fa-comment-dots"></i>
-                        <h5>Nenhuma conversa</h5>
-                        <p>Inicie uma conversa com seus amigos</p>
-                        <button class="btn-start" id="startChatBtn"><i class="fas fa-plus"></i> Nova conversa</button>
-                    </div>
-                `;
-                const startBtn = document.getElementById('startChatBtn');
-                if (startBtn) {
-                    startBtn.addEventListener('click', () => {
-                        if (btnNewChat) btnNewChat.click();
-                    });
-                }
-            }
+            chatList.innerHTML = `
+                <div class="empty-chat">
+                    <i class="fas fa-comment-dots"></i>
+                    <h5>Nenhuma conversa</h5>
+                    <p>Inicie uma conversa com seus amigos</p>
+                    <button class="btn-start" id="startChatBtn"><i class="fas fa-plus"></i> Nova conversa</button>
+                </div>
+            `;
+            document.getElementById('startChatBtn')?.addEventListener('click', () => btnNewChat?.click());
             return;
         }
         
         const sorted = Object.keys(chats).sort((a, b) => {
-            const timeA = chats[a]?.timestamp || 0;
-            const timeB = chats[b]?.timestamp || 0;
-            return timeB - timeA;
+            return (chats[b]?.timestamp || 0) - (chats[a]?.timestamp || 0);
         });
         
         let html = '';
@@ -1197,9 +1056,7 @@ function loadChats() {
             if (!user) return;
             
             const photo = user.photo ? `<img src="${user.photo}" alt="" />` : `<i class="fas fa-user"></i>`;
-            const verified = user.verified ? `<i class="fas fa-check-circle verified-badge"></i>` : '';
             const online = user.status === 'online';
-            const statusIcon = online ? 'online' : 'offline';
             const lastMsg = chat?.lastMessage || 'Iniciar conversa';
             const time = chat?.timestamp ? 
                 new Date(chat.timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '';
@@ -1209,13 +1066,10 @@ function loadChats() {
                 <div class="chat-item" data-uid="${uid}" onclick="window.openConversation('${uid}')">
                     <div class="chat-avatar">
                         ${photo}
-                        <span class="online-dot ${statusIcon}"></span>
+                        <span class="online-dot ${online ? 'online' : 'offline'}"></span>
                     </div>
                     <div class="chat-info">
-                        <div class="chat-name">
-                            ${user.fullName || 'Usuário'}
-                            ${verified}
-                        </div>
+                        <div class="chat-name">${user.fullName || 'Usuário'}</div>
                         <div class="chat-last">${lastMsg}</div>
                     </div>
                     <div class="chat-meta">
@@ -1226,7 +1080,7 @@ function loadChats() {
             `;
         });
         
-        if (chatList) chatList.innerHTML = html;
+        chatList.innerHTML = html;
     });
 }
 
@@ -1235,141 +1089,60 @@ function loadChats() {
 // ============================================
 window.openConversation = function(uid) {
     const user = allUsers[uid];
-    if (!user) {
-        console.error('Usuário não encontrado:', uid);
-        return;
-    }
+    if (!user) return;
     
     currentChatUser = user;
-    currentChatId = [currentUser.uid, uid].sort().join('_');
-    
-    const chatRef = ref(database, `chats/${currentUser.uid}/${uid}`);
-    update(chatRef, { unread: 0 });
     
     const photo = user.photo ? `<img src="${user.photo}" alt="" />` : `<i class="fas fa-user"></i>`;
-    if (convAvatar) convAvatar.innerHTML = photo;
-    if (convName) convName.innerHTML = `${user.fullName || 'Usuário'} ${user.verified ? '<i class="fas fa-check-circle" style="color:#1a73e8;font-size:14px;"></i>' : ''}`;
-    if (convStatus) {
-        convStatus.textContent = user.status === 'online' ? 'Online' : 'Offline';
-        convStatus.className = `conv-status ${user.status === 'online' ? 'online' : ''}`;
-    }
+    convAvatar.innerHTML = photo;
+    convName.textContent = user.fullName || 'Usuário';
+    convStatus.textContent = user.status === 'online' ? 'Online' : 'Offline';
+    convStatus.className = `conv-status ${user.status === 'online' ? 'online' : ''}`;
     
-    if (conversationView) {
-        conversationView.classList.add('active');
-    }
+    conversationView.classList.add('active');
     document.body.style.overflow = 'hidden';
     
-    loadMessages();
+    loadMessages(uid);
     
-    setTimeout(() => {
-        if (messageInput) messageInput.focus();
-    }, 300);
+    setTimeout(() => messageInput?.focus(), 300);
 };
 
 function closeConversation() {
-    if (conversationView) {
-        conversationView.classList.remove('active');
-    }
+    conversationView.classList.remove('active');
     document.body.style.overflow = 'auto';
-    if (messageListener) {
-        messageListener();
-        messageListener = null;
-    }
-    if (isCallActive) {
-        endCall();
-    }
-    // Remover listeners de chamada
-    callListeners.forEach(listener => listener());
-    callListeners = [];
-    currentChatId = null;
+    if (messageListener) { messageListener(); messageListener = null; }
+    if (isCallActive) endCall();
     currentChatUser = null;
-    if (messagesContainer) messagesContainer.innerHTML = '';
+    messagesContainer.innerHTML = '';
 }
 
-// ============================================
-// EVENTOS DE FECHAR
-// ============================================
-if (convBack) {
-    convBack.addEventListener('click', closeConversation);
-}
-
-if (chatListBack) {
-    chatListBack.addEventListener('click', () => {
-        if (conversationView && conversationView.classList.contains('active')) {
-            closeConversation();
-        }
-    });
-}
+convBack.addEventListener('click', closeConversation);
 
 // ============================================
 // CARREGAR MENSAGENS
 // ============================================
-function loadMessages() {
-    if (!currentChatId) return;
-    
-    const messagesRef = ref(database, `messages/${currentChatId}`);
+function loadMessages(uid) {
+    const chatId = [currentUser.uid, uid].sort().join('_');
+    const messagesRef = ref(database, `messages/${chatId}`);
     const messagesQuery = query(messagesRef, orderByChild('timestamp'), limitToLast(50));
     
-    if (messageListener) {
-        messageListener();
-        messageListener = null;
-    }
-    
-    if (messagesContainer) messagesContainer.innerHTML = '';
+    if (messageListener) { messageListener(); messageListener = null; }
+    messagesContainer.innerHTML = '';
     
     messageListener = onChildAdded(messagesQuery, (snapshot) => {
         const msg = snapshot.val();
-        msg.id = snapshot.key;
-        appendMessage(msg);
-        scrollToBottom();
+        const isSent = msg.from === currentUser.uid;
+        const time = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '';
+        
+        const div = document.createElement('div');
+        div.className = `message ${isSent ? 'sent' : 'received'}`;
+        div.innerHTML = `
+            ${msg.text}
+            <span class="msg-time">${time}</span>
+        `;
+        messagesContainer.appendChild(div);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
     });
-    
-    onChildChanged(messagesRef, (snapshot) => {
-        const msg = snapshot.val();
-        const msgElement = messagesContainer?.querySelector(`[data-msg-id="${snapshot.key}"]`);
-        if (msgElement && msg.read) {
-            const statusEl = msgElement.querySelector('.msg-status');
-            if (statusEl) {
-                statusEl.className = 'msg-status read';
-                statusEl.innerHTML = '<i class="fas fa-check-double"></i>';
-            }
-        }
-    });
-}
-
-function appendMessage(msg) {
-    const isSent = msg.from === currentUser.uid;
-    const time = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString('pt-BR', {
-        hour: '2-digit', minute: '2-digit'
-    }) : '';
-    
-    const div = document.createElement('div');
-    div.className = `message ${isSent ? 'sent' : 'received'}`;
-    div.dataset.msgId = msg.id || '';
-    
-    let statusHtml = '';
-    if (isSent) {
-        if (msg.read) {
-            statusHtml = '<span class="msg-status read"><i class="fas fa-check-double"></i></span>';
-        } else {
-            statusHtml = '<span class="msg-status delivered"><i class="fas fa-check"></i></span>';
-        }
-    }
-    
-    div.innerHTML = `
-        ${msg.text}
-        <span class="msg-time">${time} ${statusHtml}</span>
-    `;
-    
-    if (messagesContainer) messagesContainer.appendChild(div);
-}
-
-function scrollToBottom() {
-    setTimeout(() => {
-        if (messagesContainer) {
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-    }, 50);
 }
 
 // ============================================
@@ -1382,14 +1155,11 @@ async function sendMessage() {
     const uid = currentChatUser.uid;
     const chatId = [currentUser.uid, uid].sort().join('_');
     
-    if (sendBtn) {
-        sendBtn.disabled = true;
-        sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-    }
+    sendBtn.disabled = true;
+    sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
     
     try {
-        const messagesRef = ref(database, `messages/${chatId}`);
-        const newMsgRef = push(messagesRef);
+        const newMsgRef = push(ref(database, `messages/${chatId}`));
         await set(newMsgRef, {
             from: currentUser.uid,
             to: uid,
@@ -1409,137 +1179,36 @@ async function sendMessage() {
             unread: 1
         });
         
-        if (messageInput) messageInput.value = '';
-        scrollToBottom();
+        messageInput.value = '';
         
     } catch (error) {
-        console.error('Erro ao enviar mensagem:', error);
-        Swal.fire({
-            icon: 'error',
-            title: 'Erro',
-            text: 'Não foi possível enviar a mensagem',
-            confirmButtonColor: '#1a73e8'
-        });
+        console.error('Erro ao enviar:', error);
     }
     
-    if (sendBtn) {
-        sendBtn.disabled = false;
-        sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+    sendBtn.disabled = false;
+    sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+}
+
+sendBtn.addEventListener('click', sendMessage);
+messageInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
     }
-}
+});
 
 // ============================================
-// EVENTOS DE ENVIO
-// ============================================
-if (sendBtn) {
-    sendBtn.addEventListener('click', sendMessage);
-}
-
-if (messageInput) {
-    messageInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            sendMessage();
-        }
-    });
-}
-
-// ============================================
-// ABRIR LISTA DE AMIGOS (NOVA CONVERSA)
-// ============================================
-async function openFriendsList() {
-    await loadUsers();
-    
-    const friendsList = Object.keys(allUsers).filter(uid => {
-        if (uid === currentUser.uid) return false;
-        if (chats[uid]) return false;
-        return true;
-    });
-    
-    if (friendsList.length === 0) {
-        friendsListContainer.innerHTML = `
-            <div class="empty-chat">
-                <i class="fas fa-user-friends"></i>
-                <h5>Nenhum amigo disponível</h5>
-                <p>Todos os seus amigos já têm conversa ou você não tem amigos</p>
-            </div>
-        `;
-    } else {
-        let html = '';
-        friendsList.forEach(uid => {
-            const user = allUsers[uid];
-            if (!user) return;
-            
-            const photo = user.photo ? `<img src="${user.photo}" alt="" />` : `<i class="fas fa-user"></i>`;
-            const statusClass = user.status === 'online' ? 'online' : 'offline';
-            
-            html += `
-                <div class="friend-select-item" onclick="window.startNewChat('${uid}')">
-                    <div class="fs-avatar">${photo}</div>
-                    <div class="fs-info">
-                        <div class="fs-name">${user.fullName || 'Usuário'}</div>
-                        <div class="fs-username">@${user.username || 'usuario'}</div>
-                        <div class="fs-status ${statusClass}">${user.status === 'online' ? '🟢 Online' : '⚪ Offline'}</div>
-                    </div>
-                </div>
-            `;
-        });
-        friendsListContainer.innerHTML = html;
-    }
-    
-    friendsListPage.classList.add('active');
-    document.body.style.overflow = 'hidden';
-}
-
-window.startNewChat = function(uid) {
-    const chatId = [currentUser.uid, uid].sort().join('_');
-    set(ref(database, `chats/${currentUser.uid}/${uid}`), {
-        lastMessage: 'Início da conversa',
-        timestamp: serverTimestamp(),
-        unread: 0
-    });
-    set(ref(database, `chats/${uid}/${currentUser.uid}`), {
-        lastMessage: 'Início da conversa',
-        timestamp: serverTimestamp(),
-        unread: 0
-    });
-    
-    friendsListPage.classList.remove('active');
-    document.body.style.overflow = 'auto';
-    openConversation(uid);
-};
-
-if (closeFriendsList) {
-    closeFriendsList.addEventListener('click', () => {
-        friendsListPage.classList.remove('active');
-        document.body.style.overflow = 'auto';
-    });
-}
-
-// ============================================
-// EVENTO NOVA CONVERSA
-// ============================================
-if (btnNewChat) {
-    btnNewChat.addEventListener('click', openFriendsList);
-}
-
-// ============================================
-// CHAMADA DE ÁUDIO
+// CHAMADA REAL - COM PERMISSÃO
 // ============================================
 async function startAudioCall() {
     if (!currentChatUser) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Nenhuma conversa aberta',
-            text: 'Abra uma conversa para fazer uma chamada',
-            confirmButtonColor: '#1a73e8'
-        });
+        Swal.fire({ icon: 'warning', title: 'Atenção', text: 'Abra uma conversa para chamar' });
         return;
     }
 
     try {
-        // Solicitar permissão do microfone
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        // PEDIR PERMISSÃO DO MICROFONE
+        await navigator.mediaDevices.getUserMedia({ audio: true });
         
         isCallActive = true;
         callAnswered = false;
@@ -1547,21 +1216,21 @@ async function startAudioCall() {
         
         const user = currentChatUser;
         
-        // Configurar overlay
-        if (callOverlay) {
-            callOverlay.style.backgroundImage = user.photo ? `url('${user.photo}')` : '';
-            callOverlay.style.backgroundColor = user.photo ? '' : '#0d47a1';
+        // CONFIGURAR OVERLAY
+        if (user.photo) {
+            callOverlay.style.backgroundImage = `url('${user.photo}')`;
+        } else {
+            callOverlay.style.backgroundImage = 'linear-gradient(135deg, #0d47a1, #1a73e8)';
         }
         
-        const photo = user.photo ? `<img src="${user.photo}" alt="" />` : `<i class="fas fa-user"></i>`;
-        if (callAvatar) callAvatar.innerHTML = photo;
-        if (callName) callName.textContent = user.fullName || 'Usuário';
-        if (callStatus) callStatus.textContent = '📞 Chamando...';
-        if (callTimer) callTimer.textContent = '00:00';
+        callAvatar.innerHTML = user.photo ? `<img src="${user.photo}" alt="" />` : `<i class="fas fa-user"></i>`;
+        callName.textContent = user.fullName || 'Usuário';
+        callStatus.textContent = '📞 Chamando...';
+        callTimer.textContent = '00:00';
         
-        if (callOverlay) callOverlay.classList.add('active');
+        callOverlay.classList.add('active');
         
-        // Criar chamada no Firebase
+        // CRIAR CHAMADA NO FIREBASE
         const callRef = ref(database, `calls/${currentUser.uid}/${user.uid}`);
         await set(callRef, {
             type: 'audio',
@@ -1572,7 +1241,7 @@ async function startAudioCall() {
             timestamp: serverTimestamp()
         });
         
-        // Criar notificação
+        // NOTIFICAR OUTRO USUÁRIO
         const notifRef = ref(database, `notifications/${user.uid}/${currentUser.uid}_call`);
         await set(notifRef, {
             type: 'call',
@@ -1583,120 +1252,110 @@ async function startAudioCall() {
             timestamp: serverTimestamp()
         });
         
-        // Escutar resposta
+        // ESCUTAR RESPOSTA
         const callResponseRef = ref(database, `calls/${user.uid}/${currentUser.uid}`);
         const listener = onValue(callResponseRef, (snapshot) => {
             const data = snapshot.val();
             if (data?.status === 'answered' && !callAnswered) {
                 callAnswered = true;
-                if (callStatus) callStatus.textContent = '📞 Chamada conectada';
+                callStatus.textContent = '📞 Chamada conectada';
                 startCallTimer();
                 Swal.fire({
                     icon: 'success',
                     title: 'Chamada conectada!',
-                    text: `${user.fullName || 'Usuário'} atendeu a chamada`,
+                    text: `${user.fullName} atendeu`,
                     timer: 1500,
                     showConfirmButton: false
                 });
             } else if (data?.status === 'rejected' && !callAnswered) {
-                stream.getTracks().forEach(track => track.stop());
                 endCall();
                 Swal.fire({
                     icon: 'info',
                     title: 'Chamada recusada',
-                    text: `${user.fullName || 'Usuário'} recusou a chamada`,
+                    text: `${user.fullName} recusou`,
                     confirmButtonColor: '#1a73e8'
                 });
             }
         });
-        callListeners.push(listener);
         
-        // Timeout
+        // TIMEOUT - NÃO ATENDEU
         setTimeout(() => {
             if (!callAnswered && isCallActive) {
                 update(callRef, { status: 'missed' });
-                stream.getTracks().forEach(track => track.stop());
                 endCall();
                 Swal.fire({
                     icon: 'info',
                     title: 'Chamada não atendida',
-                    text: `${user.fullName || 'Usuário'} não atendeu a chamada`,
+                    text: `${user.fullName} não atendeu`,
                     confirmButtonColor: '#1a73e8'
                 });
             }
         }, 30000);
         
     } catch (error) {
-        console.error('Erro no áudio:', error);
+        console.error('Erro:', error);
         Swal.fire({
             icon: 'error',
             title: 'Permissão negada',
-            text: 'É necessário permitir o acesso ao microfone para chamadas',
+            text: 'Permita o acesso ao microfone para fazer chamadas',
             confirmButtonColor: '#1a73e8'
         });
     }
 }
+
+function startCallTimer() {
+    if (callTimerInterval) clearInterval(callTimerInterval);
+    callTimerInterval = setInterval(() => {
+        callSeconds++;
+        const mins = String(Math.floor(callSeconds / 60)).padStart(2, '0');
+        const secs = String(callSeconds % 60).padStart(2, '0');
+        callTimer.textContent = `${mins}:${secs}`;
+    }, 1000);
+}
+
+function endCall() {
+    isCallActive = false;
+    if (callTimerInterval) {
+        clearInterval(callTimerInterval);
+        callTimerInterval = null;
+    }
+    callOverlay.classList.remove('active');
+    callTimer.textContent = '00:00';
+    if (currentChatUser && callAnswered) {
+        update(ref(database, `calls/${currentUser.uid}/${currentChatUser.uid}`), { 
+            duration: callSeconds,
+            answered: true
+        });
+    }
+}
+
+convCall.addEventListener('click', startAudioCall);
 
 // ============================================
 // CHAMADA DE VÍDEO
 // ============================================
 async function startVideoCall() {
     if (!currentChatUser) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Nenhuma conversa aberta',
-            text: 'Abra uma conversa para fazer uma chamada',
-            confirmButtonColor: '#1a73e8'
-        });
+        Swal.fire({ icon: 'warning', title: 'Atenção', text: 'Abra uma conversa para chamar' });
         return;
     }
-    
+
     try {
-        const stream = await navigator.mediaDevices.getUserMedia({ 
-            video: { facingMode: 'user' },
-            audio: true 
-        });
+        await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: true });
         
         isCallActive = true;
         callAnswered = false;
         callSeconds = 0;
         
         const user = currentChatUser;
+        callOverlay.style.backgroundImage = 'linear-gradient(135deg, #0d47a1, #1a73e8)';
+        callAvatar.innerHTML = user.photo ? `<img src="${user.photo}" alt="" />` : `<i class="fas fa-user"></i>`;
+        callName.textContent = user.fullName || 'Usuário';
+        callStatus.textContent = '📹 Chamando...';
+        callTimer.textContent = '00:00';
         
-        if (callOverlay) {
-            callOverlay.style.backgroundImage = 'linear-gradient(135deg, #0d47a1, #1a73e8)';
-            callOverlay.style.backgroundColor = '';
-        }
+        callOverlay.classList.add('active');
         
-        // Preview da câmera
-        const video = document.createElement('video');
-        video.srcObject = stream;
-        video.autoplay = true;
-        video.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;';
-        
-        const oldVideo = callOverlay?.querySelector('video');
-        if (oldVideo) oldVideo.remove();
-        if (callOverlay) callOverlay.prepend(video);
-        
-        // Picture-in-picture
-        const pip = document.createElement('video');
-        pip.srcObject = stream;
-        pip.autoplay = true;
-        pip.style.cssText = 'position:absolute;bottom:100px;right:20px;width:80px;height:120px;border-radius:12px;border:2px solid white;object-fit:cover;z-index:3;box-shadow:0 4px 20px rgba(0,0,0,0.3);';
-        if (callOverlay) callOverlay.appendChild(pip);
-        
-        const photo = user.photo ? `<img src="${user.photo}" alt="" />` : `<i class="fas fa-user"></i>`;
-        if (callAvatar) {
-            callAvatar.innerHTML = photo;
-            callAvatar.style.cssText = 'position:relative;z-index:2;border:3px solid rgba(255,255,255,0.5);';
-        }
-        if (callName) callName.textContent = user.fullName || 'Usuário';
-        if (callStatus) callStatus.textContent = '📹 Chamando...';
-        if (callTimer) callTimer.textContent = '00:00';
-        
-        if (callOverlay) callOverlay.classList.add('active');
-        
-        // Criar chamada no Firebase
         const callRef = ref(database, `calls/${currentUser.uid}/${user.uid}`);
         await set(callRef, {
             type: 'video',
@@ -1718,139 +1377,55 @@ async function startVideoCall() {
         });
         
         const callResponseRef = ref(database, `calls/${user.uid}/${currentUser.uid}`);
-        const listener = onValue(callResponseRef, (snapshot) => {
+        onValue(callResponseRef, (snapshot) => {
             const data = snapshot.val();
             if (data?.status === 'answered' && !callAnswered) {
                 callAnswered = true;
-                if (callStatus) callStatus.textContent = '📹 Chamada de vídeo conectada';
+                callStatus.textContent = '📹 Chamada de vídeo conectada';
                 startCallTimer();
                 Swal.fire({
                     icon: 'success',
                     title: 'Vídeo chamada conectada!',
-                    text: `${user.fullName || 'Usuário'} atendeu a chamada de vídeo`,
+                    text: `${user.fullName} atendeu`,
                     timer: 1500,
                     showConfirmButton: false
                 });
             } else if (data?.status === 'rejected' && !callAnswered) {
-                stream.getTracks().forEach(track => track.stop());
                 endCall();
                 Swal.fire({
                     icon: 'info',
                     title: 'Chamada recusada',
-                    text: `${user.fullName || 'Usuário'} recusou a chamada de vídeo`,
+                    text: `${user.fullName} recusou`,
                     confirmButtonColor: '#1a73e8'
                 });
             }
         });
-        callListeners.push(listener);
         
         setTimeout(() => {
             if (!callAnswered && isCallActive) {
                 update(callRef, { status: 'missed' });
-                stream.getTracks().forEach(track => track.stop());
                 endCall();
                 Swal.fire({
                     icon: 'info',
                     title: 'Chamada não atendida',
-                    text: `${user.fullName || 'Usuário'} não atendeu a chamada de vídeo`,
+                    text: `${user.fullName} não atendeu`,
                     confirmButtonColor: '#1a73e8'
                 });
             }
         }, 30000);
         
     } catch (error) {
-        console.error('Erro na câmera:', error);
+        console.error('Erro:', error);
         Swal.fire({
             icon: 'error',
             title: 'Permissão negada',
-            text: 'É necessário permitir o acesso à câmera e microfone para chamadas de vídeo',
+            text: 'Permita o acesso à câmera para vídeo chamadas',
             confirmButtonColor: '#1a73e8'
         });
     }
 }
 
-function startCallTimer() {
-    if (callTimerInterval) clearInterval(callTimerInterval);
-    callTimerInterval = setInterval(() => {
-        callSeconds++;
-        const mins = String(Math.floor(callSeconds / 60)).padStart(2, '0');
-        const secs = String(callSeconds % 60).padStart(2, '0');
-        if (callTimer) callTimer.textContent = `${mins}:${secs}`;
-    }, 1000);
-}
-
-function endCall() {
-    isCallActive = false;
-    if (callTimerInterval) {
-        clearInterval(callTimerInterval);
-        callTimerInterval = null;
-    }
-    
-    // Parar streams
-    const videos = callOverlay?.querySelectorAll('video');
-    if (videos) {
-        videos.forEach(video => {
-            if (video.srcObject) {
-                video.srcObject.getTracks().forEach(track => track.stop());
-            }
-            video.remove();
-        });
-    }
-    
-    if (callOverlay) {
-        callOverlay.classList.remove('active');
-        callOverlay.style.backgroundImage = '';
-        if (callAvatar) callAvatar.style.cssText = '';
-        if (callName) callName.style.cssText = '';
-        if (callStatus) callStatus.style.cssText = '';
-        if (callTimer) callTimer.style.cssText = '';
-    }
-    if (callTimer) callTimer.textContent = '00:00';
-    
-    document.querySelectorAll('.call-actions button').forEach(b => {
-        b.style.display = 'flex';
-    });
-    
-    if (currentChatUser && callAnswered) {
-        const callRef = ref(database, `calls/${currentUser.uid}/${currentChatUser.uid}`);
-        update(callRef, { 
-            duration: callSeconds,
-            answered: true,
-            endedAt: serverTimestamp()
-        });
-    }
-}
-
-// ============================================
-// EVENTOS DE CHAMADA
-// ============================================
-if (convCall) {
-    convCall.addEventListener('click', startAudioCall);
-}
-
-if (convVideo) {
-    convVideo.addEventListener('click', startVideoCall);
-}
-
-if (callEnd) {
-    callEnd.addEventListener('click', endCall);
-}
-
-if (callMute) {
-    callMute.addEventListener('click', function() {
-        isMuted = !isMuted;
-        this.classList.toggle('active');
-        this.innerHTML = isMuted ? '<i class="fas fa-microphone-slash"></i>' : '<i class="fas fa-microphone"></i>';
-    });
-}
-
-if (callSpeaker) {
-    callSpeaker.addEventListener('click', function() {
-        isSpeaker = !isSpeaker;
-        this.classList.toggle('active');
-        this.innerHTML = isSpeaker ? '<i class="fas fa-volume-off"></i>' : '<i class="fas fa-volume-up"></i>';
-    });
-}
+convVideo.addEventListener('click', startVideoCall);
 
 // ============================================
 // ESCUTAR CHAMADAS ENTRANTES
@@ -1858,8 +1433,7 @@ if (callSpeaker) {
 function listenIncomingCalls() {
     if (!currentUser) return;
     
-    const callsRef = ref(database, `calls/${currentUser.uid}`);
-    onValue(callsRef, async (snapshot) => {
+    onValue(ref(database, `calls/${currentUser.uid}`), async (snapshot) => {
         const data = snapshot.val();
         if (!data) return;
         
@@ -1869,26 +1443,22 @@ function listenIncomingCalls() {
                 if (!fromUser) continue;
                 
                 const isVideo = callData.type === 'video';
-                const title = isVideo ? '📹 Chamada de vídeo' : '📞 Chamada de áudio';
-                const msg = `${fromUser.fullName || 'Usuário'} está chamando você`;
-                
                 const result = await Swal.fire({
-                    title: title,
-                    text: msg,
+                    title: isVideo ? '📹 Chamada de vídeo' : '📞 Chamada de áudio',
+                    text: `${fromUser.fullName} está chamando você`,
                     icon: 'info',
                     showCancelButton: true,
                     confirmButtonText: 'Atender',
                     cancelButtonText: 'Recusar',
                     confirmButtonColor: '#2ed573',
                     cancelButtonColor: '#ea4335',
-                    timer: 30000,
-                    timerProgressBar: true
+                    timer: 30000
                 });
                 
                 const callRef = ref(database, `calls/${currentUser.uid}/${fromUid}`);
                 if (result.isConfirmed) {
                     await update(callRef, { status: 'answered' });
-                    if (conversationView && !conversationView.classList.contains('active')) {
+                    if (!conversationView.classList.contains('active')) {
                         openConversation(fromUid);
                     }
                 } else {
@@ -1900,152 +1470,110 @@ function listenIncomingCalls() {
 }
 
 // ============================================
-// STATUS DE DIGITAÇÃO
+// NOVA CONVERSA
 // ============================================
-if (messageInput) {
-    messageInput.addEventListener('input', function() {
-        if (!currentChatUser) return;
-        
-        const uid = currentChatUser.uid;
-        const typingRef = ref(database, `typing/${uid}/${currentUser.uid}`);
-        set(typingRef, true);
-        
-        clearTimeout(typingTimeout);
-        typingTimeout = setTimeout(() => {
-            set(typingRef, false);
-        }, 1500);
-    });
-}
-
-function listenTyping() {
-    if (!currentUser) return;
+btnNewChat.addEventListener('click', async () => {
+    await loadUsers();
     
-    const typingRef = ref(database, `typing/${currentUser.uid}`);
-    onValue(typingRef, (snapshot) => {
-        const data = snapshot.val();
-        if (data && currentChatUser) {
-            const typingUsers = Object.keys(data).filter(uid => data[uid] === true);
-            if (typingUsers.includes(currentChatUser.uid)) {
-                if (typingIndicator) typingIndicator.classList.add('active');
-            } else {
-                if (typingIndicator) typingIndicator.classList.remove('active');
-            }
-        } else {
-            if (typingIndicator) typingIndicator.classList.remove('active');
-        }
+    const friendsList = Object.keys(allUsers).filter(uid => {
+        if (uid === currentUser.uid) return false;
+        if (chats[uid]) return false;
+        return true;
     });
-}
-
-// ============================================
-// NOTIFICAÇÕES
-// ============================================
-if (btnNotifications) {
-    btnNotifications.addEventListener('click', function() {
-        const unreadCount = Object.keys(chats).filter(uid => chats[uid]?.unread > 0).length;
-        Swal.fire({
-            title: '🔔 Notificações do Chat',
-            html: `
-                <div style="text-align:left;color:#5f6368;">
-                    <p><i class="fas fa-check-circle" style="color:#2ed573;"></i> Mensagens lidas</p>
-                    <p><i class="fas fa-clock" style="color:#f9ab00;"></i> Mensagens não lidas</p>
-                    <hr style="border-color:#e8f0fe;" />
-                    <p style="font-size:13px;">Você tem ${unreadCount} conversa${unreadCount !== 1 ? 's' : ''} com mensagens não lidas</p>
+    
+    if (friendsList.length === 0) {
+        friendsListContainer.innerHTML = `
+            <div class="empty-chat">
+                <i class="fas fa-user-friends"></i>
+                <h5>Nenhum amigo disponível</h5>
+                <p>Todos os seus amigos já têm conversa</p>
+            </div>
+        `;
+    } else {
+        let html = '';
+        friendsList.forEach(uid => {
+            const user = allUsers[uid];
+            if (!user) return;
+            html += `
+                <div class="friend-select-item" onclick="window.startNewChat('${uid}')">
+                    <div class="fs-avatar">${user.photo ? `<img src="${user.photo}" alt="" />` : `<i class="fas fa-user"></i>`}</div>
+                    <div class="fs-info">
+                        <div class="fs-name">${user.fullName || 'Usuário'}</div>
+                        <div class="fs-username">@${user.username || 'usuario'}</div>
+                        <div class="fs-status ${user.status === 'online' ? 'online' : 'offline'}">${user.status === 'online' ? '🟢 Online' : '⚪ Offline'}</div>
+                    </div>
                 </div>
-            `,
-            confirmButtonColor: '#1a73e8'
+            `;
         });
+        friendsListContainer.innerHTML = html;
+    }
+    
+    friendsListPage.classList.add('active');
+    document.body.style.overflow = 'hidden';
+});
+
+window.startNewChat = function(uid) {
+    const chatId = [currentUser.uid, uid].sort().join('_');
+    set(ref(database, `chats/${currentUser.uid}/${uid}`), {
+        lastMessage: 'Início da conversa',
+        timestamp: serverTimestamp(),
+        unread: 0
     });
-}
+    set(ref(database, `chats/${uid}/${currentUser.uid}`), {
+        lastMessage: 'Início da conversa',
+        timestamp: serverTimestamp(),
+        unread: 0
+    });
+    
+    friendsListPage.classList.remove('active');
+    document.body.style.overflow = 'auto';
+    openConversation(uid);
+};
+
+closeFriendsList.addEventListener('click', () => {
+    friendsListPage.classList.remove('active');
+    document.body.style.overflow = 'auto';
+});
 
 // ============================================
-// AÇÕES DA CONVERSA
+// CALL MUTE / SPEAKER
 // ============================================
-if (convMore) {
-    convMore.addEventListener('click', function() {
-        if (!currentChatUser) return;
-        
-        Swal.fire({
-            title: 'Opções da conversa',
-            html: `
-                <div style="text-align:left;">
-                    <button id="optionViewProfile" style="width:100%;padding:10px;border:none;background:none;text-align:left;font-size:14px;cursor:pointer;border-bottom:1px solid #e8f0fe;">
-                        <i class="fas fa-user" style="color:#1a73e8;"></i> Ver perfil
-                    </button>
-                    <button id="optionMute" style="width:100%;padding:10px;border:none;background:none;text-align:left;font-size:14px;cursor:pointer;border-bottom:1px solid #e8f0fe;">
-                        <i class="fas fa-bell-slash" style="color:#5f6368;"></i> Silenciar
-                    </button>
-                    <button id="optionClear" style="width:100%;padding:10px;border:none;background:none;text-align:left;font-size:14px;cursor:pointer;color:#ea4335;">
-                        <i class="fas fa-trash-alt"></i> Apagar conversa
-                    </button>
-                </div>
-            `,
-            confirmButtonText: 'Fechar',
-            confirmButtonColor: '#5f6368',
-            showConfirmButton: true,
-            showCancelButton: false
-        }).then(() => {});
-    });
-}
+callMute.addEventListener('click', function() {
+    this.classList.toggle('active');
+    this.innerHTML = this.classList.contains('active') ? 
+        '<i class="fas fa-microphone-slash"></i>' : 
+        '<i class="fas fa-microphone"></i>';
+});
 
-// ============================================
-// ATTACH E EMOJI
-// ============================================
-if (attachBtn) {
-    attachBtn.addEventListener('click', function() {
-        Swal.fire({
-            icon: 'info',
-            title: '📎 Anexo',
-            text: 'Funcionalidade em desenvolvimento',
-            confirmButtonColor: '#1a73e8'
-        });
-    });
-}
+callSpeaker.addEventListener('click', function() {
+    this.classList.toggle('active');
+    this.innerHTML = this.classList.contains('active') ? 
+        '<i class="fas fa-volume-off"></i>' : 
+        '<i class="fas fa-volume-up"></i>';
+});
 
-if (emojiBtn) {
-    emojiBtn.addEventListener('click', function() {
-        Swal.fire({
-            icon: 'info',
-            title: '😊 Emojis',
-            text: 'Funcionalidade em desenvolvimento',
-            confirmButtonColor: '#1a73e8'
-        });
-    });
-}
+callEnd.addEventListener('click', endCall);
 
 // ============================================
 // LOGOUT
 // ============================================
-if (btnLogout) {
-    btnLogout.addEventListener('click', async function() {
-        const result = await Swal.fire({
-            title: 'Sair?',
-            text: 'Tem certeza que deseja sair?',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#ea4335',
-            cancelButtonColor: '#5f6368',
-            confirmButtonText: 'Sair',
-            cancelButtonText: 'Cancelar'
-        });
-        
-        if (result.isConfirmed) {
-            try {
-                await signOut(auth);
-                window.location.reload();
-            } catch (error) {
-                console.error('Erro ao sair:', error);
-            }
-        }
+btnLogout.addEventListener('click', async () => {
+    const result = await Swal.fire({
+        title: 'Sair?',
+        text: 'Tem certeza?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#ea4335',
+        cancelButtonColor: '#5f6368',
+        confirmButtonText: 'Sair',
+        cancelButtonText: 'Cancelar'
     });
-}
-
-// ============================================
-// EXPOR FUNÇÕES GLOBAIS
-// ============================================
-window.openConversation = openConversation;
-window.closeConversation = closeConversation;
-window.startNewChat = startNewChat;
-window.openFriendsList = openFriendsList;
+    
+    if (result.isConfirmed) {
+        await signOut(auth);
+        window.location.reload();
+    }
+});
 
 // ============================================
 // AUTENTICAÇÃO
@@ -2053,48 +1581,32 @@ window.openFriendsList = openFriendsList;
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         currentUser = user;
-        console.log('👤 Usuário logado:', user.email);
         
-        const userRef = ref(database, `users/${user.uid}`);
-        const snapshot = await get(userRef);
+        const snapshot = await get(ref(database, `users/${user.uid}`));
         if (snapshot.exists()) {
             currentUserData = snapshot.val();
             
-            if (currentUserData.photo && userAvatarMini) {
+            if (currentUserData.photo) {
                 userAvatarMini.innerHTML = `<img src="${currentUserData.photo}" alt="Foto" />`;
             }
             
             await loadUsers();
             loadChats();
-            listenTyping();
             listenIncomingCalls();
-        } else {
-            window.location.reload();
         }
     } else {
-        console.log('👤 Nenhum usuário logado');
         window.location.href = 'social.html';
     }
 });
 
 // ============================================
-// INICIALIZAÇÃO
+// EXPOR FUNÇÕES
 // ============================================
-console.log('🚀 Zonne - Chat');
-console.log('✅ Sistema pronto!');
+window.openConversation = openConversation;
+window.closeConversation = closeConversation;
+window.startNewChat = startNewChat;
 
-// ============================================
-// FECHAR CONVERSA COM ESC
-// ============================================
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && conversationView && conversationView.classList.contains('active')) {
-        closeConversation();
-    }
-    if (e.key === 'Escape' && friendsListPage && friendsListPage.classList.contains('active')) {
-        friendsListPage.classList.remove('active');
-        document.body.style.overflow = 'auto';
-    }
-});
+console.log('🚀 Zonne - Chat pronto!');
 </script>
 </body>
 </html>
