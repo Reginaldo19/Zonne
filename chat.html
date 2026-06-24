@@ -9,404 +9,83 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            background: #f0f4f8; 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-            color: #1a1a2e;
-            height: 100vh;
-            overflow: hidden;
-        }
+        /* ... (mesmo CSS anterior, adicionar apenas estilos novos) ... */
         
-        .container-custom {
-            max-width: 480px;
-            margin: 0 auto;
-            height: 100vh;
-            background: #f0f4f8;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-        
-        /* HEADER */
-        .header-feed {
-            background: #ffffff;
-            padding: 12px 18px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid #e8f0fe;
-            flex-shrink: 0;
-            z-index: 10;
-        }
-        
-        .logo-feed {
-            font-size: 22px;
-            font-weight: 900;
-            color: #1a73e8;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            text-decoration: none;
-        }
-        .logo-feed i { color: #0d47a1; }
-        .logo-feed span { color: #0d47a1; }
-        
-        .header-actions {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-        .header-actions button {
-            background: none;
-            border: none;
-            color: #5f6368;
-            font-size: 18px;
-            cursor: pointer;
-            padding: 6px 8px;
-            border-radius: 8px;
-            transition: all 0.3s;
-            position: relative;
-        }
-        .header-actions button:hover { background: #f0f7ff; color: #1a73e8; }
-        
-        .user-avatar-mini {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 2px solid #1a73e8;
-            cursor: pointer;
-            background: #e8f0fe;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            color: #1a73e8;
-        }
-        .user-avatar-mini img { width: 100%; height: 100%; object-fit: cover; }
-        
-        /* TÍTULO */
-        .chat-title {
-            background: #ffffff;
-            padding: 10px 18px;
-            border-bottom: 1px solid #e8f0fe;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            z-index: 10;
-        }
-        .chat-title .back-btn {
-            background: none;
-            border: none;
-            font-size: 18px;
-            color: #1a73e8;
-            cursor: pointer;
-            padding: 4px;
-            display: none;
-        }
-        .chat-title h5 {
-            margin: 0;
-            font-weight: 700;
-            color: #1a1a2e;
-            font-size: 18px;
-        }
-        .chat-title .chat-count {
-            font-size: 12px;
-            color: #5f6368;
-            margin-left: auto;
-        }
-        
-        /* LISTA DE CONVERSAS */
-        .chat-list {
-            flex: 1;
-            overflow-y: auto;
-            padding: 8px 12px;
-            padding-bottom: 75px;
-        }
-        
-        .chat-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: #ffffff;
-            padding: 12px 14px;
-            border-radius: 12px;
-            margin-bottom: 6px;
-            border: 1px solid #e8f0fe;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .chat-item:hover {
-            border-color: #1a73e8;
-            box-shadow: 0 2px 8px rgba(26,115,232,0.06);
-        }
-        
-        .chat-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            overflow: hidden;
-            flex-shrink: 0;
-            background: #e8f0fe;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            color: #1a73e8;
-            position: relative;
-        }
-        .chat-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .chat-avatar .online-dot {
-            position: absolute;
-            bottom: 2px;
-            right: 2px;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            border: 2px solid #ffffff;
-        }
-        .chat-avatar .online-dot.online { background: #2ed573; }
-        .chat-avatar .online-dot.offline { background: #9aa0a6; }
-        
-        .chat-info {
-            flex: 1;
-            min-width: 0;
-        }
-        .chat-name {
-            font-weight: 600;
-            color: #1a1a2e;
-            font-size: 15px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            cursor: pointer;
-        }
-        .chat-name:hover { color: #1a73e8; }
-        .chat-last {
-            font-size: 13px;
-            color: #5f6368;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        .chat-meta {
-            flex-shrink: 0;
-            text-align: right;
-        }
-        .chat-time {
-            font-size: 10px;
-            color: #9aa0a6;
-        }
-        .chat-unread {
-            background: #1a73e8;
-            color: white;
-            font-size: 10px;
-            font-weight: 700;
-            border-radius: 50%;
-            padding: 2px 6px;
-            min-width: 20px;
-            text-align: center;
-            display: inline-block;
-            margin-top: 4px;
-        }
-        
-        /* EMPTY CHAT */
-        .empty-chat {
-            text-align: center;
-            padding: 60px 20px;
-            color: #5f6368;
-        }
-        .empty-chat i {
-            font-size: 48px;
-            color: #e8f0fe;
-            display: block;
-            margin-bottom: 16px;
-        }
-        .empty-chat h5 { color: #1a1a2e; margin-bottom: 6px; font-size: 18px; }
-        .empty-chat p { font-size: 13px; color: #9aa0a6; }
-        .empty-chat .btn-start {
-            margin-top: 16px;
-            padding: 10px 30px;
-            background: #1a73e8;
-            color: white;
-            border: none;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .empty-chat .btn-start:hover {
-            background: #1557b0;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(26,115,232,0.3);
-        }
-        
-        /* JANELA DE CONVERSA */
-        .conversation-view {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: #f0f4f8;
-            z-index: 500;
-            max-width: 480px;
-            margin: 0 auto;
-            flex-direction: column;
-        }
-        .conversation-view.active {
-            display: flex;
-        }
-        
-        .conv-header {
-            background: #ffffff;
-            padding: 10px 14px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border-bottom: 1px solid #e8f0fe;
-            flex-shrink: 0;
-            z-index: 10;
-        }
-        .conv-header .back-btn {
-            background: none;
-            border: none;
-            font-size: 18px;
-            color: #1a73e8;
-            cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 8px;
-        }
-        .conv-header .back-btn:hover { background: #f0f7ff; }
-        .conv-header .conv-avatar {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            overflow: hidden;
-            flex-shrink: 0;
-            background: #e8f0fe;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            color: #1a73e8;
-            cursor: pointer;
-        }
-        .conv-header .conv-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .conv-header .conv-info { flex: 1; min-width: 0; }
-        .conv-header .conv-name {
-            font-weight: 600;
-            color: #1a1a2e;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            cursor: pointer;
-        }
-        .conv-header .conv-name:hover { color: #1a73e8; }
-        .conv-header .conv-status {
+        /* MENSAGEM DE VISUALIZAÇÃO */
+        .message .msg-status {
             font-size: 11px;
-            color: #5f6368;
+            margin-left: 4px;
         }
-        .conv-header .conv-status.online { color: #2ed573; }
-        .conv-header .conv-actions {
-            display: flex;
-            gap: 4px;
+        .message .msg-status.read {
+            color: #2ed573;
         }
-        .conv-header .conv-actions button {
-            background: none;
-            border: none;
-            color: #5f6368;
-            font-size: 18px;
-            cursor: pointer;
-            padding: 6px 8px;
-            border-radius: 8px;
-            transition: all 0.3s;
-        }
-        .conv-header .conv-actions button:hover {
-            background: #f0f7ff;
-            color: #1a73e8;
+        .message .msg-status.delivered {
+            color: #f9ab00;
         }
         
-        /* MENSAGENS */
-        .messages-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 12px 14px;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            background: #f0f4f8;
-        }
-        
-        .message {
+        /* MENSAGEM DE CHAMADA */
+        .message.call-message {
             max-width: 85%;
-            padding: 10px 14px;
-            border-radius: 16px;
-            font-size: 15px;
-            line-height: 1.5;
-            word-wrap: break-word;
-            position: relative;
-            animation: msgIn 0.3s ease;
-        }
-        @keyframes msgIn {
-            from { opacity: 0; transform: translateY(8px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        
-        .message.sent {
-            align-self: flex-end;
-            background: #1a73e8;
-            color: white;
-            border-bottom-right-radius: 4px;
-        }
-        .message.sent .msg-time { color: rgba(255,255,255,0.7); }
-        .message.received {
-            align-self: flex-start;
-            background: #ffffff;
-            color: #1a1a2e;
-            border-bottom-left-radius: 4px;
-            border: 1px solid #e8f0fe;
-        }
-        .message.received .msg-time { color: #9aa0a6; }
-        
-        .message .msg-time {
-            font-size: 10px;
-            margin-top: 4px;
-            display: block;
-            text-align: right;
-        }
-        
-        /* STICKER MENSAGEM */
-        .message.sticker-msg {
-            max-width: 120px;
-            padding: 6px 8px;
-            font-size: 56px;
-            line-height: 1.1;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
             text-align: center;
-            border-radius: 16px;
+            background: #e8f0fe !important;
+            color: #1a73e8 !important;
+            border: 1px solid #d0e0ff !important;
+            align-self: center;
+        }
+        .message.call-message.sent {
+            background: #e8f0fe !important;
+            color: #1a73e8 !important;
+            border: 1px solid #d0e0ff !important;
+        }
+        .message.call-message.received {
+            background: #e8f0fe !important;
+            color: #1a73e8 !important;
+            border: 1px solid #d0e0ff !important;
+        }
+        .message.call-message .msg-time {
+            color: #5f6368 !important;
+        }
+        
+        /* STICKER - TAMANHO FIXO */
+        .message.sticker-msg {
+            max-width: 130px !important;
+            min-width: 80px;
+            padding: 6px 8px !important;
+            font-size: 60px !important;
+            line-height: 1.1 !important;
+            text-align: center !important;
+            border-radius: 16px !important;
             background: transparent !important;
             border: none !important;
             animation: stickerBounce 0.5s ease;
         }
         .message.sticker-msg.sent {
-            align-self: flex-end;
+            align-self: flex-end !important;
             background: transparent !important;
         }
         .message.sticker-msg.received {
-            align-self: flex-start;
+            align-self: flex-start !important;
             background: transparent !important;
             border: none !important;
         }
         .message.sticker-msg .msg-time {
-            font-size: 9px;
-            opacity: 0.5;
-            margin-top: 2px;
+            font-size: 9px !important;
+            opacity: 0.5 !important;
+            margin-top: 2px !important;
+        }
+        
+        /* STICKERS POPUP - TAMANHO FIXO */
+        .stickers-popup .sticker-grid .sticker {
+            font-size: 42px !important;
+            text-align: center;
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+            background: #f8f9fa;
         }
         
         @keyframes stickerBounce {
@@ -416,213 +95,6 @@
             100% { transform: scale(1) rotate(0deg); opacity: 1; }
         }
         
-        /* TYPING */
-        .typing-indicator {
-            display: none;
-            align-self: flex-start;
-            padding: 8px 14px;
-            background: #ffffff;
-            border-radius: 16px;
-            border: 1px solid #e8f0fe;
-            font-size: 13px;
-            color: #5f6368;
-            margin-bottom: 4px;
-        }
-        .typing-indicator.active { display: inline-block; }
-        .typing-indicator .dots {
-            display: inline-flex;
-            gap: 3px;
-        }
-        .typing-indicator .dots span {
-            width: 6px;
-            height: 6px;
-            background: #1a73e8;
-            border-radius: 50%;
-            animation: dotPulse 1.4s infinite;
-        }
-        .typing-indicator .dots span:nth-child(2) { animation-delay: 0.2s; }
-        .typing-indicator .dots span:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes dotPulse {
-            0%, 60%, 100% { opacity: 0.2; transform: scale(0.8); }
-            30% { opacity: 1; transform: scale(1); }
-        }
-        
-        /* INPUT */
-        .message-input-area {
-            background: #ffffff;
-            padding: 8px 12px 12px;
-            border-top: 1px solid #e8f0fe;
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            flex-shrink: 0;
-            z-index: 10;
-            margin-bottom: 55px;
-            flex-wrap: wrap;
-        }
-        .message-input-area .input-wrapper {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            background: #f0f4f8;
-            border-radius: 20px;
-            padding: 4px 4px 4px 14px;
-            border: 2px solid #e8f0fe;
-            transition: all 0.3s;
-            min-width: 150px;
-        }
-        .message-input-area .input-wrapper:focus-within {
-            border-color: #1a73e8;
-            box-shadow: 0 0 0 4px rgba(26,115,232,0.06);
-        }
-        .message-input-area .input-wrapper input {
-            flex: 1;
-            border: none;
-            background: none;
-            padding: 8px 4px;
-            font-size: 15px;
-            outline: none;
-            color: #1a1a2e;
-            min-height: 40px;
-        }
-        .message-input-area .input-wrapper input::placeholder {
-            color: #9aa0a6;
-        }
-        .message-input-area .input-wrapper .sticker-btn {
-            background: none;
-            border: none;
-            color: #5f6368;
-            font-size: 24px;
-            cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 50%;
-            transition: all 0.3s;
-        }
-        .message-input-area .input-wrapper .sticker-btn:hover {
-            background: #e8f0fe;
-            color: #1a73e8;
-            transform: scale(1.1);
-        }
-        .message-input-area .send-btn {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: #1a73e8;
-            color: white;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            flex-shrink: 0;
-        }
-        .message-input-area .send-btn:hover {
-            background: #1557b0;
-            transform: scale(1.05);
-        }
-        .message-input-area .send-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        /* STICKERS POPUP */
-        .stickers-popup {
-            display: none;
-            position: absolute;
-            bottom: 70px;
-            left: 10px;
-            right: 10px;
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-            border: 1px solid #e8f0fe;
-            z-index: 20;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-        .stickers-popup.active {
-            display: block;
-        }
-        .stickers-popup .sticker-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 6px;
-        }
-        .stickers-popup .sticker-grid .sticker {
-            font-size: 38px;
-            text-align: center;
-            padding: 6px;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.2s;
-            background: #f8f9fa;
-        }
-        .stickers-popup .sticker-grid .sticker:hover {
-            transform: scale(1.2);
-            background: #e8f0fe;
-        }
-        
-        /* BARRA INFERIOR */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #ffffff;
-            border-top: 1px solid #e8f0fe;
-            display: flex;
-            justify-content: space-around;
-            padding: 6px 0 10px;
-            max-width: 480px;
-            margin: 0 auto;
-            z-index: 1000;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.04);
-        }
-        
-        .nav-item {
-            background: none;
-            border: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: #5f6368;
-            font-size: 10px;
-            cursor: pointer;
-            padding: 2px 8px;
-            transition: all 0.3s;
-            position: relative;
-            min-width: 44px;
-            text-decoration: none;
-        }
-        .nav-item i {
-            font-size: 20px;
-            margin-bottom: 2px;
-            transition: all 0.3s;
-        }
-        .nav-item span { font-size: 9px; margin-top: 0px; }
-        .nav-item.active { color: #1a73e8; }
-        .nav-item.active i { transform: scale(1.05); }
-        .nav-item:hover { color: #1a73e8; }
-        
-        .nav-item .badge-nav {
-            position: absolute;
-            top: 0;
-            right: 2px;
-            background: #ea4335;
-            color: white;
-            font-size: 9px;
-            border-radius: 50%;
-            padding: 1px 6px;
-            min-width: 18px;
-            text-align: center;
-            font-weight: 700;
-        }
-        
-        /* LOADING */
         .loading-container {
             display: flex;
             justify-content: center;
@@ -652,9 +124,7 @@
             flex-direction: column;
             color: white;
         }
-        .call-overlay.active {
-            display: flex;
-        }
+        .call-overlay.active { display: flex; }
         
         .call-videos {
             flex: 1;
@@ -727,21 +197,10 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-        .call-controls .call-button.green {
-            background: #25D366;
-            color: white;
-        }
-        .call-controls .call-button.red {
-            background: #f44336;
-            color: white;
-        }
-        .call-controls .call-button.gray {
-            background: #555;
-            color: white;
-        }
-        .call-controls .call-button.active {
-            background: #075e54;
-        }
+        .call-controls .call-button.green { background: #25D366; color: white; }
+        .call-controls .call-button.red { background: #f44336; color: white; }
+        .call-controls .call-button.gray { background: #555; color: white; }
+        .call-controls .call-button.active { background: #075e54; }
         .call-controls .call-label {
             text-align: center;
             color: #ddd;
@@ -764,9 +223,7 @@
             justify-content: center;
             color: white;
         }
-        .call-incoming.active {
-            display: flex;
-        }
+        .call-incoming.active { display: flex; }
         .call-incoming .incoming-avatar {
             width: 120px;
             height: 120px;
@@ -803,280 +260,14 @@
             justify-content: center;
             cursor: pointer;
         }
-        .call-incoming .incoming-btn.accept {
-            background: #25D366;
-            color: white;
-        }
-        .call-incoming .incoming-btn.decline {
-            background: #f44336;
-            color: white;
-        }
-        
-        /* PÁGINA DE PERFIL */
-        .profile-page {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: #f0f4f8;
-            z-index: 800;
-            max-width: 480px;
-            margin: 0 auto;
-            flex-direction: column;
-            animation: slideIn 0.3s ease;
-        }
-        .profile-page.active { display: flex; }
-        
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        
-        .profile-page-header {
-            background: #ffffff;
-            padding: 14px 18px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-bottom: 1px solid #e8f0fe;
-            flex-shrink: 0;
-        }
-        .profile-page-header button {
-            background: none;
-            border: none;
-            font-size: 20px;
-            color: #5f6368;
-            cursor: pointer;
-        }
-        .profile-page-header h5 {
-            margin: 0;
-            font-weight: 700;
-            color: #1a1a2e;
-            font-size: 18px;
-        }
-        .profile-page-header h5 i { color: #1a73e8; margin-right: 8px; }
-        
-        .profile-page-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px 18px;
-        }
-        .profile-page-content .pp-avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            overflow: hidden;
-            margin: 0 auto 12px;
-            border: 3px solid #1a73e8;
-            background: #e8f0fe;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
-            color: #1a73e8;
-        }
-        .profile-page-content .pp-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .profile-page-content .pp-name {
-            text-align: center;
-            font-size: 22px;
-            font-weight: 700;
-            color: #1a1a2e;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-        .profile-page-content .pp-username {
-            text-align: center;
-            font-size: 14px;
-            color: #5f6368;
-        }
-        .profile-page-content .pp-bio {
-            text-align: center;
-            font-size: 14px;
-            color: #1a1a2e;
-            margin: 8px 0 12px;
-            padding: 0 10px;
-        }
-        .profile-page-content .pp-status {
-            text-align: center;
-            font-size: 13px;
-            color: #5f6368;
-        }
-        .profile-page-content .pp-status.online { color: #2ed573; }
-        .profile-page-content .pp-status.offline { color: #9aa0a6; }
-        
-        .profile-page-content .pp-stats {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin: 16px 0;
-        }
-        .profile-page-content .pp-stats .stat-item {
-            text-align: center;
-        }
-        .profile-page-content .pp-stats .number {
-            font-weight: 700;
-            font-size: 20px;
-            color: #1a73e8;
-        }
-        .profile-page-content .pp-stats .label {
-            font-size: 11px;
-            color: #5f6368;
-        }
-        
-        .profile-page-content .pp-actions {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            margin-top: 12px;
-            flex-wrap: wrap;
-        }
-        .profile-page-content .pp-actions button {
-            padding: 10px 24px;
-            border: none;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .profile-page-content .pp-actions .btn-primary {
-            background: #1a73e8;
-            color: white;
-        }
-        .profile-page-content .pp-actions .btn-primary:hover { background: #1557b0; }
-        .profile-page-content .pp-actions .btn-secondary {
-            background: #f0f4f8;
-            color: #5f6368;
-        }
-        .profile-page-content .pp-actions .btn-secondary:hover { background: #e8e8e8; }
-        
-        .friends-list-page {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: #f0f4f8;
-            z-index: 700;
-            max-width: 480px;
-            margin: 0 auto;
-            flex-direction: column;
-        }
-        .friends-list-page.active { display: flex; }
-        
-        .friends-list-header {
-            background: #ffffff;
-            padding: 14px 18px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-bottom: 1px solid #e8f0fe;
-            flex-shrink: 0;
-        }
-        .friends-list-header button {
-            background: none;
-            border: none;
-            font-size: 20px;
-            color: #5f6368;
-            cursor: pointer;
-        }
-        .friends-list-header h5 {
-            margin: 0;
-            font-weight: 700;
-            color: #1a1a2e;
-            font-size: 18px;
-        }
-        .friends-list-header h5 i { color: #1a73e8; margin-right: 8px; }
-        
-        .friends-list-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 12px 14px;
-        }
-        
-        .friend-select-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: #ffffff;
-            padding: 12px 14px;
-            border-radius: 12px;
-            margin-bottom: 6px;
-            border: 1px solid #e8f0fe;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .friend-select-item:hover {
-            border-color: #1a73e8;
-            box-shadow: 0 2px 8px rgba(26,115,232,0.06);
-        }
-        .friend-select-item .fs-avatar {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            overflow: hidden;
-            flex-shrink: 0;
-            background: #e8f0fe;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            color: #1a73e8;
-        }
-        .friend-select-item .fs-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .friend-select-item .fs-info { flex: 1; }
-        .friend-select-item .fs-name {
-            font-weight: 600;
-            color: #1a1a2e;
-            font-size: 14px;
-        }
-        .friend-select-item .fs-username {
-            font-size: 12px;
-            color: #5f6368;
-        }
-        .friend-select-item .fs-status {
-            font-size: 11px;
-        }
-        .friend-select-item .fs-status.online { color: #2ed573; }
-        .friend-select-item .fs-status.offline { color: #9aa0a6; }
-        
-        @media (min-width: 481px) {
-            .container-custom {
-                box-shadow: 0 0 20px rgba(0,0,0,0.05);
-                background: #f0f4f8;
-            }
-            .bottom-nav { max-width: 480px; }
-            .conversation-view {
-                max-width: 480px;
-                left: 50%;
-                transform: translateX(-50%);
-            }
-            .friends-list-page {
-                max-width: 480px;
-                left: 50%;
-                transform: translateX(-50%);
-            }
-            .profile-page {
-                max-width: 480px;
-                left: 50%;
-                transform: translateX(-50%);
-            }
-        }
+        .call-incoming .incoming-btn.accept { background: #25D366; color: white; }
+        .call-incoming .incoming-btn.decline { background: #f44336; color: white; }
         
         @media (max-width: 380px) {
-            .header-feed { padding: 8px 12px; }
-            .chat-item { padding: 10px 12px; }
-            .message { max-width: 90%; }
-            .message-input-area .input-wrapper { padding: 2px 2px 2px 10px; }
-            .message-input-area { margin-bottom: 50px; }
-            .stickers-popup .sticker-grid { grid-template-columns: repeat(4, 1fr); }
-            .stickers-popup .sticker-grid .sticker { font-size: 30px; }
+            .message.sticker-msg { font-size: 48px !important; max-width: 100px !important; }
+            .stickers-popup .sticker-grid .sticker { font-size: 32px !important; }
             #localVideo { width: 80px; height: 100px; }
+            .message-input-area { margin-bottom: 50px; }
         }
     </style>
 </head>
@@ -1223,7 +414,7 @@
         </div>
     </div>
 
-    <!-- LISTA DE USUÁRIOS PARA NOVA CONVERSA -->
+    <!-- LISTA DE AMIGOS PARA NOVA CONVERSA -->
     <div class="friends-list-page" id="friendsListPage">
         <div class="friends-list-header">
             <button id="closeFriendsList"><i class="fas fa-arrow-left"></i></button>
@@ -1314,6 +505,7 @@ const database = getDatabase(app);
 let currentUser = null;
 let currentUserData = null;
 let allUsers = {};
+let friends = {};
 let chats = {};
 let currentChatUser = null;
 let messageListener = null;
@@ -1392,7 +584,7 @@ const profilePageContent = document.getElementById('profilePageContent');
 const closeProfilePage = document.getElementById('closeProfilePage');
 
 // ============================================
-// STICKERS
+// STICKERS - TAMANHO FIXO
 // ============================================
 if (stickerBtn) {
     stickerBtn.addEventListener('click', (e) => {
@@ -1410,6 +602,7 @@ document.querySelectorAll('.sticker').forEach(el => {
         const emoji = this.textContent.trim();
         if (messageInput) {
             messageInput.value = emoji;
+            // Envia automaticamente
             setTimeout(() => sendMessage(), 100);
         }
         if (stickersPopup) stickersPopup.classList.remove('active');
@@ -1425,6 +618,17 @@ async function loadUsers() {
         if (snapshot.exists()) allUsers = snapshot.val();
     } catch (error) {
         console.error('Erro ao carregar usuários:', error);
+    }
+}
+
+async function loadFriends() {
+    if (!currentUser) return;
+    try {
+        const snapshot = await get(ref(database, `friends/${currentUser.uid}`));
+        if (snapshot.exists()) friends = snapshot.val();
+        else friends = {};
+    } catch (error) {
+        console.error('Erro ao carregar amigos:', error);
     }
 }
 
@@ -1616,6 +820,9 @@ window.openConversation = function(uid) {
     if (conversationView) conversationView.classList.add('active');
     document.body.style.overflow = 'hidden';
     
+    // Marcar mensagens como lidas
+    markMessagesAsRead(uid);
+    
     loadMessages(uid);
     
     setTimeout(() => {
@@ -1637,6 +844,39 @@ if (convBack) {
 }
 
 // ============================================
+// MARCAR MENSAGENS COMO LIDAS
+// ============================================
+async function markMessagesAsRead(uid) {
+    if (!currentUser || !uid) return;
+    
+    try {
+        const chatId = [currentUser.uid, uid].sort().join('_');
+        const messagesRef = ref(database, `messages/${chatId}`);
+        const snapshot = await get(messagesRef);
+        if (!snapshot.exists()) return;
+        
+        const messages = snapshot.val();
+        const updates = {};
+        Object.keys(messages).forEach(key => {
+            const msg = messages[key];
+            if (msg.to === currentUser.uid && !msg.read) {
+                updates[`${key}/read`] = true;
+            }
+        });
+        
+        if (Object.keys(updates).length > 0) {
+            await update(messagesRef, updates);
+        }
+        
+        // Atualizar contador de não lidas no chat
+        await update(ref(database, `chats/${currentUser.uid}/${uid}`), { unread: 0 });
+        
+    } catch (error) {
+        console.error('Erro ao marcar mensagens como lidas:', error);
+    }
+}
+
+// ============================================
 // CARREGAR MENSAGENS
 // ============================================
 function loadMessages(uid) {
@@ -1653,11 +893,20 @@ function loadMessages(uid) {
         const msg = snapshot.val();
         const isSent = msg.from === currentUser.uid;
         const isSticker = msg.isSticker || false;
+        const isCall = msg.isCall || false;
         const time = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '';
         
         const div = document.createElement('div');
         
-        if (isSticker) {
+        // Verifica se é mensagem de chamada
+        if (isCall) {
+            div.className = `message call-message ${isSent ? 'sent' : 'received'}`;
+            const callIcon = msg.callType === 'video' ? '📹' : '📞';
+            div.innerHTML = `
+                ${callIcon} ${msg.text}
+                <span class="msg-time">${time}</span>
+            `;
+        } else if (isSticker) {
             div.className = `message sticker-msg ${isSent ? 'sent' : 'received'}`;
             div.innerHTML = `
                 ${msg.text}
@@ -1665,9 +914,17 @@ function loadMessages(uid) {
             `;
         } else {
             div.className = `message ${isSent ? 'sent' : 'received'}`;
+            let statusHtml = '';
+            if (isSent) {
+                if (msg.read) {
+                    statusHtml = '<span class="msg-status read"><i class="fas fa-check-double"></i></span>';
+                } else {
+                    statusHtml = '<span class="msg-status delivered"><i class="fas fa-check"></i></span>';
+                }
+            }
             div.innerHTML = `
                 ${msg.text}
-                <span class="msg-time">${time}</span>
+                <span class="msg-time">${time} ${statusHtml}</span>
             `;
         }
         
@@ -1688,6 +945,7 @@ async function sendMessage() {
     const uid = currentChatUser.uid;
     const chatId = [currentUser.uid, uid].sort().join('_');
     
+    // Verifica se é sticker (emoji único) - MAIS PRECISO
     const isSticker = /^[\u{1F600}-\u{1F9FF}\u{2764}\u{1F940}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]$/u.test(text) && text.length <= 2;
     
     if (sendBtn) {
@@ -1702,6 +960,7 @@ async function sendMessage() {
             to: uid,
             text: text,
             isSticker: isSticker,
+            isCall: false,
             timestamp: serverTimestamp(),
             read: false
         });
@@ -1743,7 +1002,57 @@ if (messageInput) {
 }
 
 // ============================================
-// CHAMADA WEBRTC - CORRIGIDA
+// ENVIAR MENSAGEM DE CHAMADA
+// ============================================
+async function sendCallMessage(uid, callType, duration) {
+    if (!currentUser || !uid) return;
+    
+    const chatId = [currentUser.uid, uid].sort().join('_');
+    const text = duration > 0 ? 
+        `Chamada de ${callType === 'video' ? 'vídeo' : 'voz'} - ${formatDuration(duration)}` :
+        `Chamada de ${callType === 'video' ? 'vídeo' : 'voz'} - não atendida`;
+    
+    try {
+        const newMsgRef = push(ref(database, `messages/${chatId}`));
+        await set(newMsgRef, {
+            from: currentUser.uid,
+            to: uid,
+            text: text,
+            isSticker: false,
+            isCall: true,
+            callType: callType,
+            callDuration: duration,
+            timestamp: serverTimestamp(),
+            read: false
+        });
+        
+        await set(ref(database, `chats/${currentUser.uid}/${uid}`), {
+            lastMessage: text,
+            timestamp: serverTimestamp(),
+            unread: 0
+        });
+        await set(ref(database, `chats/${uid}/${currentUser.uid}`), {
+            lastMessage: text,
+            timestamp: serverTimestamp(),
+            unread: 1
+        });
+        
+    } catch (error) {
+        console.error('Erro ao enviar mensagem de chamada:', error);
+    }
+}
+
+function formatDuration(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    if (mins > 0) {
+        return `${mins}min ${secs}s`;
+    }
+    return `${secs}s`;
+}
+
+// ============================================
+// CHAMADA WEBRTC
 // ============================================
 async function startAudioCall() {
     if (!currentChatUser) {
@@ -1755,6 +1064,7 @@ async function startAudioCall() {
         const destino = currentChatUser.uid;
         const callId = [currentUser.uid, destino].sort().join('_');
         currentCallId = callId;
+        callAnswered = false;
         
         callNumber.textContent = currentChatUser.fullName || 'Usuário';
         callStatusText.textContent = 'Chamando...';
@@ -1774,6 +1084,7 @@ async function startAudioCall() {
             remoteStream = event.streams[0];
             remoteVideo.srcObject = remoteStream;
             callStatusText.textContent = 'Em chamada';
+            callAnswered = true;
             startCallTimer();
         };
 
@@ -1837,6 +1148,14 @@ async function startAudioCall() {
             }
         });
 
+        // Timeout se não atender em 30 segundos
+        setTimeout(() => {
+            if (!callAnswered && isCallActive) {
+                endCall();
+                Swal.fire({ icon: 'info', title: 'Chamada não atendida', text: 'O usuário não atendeu', confirmButtonColor: '#1a73e8' });
+            }
+        }, 30000);
+
     } catch (err) {
         console.error('Erro na chamada:', err);
         Swal.fire({ icon: 'error', title: 'Erro', text: err.message, confirmButtonColor: '#1a73e8' });
@@ -1854,6 +1173,7 @@ async function startVideoCall() {
         const destino = currentChatUser.uid;
         const callId = [currentUser.uid, destino].sort().join('_');
         currentCallId = callId;
+        callAnswered = false;
         
         callNumber.textContent = currentChatUser.fullName || 'Usuário';
         callStatusText.textContent = 'Chamando...';
@@ -1873,6 +1193,7 @@ async function startVideoCall() {
             remoteStream = event.streams[0];
             remoteVideo.srcObject = remoteStream;
             callStatusText.textContent = 'Em chamada';
+            callAnswered = true;
             startCallTimer();
         };
 
@@ -1934,6 +1255,13 @@ async function startVideoCall() {
             }
         });
 
+        setTimeout(() => {
+            if (!callAnswered && isCallActive) {
+                endCall();
+                Swal.fire({ icon: 'info', title: 'Chamada não atendida', text: 'O usuário não atendeu', confirmButtonColor: '#1a73e8' });
+            }
+        }, 30000);
+
     } catch (err) {
         console.error('Erro na chamada de vídeo:', err);
         if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
@@ -1985,6 +1313,7 @@ async function aceitarChamada() {
             remoteStream = event.streams[0];
             remoteVideo.srcObject = remoteStream;
             callStatusText.textContent = 'Em chamada';
+            callAnswered = true;
             startCallTimer();
         };
 
@@ -2049,6 +1378,13 @@ function startCallTimer() {
 }
 
 function endCall() {
+    const duration = callSeconds;
+    const callType = callStatusText.textContent === 'Em chamada' ? 
+        (document.getElementById('localVideo').srcObject?.getVideoTracks().length > 0 ? 'video' : 'audio') : 
+        'audio';
+    const wasAnswered = callAnswered;
+    
+    // Encerrar recursos de áudio/vídeo
     if (localStream) {
         localStream.getTracks().forEach(track => track.stop());
     }
@@ -2076,6 +1412,16 @@ function endCall() {
     isSpeakerOn = false;
     btnMute.classList.remove('active');
     btnSpeaker.classList.remove('active');
+    
+    // Enviar mensagem de chamada no chat
+    if (currentChatUser && wasAnswered) {
+        sendCallMessage(currentChatUser.uid, callType, duration);
+    } else if (currentChatUser && !wasAnswered && duration === 0) {
+        sendCallMessage(currentChatUser.uid, callType, 0);
+    }
+    
+    isCallActive = false;
+    callAnswered = false;
 }
 
 function stopCallTimer() {
@@ -2157,30 +1503,35 @@ if (btnSpeaker) {
 }
 
 // ============================================
-// NOVA CONVERSA
+// NOVA CONVERSA - SÓ AMIGOS
 // ============================================
 if (btnNewChat) {
     btnNewChat.addEventListener('click', async () => {
         await loadUsers();
+        await loadFriends();
         
-        const usersList = Object.keys(allUsers).filter(uid => {
+        // Mostra SÓ os amigos (que estão na lista de amigos)
+        const friendsList = Object.keys(friends).filter(uid => {
             if (uid === currentUser.uid) return false;
             return true;
         });
         
-        if (usersList.length === 0) {
+        if (friendsList.length === 0) {
             if (friendsListContainer) {
                 friendsListContainer.innerHTML = `
                     <div class="empty-chat">
                         <i class="fas fa-user-friends"></i>
-                        <h5>Nenhum usuário encontrado</h5>
-                        <p>Convide seus amigos para o Zonne!</p>
+                        <h5>Nenhum amigo</h5>
+                        <p>Adicione amigos para iniciar uma conversa</p>
+                        <a href="amigos.html" class="btn btn-primary mt-3" style="background:#1a73e8;border:none;padding:10px 30px;border-radius:20px;color:white;text-decoration:none;">
+                            <i class="fas fa-user-plus"></i> Ver amigos
+                        </a>
                     </div>
                 `;
             }
         } else {
             let html = '';
-            usersList.forEach(uid => {
+            friendsList.forEach(uid => {
                 const user = allUsers[uid];
                 if (!user) return;
                 const hasChat = chats[uid] || false;
@@ -2318,6 +1669,7 @@ onAuthStateChanged(auth, async (user) => {
                 }
                 
                 await loadUsers();
+                await loadFriends();
                 loadChats();
                 listenIncomingCalls();
             }
@@ -2340,7 +1692,7 @@ window.openProfile = openProfile;
 window.closeProfilePage = closeProfilePage;
 window.startChatFromProfile = startChatFromProfile;
 
-console.log('🚀 Zonne - Chat com chamadas WebRTC!');
+console.log('🚀 Zonne - Chat completo!');
 console.log('✅ Sistema pronto!');
 </script>
 </body>
