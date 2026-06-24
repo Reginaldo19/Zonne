@@ -181,7 +181,9 @@
             display: flex;
             align-items: center;
             gap: 4px;
+            cursor: pointer;
         }
+        .chat-name:hover { color: #1a73e8; }
         .chat-name .verified-badge {
             color: #1a73e8;
             font-size: 14px;
@@ -297,6 +299,7 @@
             justify-content: center;
             font-size: 16px;
             color: #1a73e8;
+            cursor: pointer;
         }
         .conv-header .conv-avatar img { width: 100%; height: 100%; object-fit: cover; }
         .conv-header .conv-info { flex: 1; min-width: 0; }
@@ -307,7 +310,9 @@
             display: flex;
             align-items: center;
             gap: 4px;
+            cursor: pointer;
         }
+        .conv-header .conv-name:hover { color: #1a73e8; }
         .conv-header .conv-status {
             font-size: 11px;
             color: #5f6368;
@@ -341,7 +346,6 @@
             flex-direction: column;
             gap: 4px;
             background: #f0f4f8;
-            padding-bottom: 12px;
         }
         
         .message {
@@ -381,9 +385,35 @@
             display: block;
             text-align: right;
         }
-        .message .msg-status { font-size: 12px; margin-left: 4px; }
-        .message .msg-status.read { color: #2ed573; }
-        .message .msg-status.delivered { color: #f9ab00; }
+        
+        /* STICKERS - EMOJIS GRANDES */
+        .sticker-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            padding: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #e8f0fe;
+            margin-top: 8px;
+        }
+        .sticker-grid .sticker {
+            font-size: 32px;
+            text-align: center;
+            padding: 6px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+            background: #f8f9fa;
+            border: 1px solid #e8f0fe;
+        }
+        .sticker-grid .sticker:hover {
+            transform: scale(1.1);
+            background: #e8f0fe;
+            border-color: #1a73e8;
+        }
         
         /* TYPING */
         .typing-indicator {
@@ -419,14 +449,15 @@
         /* INPUT */
         .message-input-area {
             background: #ffffff;
-            padding: 8px 12px;
+            padding: 8px 12px 12px;
             border-top: 1px solid #e8f0fe;
             display: flex;
             gap: 8px;
             align-items: flex-end;
             flex-shrink: 0;
             z-index: 10;
-            padding-bottom: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 55px;
         }
         .message-input-area .input-wrapper {
             flex: 1;
@@ -437,6 +468,7 @@
             padding: 4px 4px 4px 14px;
             border: 2px solid #e8f0fe;
             transition: all 0.3s;
+            min-width: 150px;
         }
         .message-input-area .input-wrapper:focus-within {
             border-color: #1a73e8;
@@ -469,6 +501,20 @@
             background: #e8f0fe;
             color: #1a73e8;
         }
+        .message-input-area .input-wrapper .sticker-btn {
+            background: none;
+            border: none;
+            color: #5f6368;
+            font-size: 22px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+        .message-input-area .input-wrapper .sticker-btn:hover {
+            background: #e8f0fe;
+            color: #1a73e8;
+        }
         .message-input-area .send-btn {
             width: 44px;
             height: 44px;
@@ -492,6 +538,20 @@
             opacity: 0.5;
             cursor: not-allowed;
             transform: none;
+        }
+        
+        /* STICKERS CONTAINER */
+        .stickers-container {
+            display: none;
+            width: 100%;
+            animation: slideUp 0.3s ease;
+        }
+        .stickers-container.active {
+            display: block;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         /* BARRA INFERIOR */
@@ -673,6 +733,154 @@
             color: #1a1a2e;
         }
         
+        /* PÁGINA DE PERFIL DO USUÁRIO */
+        .profile-page {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #f0f4f8;
+            z-index: 800;
+            max-width: 480px;
+            margin: 0 auto;
+            flex-direction: column;
+            animation: slideIn 0.3s ease;
+        }
+        .profile-page.active {
+            display: flex;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .profile-page-header {
+            background: #ffffff;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid #e8f0fe;
+            flex-shrink: 0;
+        }
+        .profile-page-header button {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #5f6368;
+            cursor: pointer;
+        }
+        .profile-page-header h5 {
+            margin: 0;
+            font-weight: 700;
+            color: #1a1a2e;
+            font-size: 18px;
+        }
+        .profile-page-header h5 i { color: #1a73e8; margin-right: 8px; }
+        
+        .profile-page-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 18px;
+        }
+        .profile-page-content .pp-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 12px;
+            border: 3px solid #1a73e8;
+            background: #e8f0fe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: #1a73e8;
+        }
+        .profile-page-content .pp-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .profile-page-content .pp-name {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 700;
+            color: #1a1a2e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .profile-page-content .pp-name .verified-badge {
+            color: #1a73e8;
+            font-size: 20px;
+        }
+        .profile-page-content .pp-username {
+            text-align: center;
+            font-size: 14px;
+            color: #5f6368;
+        }
+        .profile-page-content .pp-bio {
+            text-align: center;
+            font-size: 14px;
+            color: #1a1a2e;
+            margin: 8px 0 12px;
+            padding: 0 10px;
+        }
+        .profile-page-content .pp-status {
+            text-align: center;
+            font-size: 13px;
+            color: #5f6368;
+        }
+        .profile-page-content .pp-status.online { color: #2ed573; }
+        .profile-page-content .pp-status.offline { color: #9aa0a6; }
+        
+        .profile-page-content .pp-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 16px 0;
+        }
+        .profile-page-content .pp-stats .stat-item {
+            text-align: center;
+        }
+        .profile-page-content .pp-stats .number {
+            font-weight: 700;
+            font-size: 20px;
+            color: #1a73e8;
+        }
+        .profile-page-content .pp-stats .label {
+            font-size: 11px;
+            color: #5f6368;
+        }
+        
+        .profile-page-content .pp-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+        .profile-page-content .pp-actions button {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .profile-page-content .pp-actions .btn-primary {
+            background: #1a73e8;
+            color: white;
+        }
+        .profile-page-content .pp-actions .btn-primary:hover { background: #1557b0; }
+        .profile-page-content .pp-actions .btn-secondary {
+            background: #f0f4f8;
+            color: #5f6368;
+        }
+        .profile-page-content .pp-actions .btn-secondary:hover { background: #e8e8e8; }
+        
         .friends-list-page {
             display: none;
             position: fixed;
@@ -780,6 +988,11 @@
                 left: 50%;
                 transform: translateX(-50%);
             }
+            .profile-page {
+                max-width: 480px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
         }
         
         @media (max-width: 380px) {
@@ -787,6 +1000,9 @@
             .chat-item { padding: 10px 12px; }
             .message { max-width: 90%; }
             .message-input-area .input-wrapper { padding: 2px 2px 2px 10px; }
+            .message-input-area { margin-bottom: 50px; }
+            .sticker-grid { grid-template-columns: repeat(4, 1fr); }
+            .sticker-grid .sticker { font-size: 26px; }
         }
     </style>
 </head>
@@ -870,14 +1086,35 @@
             </span>
         </div>
         
-        <!-- INPUT -->
+        <!-- INPUT COM STICKERS -->
         <div class="message-input-area" id="messageInputArea">
             <div class="input-wrapper">
                 <input type="text" id="messageInput" placeholder="Digite uma mensagem..." />
                 <button class="attach-btn" id="attachBtn"><i class="fas fa-paperclip"></i></button>
-                <button class="attach-btn" id="emojiBtn"><i class="fas fa-smile"></i></button>
+                <button class="sticker-btn" id="stickerBtn"><i class="fas fa-smile"></i></button>
             </div>
             <button class="send-btn" id="sendBtn"><i class="fas fa-paper-plane"></i></button>
+            
+            <div class="stickers-container" id="stickersContainer">
+                <div class="sticker-grid" id="stickerGrid">
+                    <div class="sticker">😊</div>
+                    <div class="sticker">😂</div>
+                    <div class="sticker">🥰</div>
+                    <div class="sticker">😍</div>
+                    <div class="sticker">🤔</div>
+                    <div class="sticker">😎</div>
+                    <div class="sticker">🔥</div>
+                    <div class="sticker">💀</div>
+                    <div class="sticker">👀</div>
+                    <div class="sticker">🙏</div>
+                    <div class="sticker">❤️</div>
+                    <div class="sticker">💪</div>
+                    <div class="sticker">✨</div>
+                    <div class="sticker">🎉</div>
+                    <div class="sticker">😢</div>
+                    <div class="sticker">🥺</div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -888,6 +1125,17 @@
             <h5><i class="fas fa-user-plus"></i> Nova conversa</h5>
         </div>
         <div class="friends-list-container" id="friendsListContainer">
+            <div class="loading-container"><div class="spinner"></div></div>
+        </div>
+    </div>
+
+    <!-- PÁGINA DE PERFIL DO USUÁRIO -->
+    <div class="profile-page" id="profilePage">
+        <div class="profile-page-header">
+            <button id="closeProfilePage"><i class="fas fa-arrow-left"></i></button>
+            <h5><i class="fas fa-user" style="color:#1a73e8;"></i> Perfil</h5>
+        </div>
+        <div class="profile-page-content" id="profilePageContent">
             <div class="loading-container"><div class="spinner"></div></div>
         </div>
     </div>
@@ -971,7 +1219,7 @@ let isCallActive = false;
 let callAnswered = false;
 
 // ============================================
-// DOM - VERIFICAR TODOS OS ELEMENTOS
+// DOM
 // ============================================
 const chatList = document.getElementById('chatList');
 const chatCount = document.getElementById('chatCount');
@@ -993,7 +1241,9 @@ const convVideo = document.getElementById('convVideo');
 const convMore = document.getElementById('convMore');
 const btnNotifications = document.getElementById('btnNotifications');
 const attachBtn = document.getElementById('attachBtn');
-const emojiBtn = document.getElementById('emojiBtn');
+const stickerBtn = document.getElementById('stickerBtn');
+const stickersContainer = document.getElementById('stickersContainer');
+const stickerGrid = document.getElementById('stickerGrid');
 
 // Call
 const callOverlay = document.getElementById('callOverlay');
@@ -1010,8 +1260,43 @@ const friendsListPage = document.getElementById('friendsListPage');
 const friendsListContainer = document.getElementById('friendsListContainer');
 const closeFriendsList = document.getElementById('closeFriendsList');
 
+// Profile page
+const profilePage = document.getElementById('profilePage');
+const profilePageContent = document.getElementById('profilePageContent');
+const closeProfilePage = document.getElementById('closeProfilePage');
+
 // ============================================
-// CARREGAR USUÁRIOS
+// STICKERS
+// ============================================
+if (stickerBtn) {
+    stickerBtn.addEventListener('click', () => {
+        stickersContainer.classList.toggle('active');
+    });
+}
+
+if (stickerGrid) {
+    stickerGrid.addEventListener('click', (e) => {
+        const sticker = e.target.closest('.sticker');
+        if (sticker) {
+            const emoji = sticker.textContent;
+            if (messageInput) {
+                messageInput.value += emoji;
+                messageInput.focus();
+            }
+            stickersContainer.classList.remove('active');
+        }
+    });
+}
+
+// Fechar stickers ao clicar fora
+document.addEventListener('click', (e) => {
+    if (stickersContainer && !e.target.closest('.message-input-area')) {
+        stickersContainer.classList.remove('active');
+    }
+});
+
+// ============================================
+// FUNÇÕES
 // ============================================
 async function loadUsers() {
     try {
@@ -1022,9 +1307,6 @@ async function loadUsers() {
     }
 }
 
-// ============================================
-// CARREGAR CHATS
-// ============================================
 function loadChats() {
     if (!currentUser || !chatList) return;
     
@@ -1070,13 +1352,15 @@ function loadChats() {
             const unread = chat?.unread || 0;
             
             html += `
-                <div class="chat-item" data-uid="${uid}" onclick="window.openConversation('${uid}')">
+                <div class="chat-item" data-uid="${uid}">
                     <div class="chat-avatar">
                         ${photo}
                         <span class="online-dot ${online ? 'online' : 'offline'}"></span>
                     </div>
                     <div class="chat-info">
-                        <div class="chat-name">${user.fullName || 'Usuário'}</div>
+                        <div class="chat-name" onclick="window.openProfile('${uid}')">
+                            ${user.fullName || 'Usuário'}
+                        </div>
                         <div class="chat-last">${lastMsg}</div>
                     </div>
                     <div class="chat-meta">
@@ -1088,8 +1372,107 @@ function loadChats() {
         });
         
         chatList.innerHTML = html;
+        
+        // Adicionar eventos de clique para abrir conversa
+        chatList.querySelectorAll('.chat-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const uid = this.dataset.uid;
+                if (uid) openConversation(uid);
+            });
+        });
     });
 }
+
+// ============================================
+// ABRIR PERFIL DO USUÁRIO
+// ============================================
+window.openProfile = function(uid) {
+    const user = allUsers[uid];
+    if (!user) {
+        console.error('Usuário não encontrado');
+        return;
+    }
+    
+    const photo = user.photo ? `<img src="${user.photo}" alt="" />` : `<i class="fas fa-user"></i>`;
+    const verified = user.verified ? `<i class="fas fa-check-circle verified-badge"></i>` : '';
+    const statusClass = user.status === 'online' ? 'online' : 'offline';
+    const statusText = user.status === 'online' ? '🟢 Online' : '⚪ Offline';
+    
+    // Contar amigos
+    let friendsCount = 0;
+    if (user.friends) {
+        friendsCount = Object.keys(user.friends).length;
+    }
+    
+    profilePageContent.innerHTML = `
+        <div class="pp-avatar">${photo}</div>
+        <div class="pp-name">
+            ${user.fullName || 'Usuário'}
+            ${verified}
+        </div>
+        <div class="pp-username">@${user.username || 'usuario'}</div>
+        <div class="pp-bio">${user.bio || 'Olá! Estou no Zonne 🌟'}</div>
+        <div class="pp-status ${statusClass}">${statusText}</div>
+        
+        <div class="pp-stats">
+            <div class="stat-item">
+                <div class="number">${user.postsCount || 0}</div>
+                <div class="label"><i class="fas fa-file-alt"></i> Publicações</div>
+            </div>
+            <div class="stat-item">
+                <div class="number">${friendsCount}</div>
+                <div class="label"><i class="fas fa-user-friends"></i> Amigos</div>
+            </div>
+            <div class="stat-item">
+                <div class="number">${user.likesCount || 0}</div>
+                <div class="label"><i class="fas fa-heart" style="color:#ea4335;"></i> Curtidas</div>
+            </div>
+        </div>
+        
+        <div class="pp-actions">
+            <button class="btn-primary" onclick="window.startChatFromProfile('${uid}')">
+                <i class="fas fa-comment"></i> Mensagem
+            </button>
+            <button class="btn-secondary" onclick="window.closeProfilePage()">
+                <i class="fas fa-times"></i> Fechar
+            </button>
+        </div>
+    `;
+    
+    profilePage.classList.add('active');
+    document.body.style.overflow = 'hidden';
+};
+
+window.closeProfilePage = function() {
+    profilePage.classList.remove('active');
+    document.body.style.overflow = 'auto';
+};
+
+if (closeProfilePage) {
+    closeProfilePage.addEventListener('click', window.closeProfilePage);
+}
+
+window.startChatFromProfile = function(uid) {
+    profilePage.classList.remove('active');
+    document.body.style.overflow = 'auto';
+    
+    // Verificar se já tem conversa
+    if (!chats[uid]) {
+        const chatId = [currentUser.uid, uid].sort().join('_');
+        set(ref(database, `chats/${currentUser.uid}/${uid}`), {
+            lastMessage: 'Início da conversa',
+            timestamp: serverTimestamp(),
+            unread: 0
+        });
+        set(ref(database, `chats/${uid}/${currentUser.uid}`), {
+            lastMessage: 'Início da conversa',
+            timestamp: serverTimestamp(),
+            unread: 0
+        });
+    }
+    
+    openConversation(uid);
+};
 
 // ============================================
 // ABRIR CONVERSA
@@ -1106,6 +1489,16 @@ window.openConversation = function(uid) {
     if (convStatus) {
         convStatus.textContent = user.status === 'online' ? 'Online' : 'Offline';
         convStatus.className = `conv-status ${user.status === 'online' ? 'online' : ''}`;
+    }
+    
+    // Adicionar evento de clique no nome para abrir perfil
+    if (convName) {
+        convName.style.cursor = 'pointer';
+        convName.onclick = () => openProfile(uid);
+    }
+    if (convAvatar) {
+        convAvatar.style.cursor = 'pointer';
+        convAvatar.onclick = () => openProfile(uid);
     }
     
     if (conversationView) conversationView.classList.add('active');
@@ -1224,7 +1617,7 @@ if (messageInput) {
 }
 
 // ============================================
-// CHAMADA
+// CHAMADA DE ÁUDIO - CORRIGIDA
 // ============================================
 async function startAudioCall() {
     if (!currentChatUser) {
@@ -1233,7 +1626,8 @@ async function startAudioCall() {
     }
 
     try {
-        await navigator.mediaDevices.getUserMedia({ audio: true });
+        // PEDIR PERMISSÃO DO MICROFONE
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         
         isCallActive = true;
         callAnswered = false;
@@ -1258,6 +1652,7 @@ async function startAudioCall() {
         
         if (callOverlay) callOverlay.classList.add('active');
         
+        // CRIAR CHAMADA NO FIREBASE
         const callRef = ref(database, `calls/${currentUser.uid}/${user.uid}`);
         await set(callRef, {
             type: 'audio',
@@ -1268,6 +1663,7 @@ async function startAudioCall() {
             timestamp: serverTimestamp()
         });
         
+        // NOTIFICAR OUTRO USUÁRIO
         const notifRef = ref(database, `notifications/${user.uid}/${currentUser.uid}_call`);
         await set(notifRef, {
             type: 'call',
@@ -1278,6 +1674,7 @@ async function startAudioCall() {
             timestamp: serverTimestamp()
         });
         
+        // ESCUTAR RESPOSTA
         const callResponseRef = ref(database, `calls/${user.uid}/${currentUser.uid}`);
         const listener = onValue(callResponseRef, (snapshot) => {
             const data = snapshot.val();
@@ -1293,6 +1690,7 @@ async function startAudioCall() {
                     showConfirmButton: false
                 });
             } else if (data?.status === 'rejected' && !callAnswered) {
+                stream.getTracks().forEach(track => track.stop());
                 endCall();
                 Swal.fire({
                     icon: 'info',
@@ -1303,9 +1701,11 @@ async function startAudioCall() {
             }
         });
         
+        // TIMEOUT - NÃO ATENDEU
         setTimeout(() => {
             if (!callAnswered && isCallActive) {
                 update(callRef, { status: 'missed' });
+                stream.getTracks().forEach(track => track.stop());
                 endCall();
                 Swal.fire({
                     icon: 'info',
@@ -1317,7 +1717,7 @@ async function startAudioCall() {
         }, 30000);
         
     } catch (error) {
-        console.error('Erro:', error);
+        console.error('Erro ao iniciar chamada:', error);
         Swal.fire({
             icon: 'error',
             title: 'Permissão negada',
@@ -1367,7 +1767,7 @@ async function startVideoCall() {
     }
 
     try {
-        await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: true });
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: true });
         
         isCallActive = true;
         callAnswered = false;
@@ -1421,6 +1821,7 @@ async function startVideoCall() {
                     showConfirmButton: false
                 });
             } else if (data?.status === 'rejected' && !callAnswered) {
+                stream.getTracks().forEach(track => track.stop());
                 endCall();
                 Swal.fire({
                     icon: 'info',
@@ -1434,6 +1835,7 @@ async function startVideoCall() {
         setTimeout(() => {
             if (!callAnswered && isCallActive) {
                 update(callRef, { status: 'missed' });
+                stream.getTracks().forEach(track => track.stop());
                 endCall();
                 Swal.fire({
                     icon: 'info',
@@ -1445,7 +1847,7 @@ async function startVideoCall() {
         }, 30000);
         
     } catch (error) {
-        console.error('Erro:', error);
+        console.error('Erro ao iniciar chamada de vídeo:', error);
         Swal.fire({
             icon: 'error',
             title: 'Permissão negada',
@@ -1601,35 +2003,27 @@ if (callEnd) {
 }
 
 // ============================================
-// NOTIFICAÇÕES
+// NOTIFICAÇÕES E OUTROS
 // ============================================
 if (btnNotifications) {
     btnNotifications.addEventListener('click', function() {
         const unreadCount = Object.keys(chats).filter(uid => chats[uid]?.unread > 0).length;
         Swal.fire({
             title: '🔔 Notificações',
-            html: `
-                <div style="text-align:left;color:#5f6368;">
-                    <p>Você tem ${unreadCount} conversa${unreadCount !== 1 ? 's' : ''} com mensagens não lidas</p>
-                </div>
-            `,
+            html: `<p>Você tem ${unreadCount} conversa${unreadCount !== 1 ? 's' : ''} com mensagens não lidas</p>`,
             confirmButtonColor: '#1a73e8'
         });
     });
 }
 
-// ============================================
-// MAIS OPÇÕES
-// ============================================
 if (convMore) {
     convMore.addEventListener('click', function() {
         if (!currentChatUser) return;
-        
         Swal.fire({
             title: 'Opções',
             html: `
                 <div style="text-align:left;">
-                    <button id="optionViewProfile" style="width:100%;padding:10px;border:none;background:none;text-align:left;font-size:14px;cursor:pointer;border-bottom:1px solid #e8f0fe;">
+                    <button id="optionViewProfile" style="width:100%;padding:10px;border:none;background:none;text-align:left;font-size:14px;cursor:pointer;border-bottom:1px solid #e8f0fe;" onclick="window.openProfile('${currentChatUser.uid}')">
                         <i class="fas fa-user" style="color:#1a73e8;"></i> Ver perfil
                     </button>
                     <button id="optionClear" style="width:100%;padding:10px;border:none;background:none;text-align:left;font-size:14px;cursor:pointer;color:#ea4335;">
@@ -1643,25 +2037,11 @@ if (convMore) {
     });
 }
 
-// ============================================
-// ATTACH E EMOJI
-// ============================================
 if (attachBtn) {
     attachBtn.addEventListener('click', function() {
         Swal.fire({
             icon: 'info',
             title: '📎 Anexo',
-            text: 'Funcionalidade em desenvolvimento',
-            confirmButtonColor: '#1a73e8'
-        });
-    });
-}
-
-if (emojiBtn) {
-    emojiBtn.addEventListener('click', function() {
-        Swal.fire({
-            icon: 'info',
-            title: '😊 Emojis',
             text: 'Funcionalidade em desenvolvimento',
             confirmButtonColor: '#1a73e8'
         });
@@ -1731,8 +2111,12 @@ onAuthStateChanged(auth, async (user) => {
 window.openConversation = openConversation;
 window.closeConversation = closeConversation;
 window.startNewChat = startNewChat;
+window.openProfile = openProfile;
+window.closeProfilePage = closeProfilePage;
+window.startChatFromProfile = startChatFromProfile;
 
-console.log('🚀 Zonne - Chat pronto!');
+console.log('🚀 Zonne - Chat com Stickers e Perfil!');
+console.log('✅ Sistema pronto!');
 </script>
 </body>
 </html>
