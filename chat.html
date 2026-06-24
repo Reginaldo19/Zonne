@@ -184,10 +184,6 @@
             cursor: pointer;
         }
         .chat-name:hover { color: #1a73e8; }
-        .chat-name .verified-badge {
-            color: #1a73e8;
-            font-size: 14px;
-        }
         .chat-last {
             font-size: 13px;
             color: #5f6368;
@@ -386,35 +382,6 @@
             text-align: right;
         }
         
-        /* STICKERS - EMOJIS GRANDES */
-        .sticker-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 6px;
-            padding: 8px;
-            max-height: 200px;
-            overflow-y: auto;
-            background: #ffffff;
-            border-radius: 12px;
-            border: 1px solid #e8f0fe;
-            margin-top: 8px;
-        }
-        .sticker-grid .sticker {
-            font-size: 32px;
-            text-align: center;
-            padding: 6px;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.3s;
-            background: #f8f9fa;
-            border: 1px solid #e8f0fe;
-        }
-        .sticker-grid .sticker:hover {
-            transform: scale(1.1);
-            background: #e8f0fe;
-            border-color: #1a73e8;
-        }
-        
         /* TYPING */
         .typing-indicator {
             display: none;
@@ -453,11 +420,11 @@
             border-top: 1px solid #e8f0fe;
             display: flex;
             gap: 8px;
-            align-items: flex-end;
+            align-items: center;
             flex-shrink: 0;
             z-index: 10;
-            flex-wrap: wrap;
             margin-bottom: 55px;
+            flex-wrap: wrap;
         }
         .message-input-area .input-wrapper {
             flex: 1;
@@ -501,20 +468,6 @@
             background: #e8f0fe;
             color: #1a73e8;
         }
-        .message-input-area .input-wrapper .sticker-btn {
-            background: none;
-            border: none;
-            color: #5f6368;
-            font-size: 22px;
-            cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 50%;
-            transition: all 0.3s;
-        }
-        .message-input-area .input-wrapper .sticker-btn:hover {
-            background: #e8f0fe;
-            color: #1a73e8;
-        }
         .message-input-area .send-btn {
             width: 44px;
             height: 44px;
@@ -538,20 +491,6 @@
             opacity: 0.5;
             cursor: not-allowed;
             transform: none;
-        }
-        
-        /* STICKERS CONTAINER */
-        .stickers-container {
-            display: none;
-            width: 100%;
-            animation: slideUp 0.3s ease;
-        }
-        .stickers-container.active {
-            display: block;
-        }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
         }
         
         /* BARRA INFERIOR */
@@ -641,9 +580,9 @@
             justify-content: center;
             color: white;
             padding: 40px 20px;
+            background: linear-gradient(135deg, #0d47a1, #1a73e8);
             background-size: cover;
             background-position: center;
-            background-color: #0d47a1;
         }
         .call-overlay.active { display: flex; }
         .call-overlay::before {
@@ -653,7 +592,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.3);
             z-index: 1;
         }
         .call-overlay > * { position: relative; z-index: 2; }
@@ -733,7 +672,7 @@
             color: #1a1a2e;
         }
         
-        /* PÁGINA DE PERFIL DO USUÁRIO */
+        /* PÁGINA DE PERFIL */
         .profile-page {
             display: none;
             position: fixed;
@@ -748,9 +687,7 @@
             flex-direction: column;
             animation: slideIn 0.3s ease;
         }
-        .profile-page.active {
-            display: flex;
-        }
+        .profile-page.active { display: flex; }
         
         @keyframes slideIn {
             from { transform: translateX(100%); opacity: 0; }
@@ -810,10 +747,6 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
-        }
-        .profile-page-content .pp-name .verified-badge {
-            color: #1a73e8;
-            font-size: 20px;
         }
         .profile-page-content .pp-username {
             text-align: center;
@@ -1001,8 +934,6 @@
             .message { max-width: 90%; }
             .message-input-area .input-wrapper { padding: 2px 2px 2px 10px; }
             .message-input-area { margin-bottom: 50px; }
-            .sticker-grid { grid-template-columns: repeat(4, 1fr); }
-            .sticker-grid .sticker { font-size: 26px; }
         }
     </style>
 </head>
@@ -1065,10 +996,10 @@
             <div class="call-status" id="callStatus">Conectando...</div>
             <div class="call-timer" id="callTimer">00:00</div>
             <div class="call-actions">
-                <button class="btn-mute" id="callMute" title="Silenciar microfone">
+                <button class="btn-mute" id="callMute" title="Silenciar">
                     <i class="fas fa-microphone"></i>
                 </button>
-                <button class="btn-end-call" id="callEnd" title="Encerrar chamada">
+                <button class="btn-end-call" id="callEnd" title="Encerrar">
                     <i class="fas fa-phone-slash"></i>
                 </button>
                 <button class="btn-speaker" id="callSpeaker" title="Alto-falante">
@@ -1086,35 +1017,13 @@
             </span>
         </div>
         
-        <!-- INPUT COM STICKERS -->
+        <!-- INPUT -->
         <div class="message-input-area" id="messageInputArea">
             <div class="input-wrapper">
                 <input type="text" id="messageInput" placeholder="Digite uma mensagem..." />
                 <button class="attach-btn" id="attachBtn"><i class="fas fa-paperclip"></i></button>
-                <button class="sticker-btn" id="stickerBtn"><i class="fas fa-smile"></i></button>
             </div>
             <button class="send-btn" id="sendBtn"><i class="fas fa-paper-plane"></i></button>
-            
-            <div class="stickers-container" id="stickersContainer">
-                <div class="sticker-grid" id="stickerGrid">
-                    <div class="sticker">😊</div>
-                    <div class="sticker">😂</div>
-                    <div class="sticker">🥰</div>
-                    <div class="sticker">😍</div>
-                    <div class="sticker">🤔</div>
-                    <div class="sticker">😎</div>
-                    <div class="sticker">🔥</div>
-                    <div class="sticker">💀</div>
-                    <div class="sticker">👀</div>
-                    <div class="sticker">🙏</div>
-                    <div class="sticker">❤️</div>
-                    <div class="sticker">💪</div>
-                    <div class="sticker">✨</div>
-                    <div class="sticker">🎉</div>
-                    <div class="sticker">😢</div>
-                    <div class="sticker">🥺</div>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -1129,7 +1038,7 @@
         </div>
     </div>
 
-    <!-- PÁGINA DE PERFIL DO USUÁRIO -->
+    <!-- PÁGINA DE PERFIL -->
     <div class="profile-page" id="profilePage">
         <div class="profile-page-header">
             <button id="closeProfilePage"><i class="fas fa-arrow-left"></i></button>
@@ -1183,7 +1092,7 @@ import { initializeApp } from 'firebase/app';
 import { getAuth, signOut, onAuthStateChanged } from 'firebase/auth';
 import { 
     getDatabase, ref, set, push, onValue, update, get, 
-    serverTimestamp, query, orderByChild, limitToLast, onChildAdded, onChildChanged
+    serverTimestamp, query, orderByChild, limitToLast, onChildAdded, remove
 } from 'firebase/database';
 
 // ============================================
@@ -1241,9 +1150,6 @@ const convVideo = document.getElementById('convVideo');
 const convMore = document.getElementById('convMore');
 const btnNotifications = document.getElementById('btnNotifications');
 const attachBtn = document.getElementById('attachBtn');
-const stickerBtn = document.getElementById('stickerBtn');
-const stickersContainer = document.getElementById('stickersContainer');
-const stickerGrid = document.getElementById('stickerGrid');
 
 // Call
 const callOverlay = document.getElementById('callOverlay');
@@ -1264,36 +1170,6 @@ const closeFriendsList = document.getElementById('closeFriendsList');
 const profilePage = document.getElementById('profilePage');
 const profilePageContent = document.getElementById('profilePageContent');
 const closeProfilePage = document.getElementById('closeProfilePage');
-
-// ============================================
-// STICKERS
-// ============================================
-if (stickerBtn) {
-    stickerBtn.addEventListener('click', () => {
-        stickersContainer.classList.toggle('active');
-    });
-}
-
-if (stickerGrid) {
-    stickerGrid.addEventListener('click', (e) => {
-        const sticker = e.target.closest('.sticker');
-        if (sticker) {
-            const emoji = sticker.textContent;
-            if (messageInput) {
-                messageInput.value += emoji;
-                messageInput.focus();
-            }
-            stickersContainer.classList.remove('active');
-        }
-    });
-}
-
-// Fechar stickers ao clicar fora
-document.addEventListener('click', (e) => {
-    if (stickersContainer && !e.target.closest('.message-input-area')) {
-        stickersContainer.classList.remove('active');
-    }
-});
 
 // ============================================
 // FUNÇÕES
@@ -1373,7 +1249,6 @@ function loadChats() {
         
         chatList.innerHTML = html;
         
-        // Adicionar eventos de clique para abrir conversa
         chatList.querySelectorAll('.chat-item').forEach(item => {
             item.addEventListener('click', function() {
                 const uid = this.dataset.uid;
@@ -1384,25 +1259,19 @@ function loadChats() {
 }
 
 // ============================================
-// ABRIR PERFIL DO USUÁRIO
+// ABRIR PERFIL
 // ============================================
 window.openProfile = function(uid) {
     const user = allUsers[uid];
-    if (!user) {
-        console.error('Usuário não encontrado');
-        return;
-    }
+    if (!user) return;
     
     const photo = user.photo ? `<img src="${user.photo}" alt="" />` : `<i class="fas fa-user"></i>`;
-    const verified = user.verified ? `<i class="fas fa-check-circle verified-badge"></i>` : '';
+    const verified = user.verified ? `<i class="fas fa-check-circle" style="color:#1a73e8;font-size:20px;"></i>` : '';
     const statusClass = user.status === 'online' ? 'online' : 'offline';
     const statusText = user.status === 'online' ? '🟢 Online' : '⚪ Offline';
     
-    // Contar amigos
     let friendsCount = 0;
-    if (user.friends) {
-        friendsCount = Object.keys(user.friends).length;
-    }
+    if (user.friends) friendsCount = Object.keys(user.friends).length;
     
     profilePageContent.innerHTML = `
         <div class="pp-avatar">${photo}</div>
@@ -1456,7 +1325,6 @@ window.startChatFromProfile = function(uid) {
     profilePage.classList.remove('active');
     document.body.style.overflow = 'auto';
     
-    // Verificar se já tem conversa
     if (!chats[uid]) {
         const chatId = [currentUser.uid, uid].sort().join('_');
         set(ref(database, `chats/${currentUser.uid}/${uid}`), {
@@ -1491,7 +1359,6 @@ window.openConversation = function(uid) {
         convStatus.className = `conv-status ${user.status === 'online' ? 'online' : ''}`;
     }
     
-    // Adicionar evento de clique no nome para abrir perfil
     if (convName) {
         convName.style.cursor = 'pointer';
         convName.onclick = () => openProfile(uid);
@@ -1617,7 +1484,7 @@ if (messageInput) {
 }
 
 // ============================================
-// CHAMADA DE ÁUDIO - CORRIGIDA
+// CHAMADA - VERSÃO SIMPLES QUE FUNCIONA
 // ============================================
 async function startAudioCall() {
     if (!currentChatUser) {
@@ -1626,105 +1493,98 @@ async function startAudioCall() {
     }
 
     try {
-        // PEDIR PERMISSÃO DO MICROFONE
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        
-        isCallActive = true;
-        callAnswered = false;
-        callSeconds = 0;
-        
-        const user = currentChatUser;
-        
-        if (callOverlay) {
-            if (user.photo) {
-                callOverlay.style.backgroundImage = `url('${user.photo}')`;
-            } else {
-                callOverlay.style.backgroundImage = 'linear-gradient(135deg, #0d47a1, #1a73e8)';
-            }
-        }
-        
-        if (callAvatar) {
-            callAvatar.innerHTML = user.photo ? `<img src="${user.photo}" alt="" />` : `<i class="fas fa-user"></i>`;
-        }
-        if (callName) callName.textContent = user.fullName || 'Usuário';
-        if (callStatus) callStatus.textContent = '📞 Chamando...';
-        if (callTimer) callTimer.textContent = '00:00';
-        
-        if (callOverlay) callOverlay.classList.add('active');
-        
-        // CRIAR CHAMADA NO FIREBASE
-        const callRef = ref(database, `calls/${currentUser.uid}/${user.uid}`);
-        await set(callRef, {
-            type: 'audio',
-            from: currentUser.uid,
-            fromName: currentUserData?.fullName || 'Usuário',
-            to: user.uid,
-            status: 'calling',
-            timestamp: serverTimestamp()
-        });
-        
-        // NOTIFICAR OUTRO USUÁRIO
-        const notifRef = ref(database, `notifications/${user.uid}/${currentUser.uid}_call`);
-        await set(notifRef, {
-            type: 'call',
-            fromUid: currentUser.uid,
-            fromName: currentUserData?.fullName || 'Usuário',
-            message: 'está chamando você 📞',
-            callType: 'audio',
-            timestamp: serverTimestamp()
-        });
-        
-        // ESCUTAR RESPOSTA
-        const callResponseRef = ref(database, `calls/${user.uid}/${currentUser.uid}`);
-        const listener = onValue(callResponseRef, (snapshot) => {
-            const data = snapshot.val();
-            if (data?.status === 'answered' && !callAnswered) {
-                callAnswered = true;
-                if (callStatus) callStatus.textContent = '📞 Chamada conectada';
-                startCallTimer();
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Chamada conectada!',
-                    text: `${user.fullName} atendeu`,
-                    timer: 1500,
-                    showConfirmButton: false
-                });
-            } else if (data?.status === 'rejected' && !callAnswered) {
-                stream.getTracks().forEach(track => track.stop());
-                endCall();
-                Swal.fire({
-                    icon: 'info',
-                    title: 'Chamada recusada',
-                    text: `${user.fullName} recusou`,
-                    confirmButtonColor: '#1a73e8'
-                });
-            }
-        });
-        
-        // TIMEOUT - NÃO ATENDEU
-        setTimeout(() => {
-            if (!callAnswered && isCallActive) {
-                update(callRef, { status: 'missed' });
-                stream.getTracks().forEach(track => track.stop());
-                endCall();
-                Swal.fire({
-                    icon: 'info',
-                    title: 'Chamada não atendida',
-                    text: `${user.fullName} não atendeu`,
-                    confirmButtonColor: '#1a73e8'
-                });
-            }
-        }, 30000);
-        
+        // Tenta pedir permissão do microfone
+        await navigator.mediaDevices.getUserMedia({ audio: true });
     } catch (error) {
-        console.error('Erro ao iniciar chamada:', error);
-        Swal.fire({
-            icon: 'error',
-            title: 'Permissão negada',
-            text: 'Permita o acesso ao microfone para fazer chamadas',
-            confirmButtonColor: '#1a73e8'
-        });
+        console.log('Permissão de áudio negada, continuando sem áudio');
     }
+    
+    isCallActive = true;
+    callAnswered = false;
+    callSeconds = 0;
+    
+    const user = currentChatUser;
+    
+    // Configurar overlay
+    if (callOverlay) {
+        if (user.photo) {
+            callOverlay.style.backgroundImage = `url('${user.photo}')`;
+            callOverlay.style.backgroundColor = '';
+        } else {
+            callOverlay.style.backgroundImage = 'linear-gradient(135deg, #0d47a1, #1a73e8)';
+        }
+    }
+    
+    if (callAvatar) {
+        callAvatar.innerHTML = user.photo ? `<img src="${user.photo}" alt="" />` : `<i class="fas fa-user"></i>`;
+    }
+    if (callName) callName.textContent = user.fullName || 'Usuário';
+    if (callStatus) callStatus.textContent = '📞 Chamando...';
+    if (callTimer) callTimer.textContent = '00:00';
+    
+    if (callOverlay) callOverlay.classList.add('active');
+    
+    // CRIAR CHAMADA NO FIREBASE
+    const callRef = ref(database, `calls/${currentUser.uid}/${user.uid}`);
+    await set(callRef, {
+        type: 'audio',
+        from: currentUser.uid,
+        fromName: currentUserData?.fullName || 'Usuário',
+        to: user.uid,
+        status: 'calling',
+        timestamp: serverTimestamp()
+    });
+    
+    // NOTIFICAR OUTRO USUÁRIO
+    const notifRef = ref(database, `notifications/${user.uid}/${currentUser.uid}_call`);
+    await set(notifRef, {
+        type: 'call',
+        fromUid: currentUser.uid,
+        fromName: currentUserData?.fullName || 'Usuário',
+        message: 'está chamando você 📞',
+        callType: 'audio',
+        timestamp: serverTimestamp()
+    });
+    
+    // ESCUTAR RESPOSTA
+    const callResponseRef = ref(database, `calls/${user.uid}/${currentUser.uid}`);
+    const listener = onValue(callResponseRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data?.status === 'answered' && !callAnswered) {
+            callAnswered = true;
+            if (callStatus) callStatus.textContent = '📞 Chamada conectada';
+            startCallTimer();
+            Swal.fire({
+                icon: 'success',
+                title: 'Chamada conectada!',
+                text: `${user.fullName} atendeu`,
+                timer: 1500,
+                showConfirmButton: false
+            });
+        } else if (data?.status === 'rejected' && !callAnswered) {
+            endCall();
+            Swal.fire({
+                icon: 'info',
+                title: 'Chamada recusada',
+                text: `${user.fullName} recusou`,
+                confirmButtonColor: '#1a73e8'
+            });
+        }
+    });
+    
+    // TIMEOUT - NÃO ATENDEU (15 segundos)
+    setTimeout(() => {
+        if (!callAnswered && isCallActive) {
+            update(callRef, { status: 'missed' });
+            endCall();
+            Swal.fire({
+                icon: 'info',
+                title: 'Chamada não atendida',
+                text: `${user.fullName} não atendeu`,
+                confirmButtonColor: '#1a73e8'
+            });
+        }
+    }, 15000);
 }
 
 function startCallTimer() {
@@ -1767,94 +1627,85 @@ async function startVideoCall() {
     }
 
     try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: true });
-        
-        isCallActive = true;
-        callAnswered = false;
-        callSeconds = 0;
-        
-        const user = currentChatUser;
-        if (callOverlay) {
-            callOverlay.style.backgroundImage = 'linear-gradient(135deg, #0d47a1, #1a73e8)';
-        }
-        if (callAvatar) {
-            callAvatar.innerHTML = user.photo ? `<img src="${user.photo}" alt="" />` : `<i class="fas fa-user"></i>`;
-        }
-        if (callName) callName.textContent = user.fullName || 'Usuário';
-        if (callStatus) callStatus.textContent = '📹 Chamando...';
-        if (callTimer) callTimer.textContent = '00:00';
-        
-        if (callOverlay) callOverlay.classList.add('active');
-        
-        const callRef = ref(database, `calls/${currentUser.uid}/${user.uid}`);
-        await set(callRef, {
-            type: 'video',
-            from: currentUser.uid,
-            fromName: currentUserData?.fullName || 'Usuário',
-            to: user.uid,
-            status: 'calling',
-            timestamp: serverTimestamp()
-        });
-        
-        const notifRef = ref(database, `notifications/${user.uid}/${currentUser.uid}_call`);
-        await set(notifRef, {
-            type: 'call',
-            fromUid: currentUser.uid,
-            fromName: currentUserData?.fullName || 'Usuário',
-            message: 'está chamando você 📹',
-            callType: 'video',
-            timestamp: serverTimestamp()
-        });
-        
-        const callResponseRef = ref(database, `calls/${user.uid}/${currentUser.uid}`);
-        const listener = onValue(callResponseRef, (snapshot) => {
-            const data = snapshot.val();
-            if (data?.status === 'answered' && !callAnswered) {
-                callAnswered = true;
-                if (callStatus) callStatus.textContent = '📹 Chamada de vídeo conectada';
-                startCallTimer();
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Vídeo chamada conectada!',
-                    text: `${user.fullName} atendeu`,
-                    timer: 1500,
-                    showConfirmButton: false
-                });
-            } else if (data?.status === 'rejected' && !callAnswered) {
-                stream.getTracks().forEach(track => track.stop());
-                endCall();
-                Swal.fire({
-                    icon: 'info',
-                    title: 'Chamada recusada',
-                    text: `${user.fullName} recusou`,
-                    confirmButtonColor: '#1a73e8'
-                });
-            }
-        });
-        
-        setTimeout(() => {
-            if (!callAnswered && isCallActive) {
-                update(callRef, { status: 'missed' });
-                stream.getTracks().forEach(track => track.stop());
-                endCall();
-                Swal.fire({
-                    icon: 'info',
-                    title: 'Chamada não atendida',
-                    text: `${user.fullName} não atendeu`,
-                    confirmButtonColor: '#1a73e8'
-                });
-            }
-        }, 30000);
-        
+        await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: true });
     } catch (error) {
-        console.error('Erro ao iniciar chamada de vídeo:', error);
-        Swal.fire({
-            icon: 'error',
-            title: 'Permissão negada',
-            text: 'Permita o acesso à câmera para vídeo chamadas',
-            confirmButtonColor: '#1a73e8'
-        });
+        console.log('Permissão de câmera negada, continuando sem vídeo');
     }
+    
+    isCallActive = true;
+    callAnswered = false;
+    callSeconds = 0;
+    
+    const user = currentChatUser;
+    if (callOverlay) {
+        callOverlay.style.backgroundImage = 'linear-gradient(135deg, #0d47a1, #1a73e8)';
+    }
+    if (callAvatar) {
+        callAvatar.innerHTML = user.photo ? `<img src="${user.photo}" alt="" />` : `<i class="fas fa-user"></i>`;
+    }
+    if (callName) callName.textContent = user.fullName || 'Usuário';
+    if (callStatus) callStatus.textContent = '📹 Chamando...';
+    if (callTimer) callTimer.textContent = '00:00';
+    
+    if (callOverlay) callOverlay.classList.add('active');
+    
+    const callRef = ref(database, `calls/${currentUser.uid}/${user.uid}`);
+    await set(callRef, {
+        type: 'video',
+        from: currentUser.uid,
+        fromName: currentUserData?.fullName || 'Usuário',
+        to: user.uid,
+        status: 'calling',
+        timestamp: serverTimestamp()
+    });
+    
+    const notifRef = ref(database, `notifications/${user.uid}/${currentUser.uid}_call`);
+    await set(notifRef, {
+        type: 'call',
+        fromUid: currentUser.uid,
+        fromName: currentUserData?.fullName || 'Usuário',
+        message: 'está chamando você 📹',
+        callType: 'video',
+        timestamp: serverTimestamp()
+    });
+    
+    const callResponseRef = ref(database, `calls/${user.uid}/${currentUser.uid}`);
+    const listener = onValue(callResponseRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data?.status === 'answered' && !callAnswered) {
+            callAnswered = true;
+            if (callStatus) callStatus.textContent = '📹 Chamada de vídeo conectada';
+            startCallTimer();
+            Swal.fire({
+                icon: 'success',
+                title: 'Vídeo chamada conectada!',
+                text: `${user.fullName} atendeu`,
+                timer: 1500,
+                showConfirmButton: false
+            });
+        } else if (data?.status === 'rejected' && !callAnswered) {
+            endCall();
+            Swal.fire({
+                icon: 'info',
+                title: 'Chamada recusada',
+                text: `${user.fullName} recusou`,
+                confirmButtonColor: '#1a73e8'
+            });
+        }
+    });
+    
+    setTimeout(() => {
+        if (!callAnswered && isCallActive) {
+            update(callRef, { status: 'missed' });
+            endCall();
+            Swal.fire({
+                icon: 'info',
+                title: 'Chamada não atendida',
+                text: `${user.fullName} não atendeu`,
+                confirmButtonColor: '#1a73e8'
+            });
+        }
+    }, 15000);
 }
 
 if (convVideo) {
@@ -1862,7 +1713,7 @@ if (convVideo) {
 }
 
 // ============================================
-// ESCUTAR CHAMADAS ENTRANTES
+// ESCUTAR CHAMADAS ENTRANTES - NOTIFICAÇÃO REAL
 // ============================================
 function listenIncomingCalls() {
     if (!currentUser) return;
@@ -1877,24 +1728,37 @@ function listenIncomingCalls() {
                 if (!fromUser) continue;
                 
                 const isVideo = callData.type === 'video';
+                
+                // Mostrar notificação
                 const result = await Swal.fire({
                     title: isVideo ? '📹 Chamada de vídeo' : '📞 Chamada de áudio',
-                    text: `${fromUser.fullName} está chamando você`,
+                    text: `${fromUser.fullName || 'Usuário'} está chamando você`,
                     icon: 'info',
                     showCancelButton: true,
                     confirmButtonText: 'Atender',
                     cancelButtonText: 'Recusar',
                     confirmButtonColor: '#2ed573',
                     cancelButtonColor: '#ea4335',
-                    timer: 30000
+                    timer: 15000,
+                    timerProgressBar: true,
+                    background: '#ffffff',
+                    allowOutsideClick: false
                 });
                 
                 const callRef = ref(database, `calls/${currentUser.uid}/${fromUid}`);
                 if (result.isConfirmed) {
                     await update(callRef, { status: 'answered' });
-                    if (conversationView && !conversationView.classList.contains('active')) {
+                    // Abrir conversa
+                    if (!conversationView.classList.contains('active')) {
                         openConversation(fromUid);
                     }
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Chamada conectada!',
+                        text: `Você atendeu a chamada de ${fromUser.fullName}`,
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
                 } else {
                     await update(callRef, { status: 'rejected' });
                 }
@@ -2003,7 +1867,7 @@ if (callEnd) {
 }
 
 // ============================================
-// NOTIFICAÇÕES E OUTROS
+// NOTIFICAÇÕES
 // ============================================
 if (btnNotifications) {
     btnNotifications.addEventListener('click', function() {
@@ -2023,11 +1887,11 @@ if (convMore) {
             title: 'Opções',
             html: `
                 <div style="text-align:left;">
-                    <button id="optionViewProfile" style="width:100%;padding:10px;border:none;background:none;text-align:left;font-size:14px;cursor:pointer;border-bottom:1px solid #e8f0fe;" onclick="window.openProfile('${currentChatUser.uid}')">
+                    <button onclick="window.openProfile('${currentChatUser.uid}')" style="width:100%;padding:10px;border:none;background:none;text-align:left;font-size:14px;cursor:pointer;border-bottom:1px solid #e8f0fe;">
                         <i class="fas fa-user" style="color:#1a73e8;"></i> Ver perfil
                     </button>
-                    <button id="optionClear" style="width:100%;padding:10px;border:none;background:none;text-align:left;font-size:14px;cursor:pointer;color:#ea4335;">
-                        <i class="fas fa-trash-alt"></i> Apagar conversa
+                    <button onclick="window.closeConversation()" style="width:100%;padding:10px;border:none;background:none;text-align:left;font-size:14px;cursor:pointer;color:#ea4335;">
+                        <i class="fas fa-times"></i> Fechar conversa
                     </button>
                 </div>
             `,
@@ -2115,7 +1979,7 @@ window.openProfile = openProfile;
 window.closeProfilePage = closeProfilePage;
 window.startChatFromProfile = startChatFromProfile;
 
-console.log('🚀 Zonne - Chat com Stickers e Perfil!');
+console.log('🚀 Zonne - Chat com notificações reais!');
 console.log('✅ Sistema pronto!');
 </script>
 </body>
