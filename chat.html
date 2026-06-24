@@ -345,7 +345,7 @@
         }
         
         .message {
-            max-width: 80%;
+            max-width: 85%;
             padding: 10px 14px;
             border-radius: 16px;
             font-size: 15px;
@@ -355,8 +355,8 @@
             animation: msgIn 0.3s ease;
         }
         @keyframes msgIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translateY(8px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
         
         .message.sent {
@@ -380,6 +380,40 @@
             margin-top: 4px;
             display: block;
             text-align: right;
+        }
+        
+        /* STICKER MENSAGEM - GRANDE E ANIMADA */
+        .message.sticker-msg {
+            max-width: 120px;
+            padding: 8px;
+            font-size: 56px;
+            line-height: 1;
+            text-align: center;
+            border-radius: 16px;
+            background: transparent !important;
+            border: none !important;
+            animation: stickerBounce 0.5s ease;
+        }
+        .message.sticker-msg.sent {
+            align-self: flex-end;
+            background: transparent !important;
+        }
+        .message.sticker-msg.received {
+            align-self: flex-start;
+            background: transparent !important;
+            border: none !important;
+        }
+        .message.sticker-msg .msg-time {
+            font-size: 9px;
+            opacity: 0.5;
+            margin-top: 2px;
+        }
+        
+        @keyframes stickerBounce {
+            0% { transform: scale(0.3) rotate(-10deg); opacity: 0; }
+            50% { transform: scale(1.2) rotate(5deg); }
+            70% { transform: scale(0.9) rotate(-2deg); }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
         }
         
         /* TYPING */
@@ -454,19 +488,20 @@
         .message-input-area .input-wrapper input::placeholder {
             color: #9aa0a6;
         }
-        .message-input-area .input-wrapper .attach-btn {
+        .message-input-area .input-wrapper .sticker-btn {
             background: none;
             border: none;
             color: #5f6368;
-            font-size: 18px;
+            font-size: 24px;
             cursor: pointer;
             padding: 4px 8px;
             border-radius: 50%;
             transition: all 0.3s;
         }
-        .message-input-area .input-wrapper .attach-btn:hover {
+        .message-input-area .input-wrapper .sticker-btn:hover {
             background: #e8f0fe;
             color: #1a73e8;
+            transform: scale(1.1);
         }
         .message-input-area .send-btn {
             width: 44px;
@@ -491,6 +526,44 @@
             opacity: 0.5;
             cursor: not-allowed;
             transform: none;
+        }
+        
+        /* STICKERS POPUP */
+        .stickers-popup {
+            display: none;
+            position: absolute;
+            bottom: 70px;
+            left: 10px;
+            right: 10px;
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            border: 1px solid #e8f0fe;
+            z-index: 20;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .stickers-popup.active {
+            display: block;
+        }
+        .stickers-popup .sticker-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+        }
+        .stickers-popup .sticker-grid .sticker {
+            font-size: 36px;
+            text-align: center;
+            padding: 6px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+            background: #f8f9fa;
+        }
+        .stickers-popup .sticker-grid .sticker:hover {
+            transform: scale(1.2);
+            background: #e8f0fe;
         }
         
         /* BARRA INFERIOR */
@@ -581,8 +654,6 @@
             color: white;
             padding: 40px 20px;
             background: linear-gradient(135deg, #0d47a1, #1a73e8);
-            background-size: cover;
-            background-position: center;
         }
         .call-overlay.active { display: flex; }
         .call-overlay::before {
@@ -598,8 +669,8 @@
         .call-overlay > * { position: relative; z-index: 2; }
         
         .call-overlay .call-avatar {
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
             overflow: hidden;
             border: 4px solid rgba(255,255,255,0.3);
@@ -607,40 +678,37 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 50px;
-            margin-bottom: 20px;
+            font-size: 40px;
+            margin-bottom: 16px;
         }
         .call-overlay .call-avatar img { width: 100%; height: 100%; object-fit: cover; }
         .call-overlay .call-name {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 700;
             margin-bottom: 4px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
         .call-overlay .call-status {
-            font-size: 16px;
-            opacity: 0.9;
-            margin-bottom: 30px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 20px;
         }
         .call-overlay .call-timer {
-            font-size: 40px;
+            font-size: 36px;
             font-weight: 300;
-            margin-bottom: 30px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
         }
         .call-overlay .call-actions {
             display: flex;
-            gap: 20px;
+            gap: 16px;
             flex-wrap: wrap;
             justify-content: center;
         }
         .call-overlay .call-actions button {
-            width: 64px;
-            height: 64px;
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
             border: none;
-            font-size: 24px;
+            font-size: 22px;
             cursor: pointer;
             transition: all 0.3s;
             display: flex;
@@ -658,17 +726,8 @@
             color: white;
         }
         .call-overlay .call-actions .btn-mute:hover { background: rgba(255,255,255,0.3); }
-        .call-overlay .call-actions .btn-speaker {
-            background: rgba(255,255,255,0.2);
-            color: white;
-        }
-        .call-overlay .call-actions .btn-speaker:hover { background: rgba(255,255,255,0.3); }
         .call-overlay .call-actions .btn-mute.active {
             background: #f9ab00;
-            color: #1a1a2e;
-        }
-        .call-overlay .call-actions .btn-speaker.active {
-            background: #2ed573;
             color: #1a1a2e;
         }
         
@@ -916,16 +975,6 @@
                 left: 50%;
                 transform: translateX(-50%);
             }
-            .friends-list-page {
-                max-width: 480px;
-                left: 50%;
-                transform: translateX(-50%);
-            }
-            .profile-page {
-                max-width: 480px;
-                left: 50%;
-                transform: translateX(-50%);
-            }
         }
         
         @media (max-width: 380px) {
@@ -934,6 +983,8 @@
             .message { max-width: 90%; }
             .message-input-area .input-wrapper { padding: 2px 2px 2px 10px; }
             .message-input-area { margin-bottom: 50px; }
+            .stickers-popup .sticker-grid { grid-template-columns: repeat(4, 1fr); }
+            .stickers-popup .sticker-grid .sticker { font-size: 28px; }
         }
     </style>
 </head>
@@ -983,8 +1034,8 @@
                 <div class="conv-status" id="convStatus">Offline</div>
             </div>
             <div class="conv-actions">
-                <button id="convCall" title="Chamada de áudio"><i class="fas fa-phone"></i></button>
-                <button id="convVideo" title="Chamada de vídeo"><i class="fas fa-video"></i></button>
+                <button id="convCall" title="Chamada"><i class="fas fa-phone"></i></button>
+                <button id="convVideo" title="Vídeo"><i class="fas fa-video"></i></button>
                 <button id="convMore" title="Mais"><i class="fas fa-ellipsis-v"></i></button>
             </div>
         </div>
@@ -993,18 +1044,11 @@
         <div class="call-overlay" id="callOverlay">
             <div class="call-avatar" id="callAvatar"><i class="fas fa-user"></i></div>
             <div class="call-name" id="callName">Usuário</div>
-            <div class="call-status" id="callStatus">Conectando...</div>
+            <div class="call-status" id="callStatus">Chamando...</div>
             <div class="call-timer" id="callTimer">00:00</div>
             <div class="call-actions">
-                <button class="btn-mute" id="callMute" title="Silenciar">
-                    <i class="fas fa-microphone"></i>
-                </button>
-                <button class="btn-end-call" id="callEnd" title="Encerrar">
-                    <i class="fas fa-phone-slash"></i>
-                </button>
-                <button class="btn-speaker" id="callSpeaker" title="Alto-falante">
-                    <i class="fas fa-volume-up"></i>
-                </button>
+                <button class="btn-mute" id="callMute"><i class="fas fa-microphone"></i></button>
+                <button class="btn-end-call" id="callEnd"><i class="fas fa-phone-slash"></i></button>
             </div>
         </div>
         
@@ -1012,22 +1056,46 @@
         
         <div class="typing-indicator" id="typingIndicator">
             <span>Digitando</span>
-            <span class="dots">
-                <span></span><span></span><span></span>
-            </span>
+            <span class="dots"><span></span><span></span><span></span></span>
         </div>
         
-        <!-- INPUT -->
+        <!-- INPUT COM STICKERS -->
         <div class="message-input-area" id="messageInputArea">
             <div class="input-wrapper">
                 <input type="text" id="messageInput" placeholder="Digite uma mensagem..." />
-                <button class="attach-btn" id="attachBtn"><i class="fas fa-paperclip"></i></button>
+                <button class="sticker-btn" id="stickerBtn"><i class="fas fa-smile"></i></button>
             </div>
             <button class="send-btn" id="sendBtn"><i class="fas fa-paper-plane"></i></button>
+            
+            <!-- STICKERS POPUP -->
+            <div class="stickers-popup" id="stickersPopup">
+                <div class="sticker-grid">
+                    <div class="sticker">😊</div>
+                    <div class="sticker">😂</div>
+                    <div class="sticker">🥰</div>
+                    <div class="sticker">😍</div>
+                    <div class="sticker">🤔</div>
+                    <div class="sticker">😎</div>
+                    <div class="sticker">🔥</div>
+                    <div class="sticker">💀</div>
+                    <div class="sticker">👀</div>
+                    <div class="sticker">🙏</div>
+                    <div class="sticker">❤️</div>
+                    <div class="sticker">💪</div>
+                    <div class="sticker">✨</div>
+                    <div class="sticker">🎉</div>
+                    <div class="sticker">😢</div>
+                    <div class="sticker">🥺</div>
+                    <div class="sticker">😡</div>
+                    <div class="sticker">🤡</div>
+                    <div class="sticker">🥳</div>
+                    <div class="sticker">🤯</div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- LISTA DE AMIGOS -->
+    <!-- LISTA DE USUÁRIOS PARA NOVA CONVERSA -->
     <div class="friends-list-page" id="friendsListPage">
         <div class="friends-list-header">
             <button id="closeFriendsList"><i class="fas fa-arrow-left"></i></button>
@@ -1042,7 +1110,7 @@
     <div class="profile-page" id="profilePage">
         <div class="profile-page-header">
             <button id="closeProfilePage"><i class="fas fa-arrow-left"></i></button>
-            <h5><i class="fas fa-user" style="color:#1a73e8;"></i> Perfil</h5>
+            <h5><i class="fas fa-user"></i> Perfil</h5>
         </div>
         <div class="profile-page-content" id="profilePageContent">
             <div class="loading-container"><div class="spinner"></div></div>
@@ -1149,7 +1217,8 @@ const convCall = document.getElementById('convCall');
 const convVideo = document.getElementById('convVideo');
 const convMore = document.getElementById('convMore');
 const btnNotifications = document.getElementById('btnNotifications');
-const attachBtn = document.getElementById('attachBtn');
+const stickerBtn = document.getElementById('stickerBtn');
+const stickersPopup = document.getElementById('stickersPopup');
 
 // Call
 const callOverlay = document.getElementById('callOverlay');
@@ -1159,7 +1228,6 @@ const callStatus = document.getElementById('callStatus');
 const callTimer = document.getElementById('callTimer');
 const callMute = document.getElementById('callMute');
 const callEnd = document.getElementById('callEnd');
-const callSpeaker = document.getElementById('callSpeaker');
 
 // Friends list
 const friendsListPage = document.getElementById('friendsListPage');
@@ -1170,6 +1238,35 @@ const closeFriendsList = document.getElementById('closeFriendsList');
 const profilePage = document.getElementById('profilePage');
 const profilePageContent = document.getElementById('profilePageContent');
 const closeProfilePage = document.getElementById('closeProfilePage');
+
+// ============================================
+// STICKERS
+// ============================================
+if (stickerBtn) {
+    stickerBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        stickersPopup.classList.toggle('active');
+    });
+}
+
+// Fechar stickers ao clicar fora
+document.addEventListener('click', () => {
+    if (stickersPopup) stickersPopup.classList.remove('active');
+});
+
+// Selecionar sticker
+document.querySelectorAll('.sticker').forEach(el => {
+    el.addEventListener('click', function() {
+        const emoji = this.textContent;
+        if (messageInput) {
+            messageInput.value = emoji;
+            messageInput.focus();
+            // Enviar automaticamente
+            sendMessage();
+        }
+        if (stickersPopup) stickersPopup.classList.remove('active');
+    });
+});
 
 // ============================================
 // FUNÇÕES
@@ -1294,7 +1391,7 @@ window.openProfile = function(uid) {
             </div>
             <div class="stat-item">
                 <div class="number">${user.likesCount || 0}</div>
-                <div class="label"><i class="fas fa-heart" style="color:#ea4335;"></i> Curtidas</div>
+                <div class="label"><i class="fas fa-heart"></i> Curtidas</div>
             </div>
         </div>
         
@@ -1407,14 +1504,25 @@ function loadMessages(uid) {
     messageListener = onChildAdded(messagesQuery, (snapshot) => {
         const msg = snapshot.val();
         const isSent = msg.from === currentUser.uid;
+        const isSticker = msg.isSticker || false;
         const time = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '';
         
         const div = document.createElement('div');
-        div.className = `message ${isSent ? 'sent' : 'received'}`;
-        div.innerHTML = `
-            ${msg.text}
-            <span class="msg-time">${time}</span>
-        `;
+        
+        if (isSticker) {
+            div.className = `message sticker-msg ${isSent ? 'sent' : 'received'}`;
+            div.innerHTML = `
+                ${msg.text}
+                <span class="msg-time">${time}</span>
+            `;
+        } else {
+            div.className = `message ${isSent ? 'sent' : 'received'}`;
+            div.innerHTML = `
+                ${msg.text}
+                <span class="msg-time">${time}</span>
+            `;
+        }
+        
         if (messagesContainer) {
             messagesContainer.appendChild(div);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -1431,6 +1539,9 @@ async function sendMessage() {
     
     const uid = currentChatUser.uid;
     const chatId = [currentUser.uid, uid].sort().join('_');
+    const isSticker = /^[\u{1F600}-\u{1F9FF}]$/u.test(text) || 
+                      /^[\u2764\u{1F940}-\u{1F9FF}]$/u.test(text) ||
+                      /^[\u2600-\u26FF\u2700-\u27BF]/.test(text);
     
     if (sendBtn) {
         sendBtn.disabled = true;
@@ -1443,6 +1554,7 @@ async function sendMessage() {
             from: currentUser.uid,
             to: uid,
             text: text,
+            isSticker: isSticker,
             timestamp: serverTimestamp(),
             read: false
         });
@@ -1484,7 +1596,7 @@ if (messageInput) {
 }
 
 // ============================================
-// CHAMADA - VERSÃO SIMPLES QUE FUNCIONA
+// CHAMADA - SIMPLES E FUNCIONAL
 // ============================================
 async function startAudioCall() {
     if (!currentChatUser) {
@@ -1492,13 +1604,6 @@ async function startAudioCall() {
         return;
     }
 
-    try {
-        // Tenta pedir permissão do microfone
-        await navigator.mediaDevices.getUserMedia({ audio: true });
-    } catch (error) {
-        console.log('Permissão de áudio negada, continuando sem áudio');
-    }
-    
     isCallActive = true;
     callAnswered = false;
     callSeconds = 0;
@@ -1509,6 +1614,7 @@ async function startAudioCall() {
     if (callOverlay) {
         if (user.photo) {
             callOverlay.style.backgroundImage = `url('${user.photo}')`;
+            callOverlay.style.backgroundSize = 'cover';
             callOverlay.style.backgroundColor = '';
         } else {
             callOverlay.style.backgroundImage = 'linear-gradient(135deg, #0d47a1, #1a73e8)';
@@ -1524,7 +1630,7 @@ async function startAudioCall() {
     
     if (callOverlay) callOverlay.classList.add('active');
     
-    // CRIAR CHAMADA NO FIREBASE
+    // Criar chamada no Firebase
     const callRef = ref(database, `calls/${currentUser.uid}/${user.uid}`);
     await set(callRef, {
         type: 'audio',
@@ -1535,18 +1641,17 @@ async function startAudioCall() {
         timestamp: serverTimestamp()
     });
     
-    // NOTIFICAR OUTRO USUÁRIO
+    // Notificar outro usuário
     const notifRef = ref(database, `notifications/${user.uid}/${currentUser.uid}_call`);
     await set(notifRef, {
         type: 'call',
         fromUid: currentUser.uid,
         fromName: currentUserData?.fullName || 'Usuário',
-        message: 'está chamando você 📞',
-        callType: 'audio',
+        message: '📞 Chamada de áudio',
         timestamp: serverTimestamp()
     });
     
-    // ESCUTAR RESPOSTA
+    // Escutar resposta
     const callResponseRef = ref(database, `calls/${user.uid}/${currentUser.uid}`);
     const listener = onValue(callResponseRef, (snapshot) => {
         const data = snapshot.val();
@@ -1572,7 +1677,7 @@ async function startAudioCall() {
         }
     });
     
-    // TIMEOUT - NÃO ATENDEU (15 segundos)
+    // Timeout - não atendeu (15 segundos)
     setTimeout(() => {
         if (!callAnswered && isCallActive) {
             update(callRef, { status: 'missed' });
@@ -1626,12 +1731,6 @@ async function startVideoCall() {
         return;
     }
 
-    try {
-        await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: true });
-    } catch (error) {
-        console.log('Permissão de câmera negada, continuando sem vídeo');
-    }
-    
     isCallActive = true;
     callAnswered = false;
     callSeconds = 0;
@@ -1664,8 +1763,7 @@ async function startVideoCall() {
         type: 'call',
         fromUid: currentUser.uid,
         fromName: currentUserData?.fullName || 'Usuário',
-        message: 'está chamando você 📹',
-        callType: 'video',
+        message: '📹 Chamada de vídeo',
         timestamp: serverTimestamp()
     });
     
@@ -1713,7 +1811,7 @@ if (convVideo) {
 }
 
 // ============================================
-// ESCUTAR CHAMADAS ENTRANTES - NOTIFICAÇÃO REAL
+// ESCUTAR CHAMADAS ENTRANTES
 // ============================================
 function listenIncomingCalls() {
     if (!currentUser) return;
@@ -1729,7 +1827,6 @@ function listenIncomingCalls() {
                 
                 const isVideo = callData.type === 'video';
                 
-                // Mostrar notificação
                 const result = await Swal.fire({
                     title: isVideo ? '📹 Chamada de vídeo' : '📞 Chamada de áudio',
                     text: `${fromUser.fullName || 'Usuário'} está chamando você`,
@@ -1748,7 +1845,6 @@ function listenIncomingCalls() {
                 const callRef = ref(database, `calls/${currentUser.uid}/${fromUid}`);
                 if (result.isConfirmed) {
                     await update(callRef, { status: 'answered' });
-                    // Abrir conversa
                     if (!conversationView.classList.contains('active')) {
                         openConversation(fromUid);
                     }
@@ -1768,33 +1864,34 @@ function listenIncomingCalls() {
 }
 
 // ============================================
-// NOVA CONVERSA
+// NOVA CONVERSA - MOSTRA TODOS OS USUÁRIOS
 // ============================================
 if (btnNewChat) {
     btnNewChat.addEventListener('click', async () => {
         await loadUsers();
         
-        const friendsList = Object.keys(allUsers).filter(uid => {
+        // Mostra TODOS os usuários exceto o atual
+        const usersList = Object.keys(allUsers).filter(uid => {
             if (uid === currentUser.uid) return false;
-            if (chats[uid]) return false;
             return true;
         });
         
-        if (friendsList.length === 0) {
+        if (usersList.length === 0) {
             if (friendsListContainer) {
                 friendsListContainer.innerHTML = `
                     <div class="empty-chat">
                         <i class="fas fa-user-friends"></i>
-                        <h5>Nenhum amigo disponível</h5>
-                        <p>Todos os seus amigos já têm conversa</p>
+                        <h5>Nenhum usuário encontrado</h5>
+                        <p>Convide seus amigos para o Zonne!</p>
                     </div>
                 `;
             }
         } else {
             let html = '';
-            friendsList.forEach(uid => {
+            usersList.forEach(uid => {
                 const user = allUsers[uid];
                 if (!user) return;
+                const hasChat = chats[uid] || false;
                 html += `
                     <div class="friend-select-item" onclick="window.startNewChat('${uid}')">
                         <div class="fs-avatar">${user.photo ? `<img src="${user.photo}" alt="" />` : `<i class="fas fa-user"></i>`}</div>
@@ -1802,6 +1899,7 @@ if (btnNewChat) {
                             <div class="fs-name">${user.fullName || 'Usuário'}</div>
                             <div class="fs-username">@${user.username || 'usuario'}</div>
                             <div class="fs-status ${user.status === 'online' ? 'online' : 'offline'}">${user.status === 'online' ? '🟢 Online' : '⚪ Offline'}</div>
+                            ${hasChat ? '<div style="font-size:10px;color:#1a73e8;"><i class="fas fa-check"></i> Já tem conversa</div>' : ''}
                         </div>
                     </div>
                 `;
@@ -1817,6 +1915,14 @@ if (btnNewChat) {
 }
 
 window.startNewChat = function(uid) {
+    // Se já tem conversa, só abre
+    if (chats[uid]) {
+        friendsListPage.classList.remove('active');
+        document.body.style.overflow = 'auto';
+        openConversation(uid);
+        return;
+    }
+    
     const chatId = [currentUser.uid, uid].sort().join('_');
     set(ref(database, `chats/${currentUser.uid}/${uid}`), {
         lastMessage: 'Início da conversa',
@@ -1842,7 +1948,7 @@ if (closeFriendsList) {
 }
 
 // ============================================
-// CALL MUTE / SPEAKER
+// CALL MUTE
 // ============================================
 if (callMute) {
     callMute.addEventListener('click', function() {
@@ -1850,15 +1956,6 @@ if (callMute) {
         this.innerHTML = this.classList.contains('active') ? 
             '<i class="fas fa-microphone-slash"></i>' : 
             '<i class="fas fa-microphone"></i>';
-    });
-}
-
-if (callSpeaker) {
-    callSpeaker.addEventListener('click', function() {
-        this.classList.toggle('active');
-        this.innerHTML = this.classList.contains('active') ? 
-            '<i class="fas fa-volume-off"></i>' : 
-            '<i class="fas fa-volume-up"></i>';
     });
 }
 
@@ -1880,6 +1977,9 @@ if (btnNotifications) {
     });
 }
 
+// ============================================
+// MAIS OPÇÕES
+// ============================================
 if (convMore) {
     convMore.addEventListener('click', function() {
         if (!currentChatUser) return;
@@ -1897,17 +1997,6 @@ if (convMore) {
             `,
             confirmButtonText: 'Fechar',
             confirmButtonColor: '#5f6368'
-        });
-    });
-}
-
-if (attachBtn) {
-    attachBtn.addEventListener('click', function() {
-        Swal.fire({
-            icon: 'info',
-            title: '📎 Anexo',
-            text: 'Funcionalidade em desenvolvimento',
-            confirmButtonColor: '#1a73e8'
         });
     });
 }
@@ -1979,7 +2068,7 @@ window.openProfile = openProfile;
 window.closeProfilePage = closeProfilePage;
 window.startChatFromProfile = startChatFromProfile;
 
-console.log('🚀 Zonne - Chat com notificações reais!');
+console.log('🚀 Zonne - Chat com Stickers animados!');
 console.log('✅ Sistema pronto!');
 </script>
 </body>
