@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>Zonne - Chat</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -382,12 +382,12 @@
             text-align: right;
         }
         
-        /* STICKER MENSAGEM - GRANDE E ANIMADA */
+        /* STICKER MENSAGEM - TAMANHO FIXO */
         .message.sticker-msg {
             max-width: 120px;
-            padding: 8px;
+            padding: 6px 8px;
             font-size: 56px;
-            line-height: 1;
+            line-height: 1.1;
             text-align: center;
             border-radius: 16px;
             background: transparent !important;
@@ -553,7 +553,7 @@
             gap: 6px;
         }
         .stickers-popup .sticker-grid .sticker {
-            font-size: 36px;
+            font-size: 38px;
             text-align: center;
             padding: 6px;
             cursor: pointer;
@@ -639,96 +639,177 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
         
-        /* CALL OVERLAY */
+        /* CALL OVERLAY - IGUAL AO AFRIMOVILE */
         .call-overlay {
-            display: none;
             position: absolute;
             top: 0;
             left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0b1a2a;
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            color: white;
+        }
+        .call-overlay.active {
+            display: flex;
+        }
+        
+        .call-videos {
+            flex: 1;
+            position: relative;
+            background: #000;
+        }
+        .call-videos video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        #localVideo {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 120px;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 2px solid white;
+            background: #333;
+        }
+        
+        .call-info {
+            position: absolute;
+            top: 40px;
+            left: 0;
             right: 0;
-            bottom: 0;
-            z-index: 600;
+            text-align: center;
+            z-index: 2;
+        }
+        .call-info .call-number {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+        .call-info .call-status {
+            font-size: 18px;
+            color: #4caf50;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+        .call-info .call-timer {
+            font-size: 20px;
+            font-family: monospace;
+            margin-top: 5px;
+            color: #ddd;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+        
+        .call-controls {
+            position: absolute;
+            bottom: 40px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            z-index: 2;
+        }
+        .call-controls .call-button {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: none;
+            font-size: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .call-controls .call-button.green {
+            background: #25D366;
+            color: white;
+        }
+        .call-controls .call-button.red {
+            background: #f44336;
+            color: white;
+        }
+        .call-controls .call-button.gray {
+            background: #555;
+            color: white;
+        }
+        .call-controls .call-button.active {
+            background: #075e54;
+        }
+        .call-controls .call-label {
+            text-align: center;
+            color: #ddd;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        
+        /* CALL INCOMING */
+        .call-incoming {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 2500;
+            display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             color: white;
-            padding: 40px 20px;
-            background: linear-gradient(135deg, #0d47a1, #1a73e8);
         }
-        .call-overlay.active { display: flex; }
-        .call-overlay::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.3);
-            z-index: 1;
+        .call-incoming.active {
+            display: flex;
         }
-        .call-overlay > * { position: relative; z-index: 2; }
-        
-        .call-overlay .call-avatar {
-            width: 100px;
-            height: 100px;
+        .call-incoming .incoming-avatar {
+            width: 120px;
+            height: 120px;
+            background: #128C7E;
             border-radius: 50%;
-            overflow: hidden;
-            border: 4px solid rgba(255,255,255,0.3);
-            background: rgba(255,255,255,0.1);
+            margin-bottom: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 40px;
-            margin-bottom: 16px;
+            font-size: 50px;
         }
-        .call-overlay .call-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .call-overlay .call-name {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 4px;
+        .call-incoming .incoming-number {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 10px;
         }
-        .call-overlay .call-status {
-            font-size: 14px;
-            opacity: 0.8;
-            margin-bottom: 20px;
+        .call-incoming .incoming-type {
+            font-size: 18px;
+            color: #aaa;
+            margin-bottom: 50px;
         }
-        .call-overlay .call-timer {
-            font-size: 36px;
-            font-weight: 300;
-            margin-bottom: 20px;
-        }
-        .call-overlay .call-actions {
+        .call-incoming .incoming-actions {
             display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-            justify-content: center;
+            gap: 40px;
         }
-        .call-overlay .call-actions button {
-            width: 56px;
-            height: 56px;
+        .call-incoming .incoming-btn {
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
             border: none;
-            font-size: 22px;
-            cursor: pointer;
-            transition: all 0.3s;
+            font-size: 35px;
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: pointer;
         }
-        .call-overlay .call-actions button:hover { transform: scale(1.08); }
-        .call-overlay .call-actions .btn-end-call {
-            background: #ea4335;
+        .call-incoming .incoming-btn.accept {
+            background: #25D366;
             color: white;
         }
-        .call-overlay .call-actions .btn-end-call:hover { background: #d33426; }
-        .call-overlay .call-actions .btn-mute {
-            background: rgba(255,255,255,0.2);
+        .call-incoming .incoming-btn.decline {
+            background: #f44336;
             color: white;
-        }
-        .call-overlay .call-actions .btn-mute:hover { background: rgba(255,255,255,0.3); }
-        .call-overlay .call-actions .btn-mute.active {
-            background: #f9ab00;
-            color: #1a1a2e;
         }
         
         /* PÁGINA DE PERFIL */
@@ -975,6 +1056,16 @@
                 left: 50%;
                 transform: translateX(-50%);
             }
+            .friends-list-page {
+                max-width: 480px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            .profile-page {
+                max-width: 480px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
         }
         
         @media (max-width: 380px) {
@@ -984,7 +1075,8 @@
             .message-input-area .input-wrapper { padding: 2px 2px 2px 10px; }
             .message-input-area { margin-bottom: 50px; }
             .stickers-popup .sticker-grid { grid-template-columns: repeat(4, 1fr); }
-            .stickers-popup .sticker-grid .sticker { font-size: 28px; }
+            .stickers-popup .sticker-grid .sticker { font-size: 30px; }
+            #localVideo { width: 80px; height: 100px; }
         }
     </style>
 </head>
@@ -1034,21 +1126,53 @@
                 <div class="conv-status" id="convStatus">Offline</div>
             </div>
             <div class="conv-actions">
-                <button id="convCall" title="Chamada"><i class="fas fa-phone"></i></button>
-                <button id="convVideo" title="Vídeo"><i class="fas fa-video"></i></button>
+                <button id="convCall" title="Chamada de áudio"><i class="fas fa-phone"></i></button>
+                <button id="convVideo" title="Chamada de vídeo"><i class="fas fa-video"></i></button>
                 <button id="convMore" title="Mais"><i class="fas fa-ellipsis-v"></i></button>
             </div>
         </div>
         
-        <!-- OVERLAY DE CHAMADA -->
+        <!-- CALL OVERLAY - IGUAL AO AFRIMOVILE -->
         <div class="call-overlay" id="callOverlay">
-            <div class="call-avatar" id="callAvatar"><i class="fas fa-user"></i></div>
-            <div class="call-name" id="callName">Usuário</div>
-            <div class="call-status" id="callStatus">Chamando...</div>
-            <div class="call-timer" id="callTimer">00:00</div>
-            <div class="call-actions">
-                <button class="btn-mute" id="callMute"><i class="fas fa-microphone"></i></button>
-                <button class="btn-end-call" id="callEnd"><i class="fas fa-phone-slash"></i></button>
+            <div class="call-videos">
+                <video id="remoteVideo" autoplay playsinline></video>
+                <video id="localVideo" autoplay playsinline muted></video>
+            </div>
+            <div class="call-info">
+                <div class="call-number" id="callNumber">+244...</div>
+                <div class="call-status" id="callStatusText">Chamando...</div>
+                <div class="call-timer" id="callTimer">00:00</div>
+            </div>
+            <div class="call-controls">
+                <div>
+                    <button class="call-button gray" id="btnMute">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                    <div class="call-label">Mudo</div>
+                </div>
+                <div>
+                    <button class="call-button gray" id="btnSpeaker">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                    <div class="call-label">Alto-falante</div>
+                </div>
+                <div>
+                    <button class="call-button red" id="btnEndCall">
+                        <i class="fas fa-phone-slash"></i>
+                    </button>
+                    <div class="call-label">Encerrar</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- CALL INCOMING -->
+        <div class="call-incoming" id="callIncoming">
+            <div class="incoming-avatar">📞</div>
+            <div class="incoming-number" id="incomingNumber">+244...</div>
+            <div class="incoming-type" id="incomingType">Chamada de voz</div>
+            <div class="incoming-actions">
+                <button class="incoming-btn decline" id="btnDeclineCall"><i class="fas fa-times"></i></button>
+                <button class="incoming-btn accept" id="btnAcceptCall"><i class="fas fa-check"></i></button>
             </div>
         </div>
         
@@ -1067,7 +1191,6 @@
             </div>
             <button class="send-btn" id="sendBtn"><i class="fas fa-paper-plane"></i></button>
             
-            <!-- STICKERS POPUP -->
             <div class="stickers-popup" id="stickersPopup">
                 <div class="sticker-grid">
                     <div class="sticker">😊</div>
@@ -1090,6 +1213,11 @@
                     <div class="sticker">🤡</div>
                     <div class="sticker">🥳</div>
                     <div class="sticker">🤯</div>
+                    <div class="sticker">😱</div>
+                    <div class="sticker">🥶</div>
+                    <div class="sticker">🤗</div>
+                    <div class="sticker">😇</div>
+                    <div class="sticker">🤩</div>
                 </div>
             </div>
         </div>
@@ -1110,7 +1238,7 @@
     <div class="profile-page" id="profilePage">
         <div class="profile-page-header">
             <button id="closeProfilePage"><i class="fas fa-arrow-left"></i></button>
-            <h5><i class="fas fa-user"></i> Perfil</h5>
+            <h5><i class="fas fa-user" style="color:#1a73e8;"></i> Perfil</h5>
         </div>
         <div class="profile-page-content" id="profilePageContent">
             <div class="loading-container"><div class="spinner"></div></div>
@@ -1195,6 +1323,23 @@ let callSeconds = 0;
 let isCallActive = false;
 let callAnswered = false;
 
+// WebRTC
+let peerConnection = null;
+let localStream = null;
+let remoteStream = null;
+let currentCallId = null;
+let callStartTime = null;
+let isMuted = false;
+let isSpeakerOn = false;
+
+const servers = {
+    iceServers: [
+        { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun:stun1.l.google.com:19302' },
+        { urls: 'stun:stun2.l.google.com:19302' }
+    ]
+};
+
 // ============================================
 // DOM
 // ============================================
@@ -1222,12 +1367,19 @@ const stickersPopup = document.getElementById('stickersPopup');
 
 // Call
 const callOverlay = document.getElementById('callOverlay');
-const callAvatar = document.getElementById('callAvatar');
-const callName = document.getElementById('callName');
-const callStatus = document.getElementById('callStatus');
+const callNumber = document.getElementById('callNumber');
+const callStatusText = document.getElementById('callStatusText');
 const callTimer = document.getElementById('callTimer');
-const callMute = document.getElementById('callMute');
-const callEnd = document.getElementById('callEnd');
+const btnMute = document.getElementById('btnMute');
+const btnSpeaker = document.getElementById('btnSpeaker');
+const btnEndCall = document.getElementById('btnEndCall');
+const btnAcceptCall = document.getElementById('btnAcceptCall');
+const btnDeclineCall = document.getElementById('btnDeclineCall');
+const incomingNumber = document.getElementById('incomingNumber');
+const incomingType = document.getElementById('incomingType');
+const callIncoming = document.getElementById('callIncoming');
+const localVideo = document.getElementById('localVideo');
+const remoteVideo = document.getElementById('remoteVideo');
 
 // Friends list
 const friendsListPage = document.getElementById('friendsListPage');
@@ -1249,20 +1401,17 @@ if (stickerBtn) {
     });
 }
 
-// Fechar stickers ao clicar fora
 document.addEventListener('click', () => {
     if (stickersPopup) stickersPopup.classList.remove('active');
 });
 
-// Selecionar sticker
 document.querySelectorAll('.sticker').forEach(el => {
     el.addEventListener('click', function() {
-        const emoji = this.textContent;
+        const emoji = this.textContent.trim();
         if (messageInput) {
             messageInput.value = emoji;
-            messageInput.focus();
-            // Enviar automaticamente
-            sendMessage();
+            // Envia automaticamente se for sticker
+            setTimeout(() => sendMessage(), 100);
         }
         if (stickersPopup) stickersPopup.classList.remove('active');
     });
@@ -1539,9 +1688,9 @@ async function sendMessage() {
     
     const uid = currentChatUser.uid;
     const chatId = [currentUser.uid, uid].sort().join('_');
-    const isSticker = /^[\u{1F600}-\u{1F9FF}]$/u.test(text) || 
-                      /^[\u2764\u{1F940}-\u{1F9FF}]$/u.test(text) ||
-                      /^[\u2600-\u26FF\u2700-\u27BF]/.test(text);
+    
+    // Verifica se é sticker (emoji único)
+    const isSticker = /^[\u{1F600}-\u{1F9FF}\u{2764}\u{1F940}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]$/u.test(text) && text.length <= 2;
     
     if (sendBtn) {
         sendBtn.disabled = true;
@@ -1596,7 +1745,7 @@ if (messageInput) {
 }
 
 // ============================================
-// CHAMADA - SIMPLES E FUNCIONAL
+// CHAMADA - IGUAL AO AFRIMOVILE
 // ============================================
 async function startAudioCall() {
     if (!currentChatUser) {
@@ -1604,273 +1753,418 @@ async function startAudioCall() {
         return;
     }
 
-    isCallActive = true;
-    callAnswered = false;
-    callSeconds = 0;
-    
-    const user = currentChatUser;
-    
-    // Configurar overlay
-    if (callOverlay) {
-        if (user.photo) {
-            callOverlay.style.backgroundImage = `url('${user.photo}')`;
-            callOverlay.style.backgroundSize = 'cover';
-            callOverlay.style.backgroundColor = '';
-        } else {
-            callOverlay.style.backgroundImage = 'linear-gradient(135deg, #0d47a1, #1a73e8)';
-        }
-    }
-    
-    if (callAvatar) {
-        callAvatar.innerHTML = user.photo ? `<img src="${user.photo}" alt="" />` : `<i class="fas fa-user"></i>`;
-    }
-    if (callName) callName.textContent = user.fullName || 'Usuário';
-    if (callStatus) callStatus.textContent = '📞 Chamando...';
-    if (callTimer) callTimer.textContent = '00:00';
-    
-    if (callOverlay) callOverlay.classList.add('active');
-    
-    // Criar chamada no Firebase
-    const callRef = ref(database, `calls/${currentUser.uid}/${user.uid}`);
-    await set(callRef, {
-        type: 'audio',
-        from: currentUser.uid,
-        fromName: currentUserData?.fullName || 'Usuário',
-        to: user.uid,
-        status: 'calling',
-        timestamp: serverTimestamp()
-    });
-    
-    // Notificar outro usuário
-    const notifRef = ref(database, `notifications/${user.uid}/${currentUser.uid}_call`);
-    await set(notifRef, {
-        type: 'call',
-        fromUid: currentUser.uid,
-        fromName: currentUserData?.fullName || 'Usuário',
-        message: '📞 Chamada de áudio',
-        timestamp: serverTimestamp()
-    });
-    
-    // Escutar resposta
-    const callResponseRef = ref(database, `calls/${user.uid}/${currentUser.uid}`);
-    const listener = onValue(callResponseRef, (snapshot) => {
-        const data = snapshot.val();
-        if (data?.status === 'answered' && !callAnswered) {
-            callAnswered = true;
-            if (callStatus) callStatus.textContent = '📞 Chamada conectada';
-            startCallTimer();
-            Swal.fire({
-                icon: 'success',
-                title: 'Chamada conectada!',
-                text: `${user.fullName} atendeu`,
-                timer: 1500,
-                showConfirmButton: false
-            });
-        } else if (data?.status === 'rejected' && !callAnswered) {
-            endCall();
-            Swal.fire({
-                icon: 'info',
-                title: 'Chamada recusada',
-                text: `${user.fullName} recusou`,
-                confirmButtonColor: '#1a73e8'
-            });
-        }
-    });
-    
-    // Timeout - não atendeu (15 segundos)
-    setTimeout(() => {
-        if (!callAnswered && isCallActive) {
-            update(callRef, { status: 'missed' });
-            endCall();
-            Swal.fire({
-                icon: 'info',
-                title: 'Chamada não atendida',
-                text: `${user.fullName} não atendeu`,
-                confirmButtonColor: '#1a73e8'
-            });
-        }
-    }, 15000);
-}
-
-function startCallTimer() {
-    if (callTimerInterval) clearInterval(callTimerInterval);
-    callTimerInterval = setInterval(() => {
-        callSeconds++;
-        const mins = String(Math.floor(callSeconds / 60)).padStart(2, '0');
-        const secs = String(callSeconds % 60).padStart(2, '0');
-        if (callTimer) callTimer.textContent = `${mins}:${secs}`;
-    }, 1000);
-}
-
-function endCall() {
-    isCallActive = false;
-    if (callTimerInterval) {
-        clearInterval(callTimerInterval);
-        callTimerInterval = null;
-    }
-    if (callOverlay) callOverlay.classList.remove('active');
-    if (callTimer) callTimer.textContent = '00:00';
-    if (currentChatUser && callAnswered) {
-        update(ref(database, `calls/${currentUser.uid}/${currentChatUser.uid}`), { 
-            duration: callSeconds,
-            answered: true
+    try {
+        const destino = currentChatUser.uid;
+        const callId = [currentUser.uid, destino].sort().join('_');
+        currentCallId = callId;
+        
+        callNumber.textContent = currentChatUser.fullName || 'Usuário';
+        callStatusText.textContent = 'Chamando...';
+        callOverlay.classList.add('active');
+        
+        // Pega mídia
+        const constraints = { audio: true, video: false };
+        localStream = await navigator.mediaDevices.getUserMedia(constraints);
+        localVideo.srcObject = localStream;
+        
+        peerConnection = new RTCPeerConnection(servers);
+        
+        localStream.getTracks().forEach(track => {
+            peerConnection.addTrack(track, localStream);
         });
+
+        peerConnection.ontrack = (event) => {
+            remoteStream = event.streams[0];
+            remoteVideo.srcObject = remoteStream;
+            callStatusText.textContent = 'Em chamada';
+            startCallTimer();
+        };
+
+        peerConnection.onicecandidate = (event) => {
+            if (event.candidate) {
+                database.ref(`calls/${callId}/candidates`).push(event.candidate.toJSON())
+                    .catch(err => console.log('Erro ao salvar candidate:', err));
+            }
+        };
+
+        peerConnection.oniceconnectionstatechange = () => {
+            if (peerConnection.iceConnectionState === 'disconnected' || 
+                peerConnection.iceConnectionState === 'failed' ||
+                peerConnection.iceConnectionState === 'closed') {
+                endCall();
+            }
+        };
+
+        const offer = await peerConnection.createOffer();
+        await peerConnection.setLocalDescription(offer);
+
+        await database.ref(`calls/${callId}`).set({
+            from: currentUser.uid,
+            fromName: currentUserData?.fullName || 'Usuário',
+            to: destino,
+            offer: offer,
+            type: 'audio',
+            status: 'calling',
+            timestamp: Date.now()
+        });
+
+        // Escuta answer
+        const callRef = database.ref(`calls/${callId}`);
+        callRef.on('value', async (snapshot) => {
+            const data = snapshot.val();
+            if (data && data.answer && peerConnection) {
+                try {
+                    await peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer));
+                } catch (err) {
+                    console.log('Erro ao set remote description:', err);
+                }
+            }
+            if (data && data.status === 'rejected') {
+                endCall();
+                Swal.fire({ icon: 'info', title: 'Chamada recusada', text: 'O usuário recusou a chamada', confirmButtonColor: '#1a73e8' });
+            }
+        });
+
+        // Escuta candidatos
+        database.ref(`calls/${callId}/candidates`).on('child_added', (snapshot) => {
+            if (peerConnection) {
+                peerConnection.addIceCandidate(new RTCIceCandidate(snapshot.val()))
+                    .catch(err => console.log('Erro ao add candidate:', err));
+            }
+        });
+
+    } catch (err) {
+        console.error('Erro na chamada:', err);
+        Swal.fire({ icon: 'error', title: 'Erro', text: err.message, confirmButtonColor: '#1a73e8' });
+        endCall();
     }
 }
 
-if (convCall) {
-    convCall.addEventListener('click', startAudioCall);
-}
-
-// ============================================
-// CHAMADA DE VÍDEO
-// ============================================
 async function startVideoCall() {
     if (!currentChatUser) {
         Swal.fire({ icon: 'warning', title: 'Atenção', text: 'Abra uma conversa para chamar' });
         return;
     }
 
-    isCallActive = true;
-    callAnswered = false;
-    callSeconds = 0;
-    
-    const user = currentChatUser;
-    if (callOverlay) {
-        callOverlay.style.backgroundImage = 'linear-gradient(135deg, #0d47a1, #1a73e8)';
-    }
-    if (callAvatar) {
-        callAvatar.innerHTML = user.photo ? `<img src="${user.photo}" alt="" />` : `<i class="fas fa-user"></i>`;
-    }
-    if (callName) callName.textContent = user.fullName || 'Usuário';
-    if (callStatus) callStatus.textContent = '📹 Chamando...';
-    if (callTimer) callTimer.textContent = '00:00';
-    
-    if (callOverlay) callOverlay.classList.add('active');
-    
-    const callRef = ref(database, `calls/${currentUser.uid}/${user.uid}`);
-    await set(callRef, {
-        type: 'video',
-        from: currentUser.uid,
-        fromName: currentUserData?.fullName || 'Usuário',
-        to: user.uid,
-        status: 'calling',
-        timestamp: serverTimestamp()
-    });
-    
-    const notifRef = ref(database, `notifications/${user.uid}/${currentUser.uid}_call`);
-    await set(notifRef, {
-        type: 'call',
-        fromUid: currentUser.uid,
-        fromName: currentUserData?.fullName || 'Usuário',
-        message: '📹 Chamada de vídeo',
-        timestamp: serverTimestamp()
-    });
-    
-    const callResponseRef = ref(database, `calls/${user.uid}/${currentUser.uid}`);
-    const listener = onValue(callResponseRef, (snapshot) => {
-        const data = snapshot.val();
-        if (data?.status === 'answered' && !callAnswered) {
-            callAnswered = true;
-            if (callStatus) callStatus.textContent = '📹 Chamada de vídeo conectada';
+    try {
+        const destino = currentChatUser.uid;
+        const callId = [currentUser.uid, destino].sort().join('_');
+        currentCallId = callId;
+        
+        callNumber.textContent = currentChatUser.fullName || 'Usuário';
+        callStatusText.textContent = 'Chamando...';
+        callOverlay.classList.add('active');
+        
+        const constraints = { audio: true, video: true };
+        localStream = await navigator.mediaDevices.getUserMedia(constraints);
+        localVideo.srcObject = localStream;
+        
+        peerConnection = new RTCPeerConnection(servers);
+        
+        localStream.getTracks().forEach(track => {
+            peerConnection.addTrack(track, localStream);
+        });
+
+        peerConnection.ontrack = (event) => {
+            remoteStream = event.streams[0];
+            remoteVideo.srcObject = remoteStream;
+            callStatusText.textContent = 'Em chamada';
             startCallTimer();
-            Swal.fire({
-                icon: 'success',
-                title: 'Vídeo chamada conectada!',
-                text: `${user.fullName} atendeu`,
-                timer: 1500,
-                showConfirmButton: false
-            });
-        } else if (data?.status === 'rejected' && !callAnswered) {
-            endCall();
-            Swal.fire({
-                icon: 'info',
-                title: 'Chamada recusada',
-                text: `${user.fullName} recusou`,
-                confirmButtonColor: '#1a73e8'
-            });
+        };
+
+        peerConnection.onicecandidate = (event) => {
+            if (event.candidate) {
+                database.ref(`calls/${callId}/candidates`).push(event.candidate.toJSON())
+                    .catch(err => console.log('Erro ao salvar candidate:', err));
+            }
+        };
+
+        peerConnection.oniceconnectionstatechange = () => {
+            if (peerConnection.iceConnectionState === 'disconnected' || 
+                peerConnection.iceConnectionState === 'failed' ||
+                peerConnection.iceConnectionState === 'closed') {
+                endCall();
+            }
+        };
+
+        const offer = await peerConnection.createOffer();
+        await peerConnection.setLocalDescription(offer);
+
+        await database.ref(`calls/${callId}`).set({
+            from: currentUser.uid,
+            fromName: currentUserData?.fullName || 'Usuário',
+            to: destino,
+            offer: offer,
+            type: 'video',
+            status: 'calling',
+            timestamp: Date.now()
+        });
+
+        const callRef = database.ref(`calls/${callId}`);
+        callRef.on('value', async (snapshot) => {
+            const data = snapshot.val();
+            if (data && data.answer && peerConnection) {
+                try {
+                    await peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer));
+                } catch (err) {
+                    console.log('Erro ao set remote description:', err);
+                }
+            }
+            if (data && data.status === 'rejected') {
+                endCall();
+                Swal.fire({ icon: 'info', title: 'Chamada recusada', text: 'O usuário recusou a chamada', confirmButtonColor: '#1a73e8' });
+            }
+        });
+
+        database.ref(`calls/${callId}/candidates`).on('child_added', (snapshot) => {
+            if (peerConnection) {
+                peerConnection.addIceCandidate(new RTCIceCandidate(snapshot.val()))
+                    .catch(err => console.log('Erro ao add candidate:', err));
+            }
+        });
+
+    } catch (err) {
+        console.error('Erro na chamada de vídeo:', err);
+        if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+            Swal.fire({ icon: 'error', title: 'Permissão negada', text: 'Permita o acesso à câmera e microfone', confirmButtonColor: '#1a73e8' });
+        } else {
+            Swal.fire({ icon: 'error', title: 'Erro', text: err.message, confirmButtonColor: '#1a73e8' });
+        }
+        endCall();
+    }
+}
+
+async function receberChamada(data) {
+    if (callIncoming.classList.contains('active')) return;
+    
+    const fromUser = allUsers[data.from];
+    incomingNumber.textContent = fromUser?.fullName || data.from;
+    incomingType.textContent = data.type === 'video' ? '📹 Videochamada' : '📞 Chamada de voz';
+    callIncoming.classList.add('active');
+    currentCallId = [currentUser.uid, data.from].sort().join('_');
+    
+    // Toca som de chamada (simulado)
+    showNotification('Chamada recebida', `${fromUser?.fullName || 'Alguém'} está chamando`, '📞');
+}
+
+async function aceitarChamada() {
+    callIncoming.classList.remove('active');
+    
+    const snapshot = await database.ref(`calls/${currentCallId}`).once('value');
+    const data = snapshot.val();
+    if (!data) return;
+    
+    callNumber.textContent = data.fromName || 'Usuário';
+    callStatusText.textContent = 'Conectando...';
+    callOverlay.classList.add('active');
+
+    try {
+        const constraints = {
+            audio: true,
+            video: data.type === 'video'
+        };
+        
+        localStream = await navigator.mediaDevices.getUserMedia(constraints);
+        localVideo.srcObject = localStream;
+        
+        peerConnection = new RTCPeerConnection(servers);
+        
+        localStream.getTracks().forEach(track => {
+            peerConnection.addTrack(track, localStream);
+        });
+
+        peerConnection.ontrack = (event) => {
+            remoteStream = event.streams[0];
+            remoteVideo.srcObject = remoteStream;
+            callStatusText.textContent = 'Em chamada';
+            startCallTimer();
+        };
+
+        peerConnection.onicecandidate = (event) => {
+            if (event.candidate) {
+                database.ref(`calls/${currentCallId}/candidates`).push(event.candidate.toJSON())
+                    .catch(err => console.log('Erro ao salvar candidate:', err));
+            }
+        };
+
+        peerConnection.oniceconnectionstatechange = () => {
+            if (peerConnection.iceConnectionState === 'disconnected' || 
+                peerConnection.iceConnectionState === 'failed' ||
+                peerConnection.iceConnectionState === 'closed') {
+                endCall();
+            }
+        };
+
+        await peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
+        const answer = await peerConnection.createAnswer();
+        await peerConnection.setLocalDescription(answer);
+
+        await database.ref(`calls/${currentCallId}`).update({
+            answer: answer,
+            status: 'connected'
+        });
+
+        database.ref(`calls/${currentCallId}/candidates`).on('child_added', (snapshot) => {
+            if (peerConnection) {
+                peerConnection.addIceCandidate(new RTCIceCandidate(snapshot.val()))
+                    .catch(err => console.log('Erro ao add candidate:', err));
+            }
+        });
+
+    } catch (err) {
+        console.error('Erro ao aceitar chamada:', err);
+        Swal.fire({ icon: 'error', title: 'Erro', text: err.message, confirmButtonColor: '#1a73e8' });
+        endCall();
+    }
+}
+
+function startCallTimer() {
+    callSeconds = 0;
+    callStartTime = Date.now();
+    if (callTimerInterval) clearInterval(callTimerInterval);
+    
+    callTimerInterval = setInterval(() => {
+        if (callStatusText.textContent === 'Em chamada') {
+            callSeconds = Math.floor((Date.now() - callStartTime) / 1000);
+            const mins = Math.floor(callSeconds / 60).toString().padStart(2, '0');
+            const secs = (callSeconds % 60).toString().padStart(2, '0');
+            callTimer.textContent = `${mins}:${secs}`;
+        }
+    }, 1000);
+}
+
+function endCall() {
+    if (localStream) {
+        localStream.getTracks().forEach(track => track.stop());
+    }
+    if (peerConnection) {
+        peerConnection.close();
+    }
+    peerConnection = null;
+    localStream = null;
+    remoteStream = null;
+    
+    if (localVideo) localVideo.srcObject = null;
+    if (remoteVideo) remoteVideo.srcObject = null;
+    
+    callOverlay.classList.remove('active');
+    callIncoming.classList.remove('active');
+    stopCallTimer();
+    
+    if (currentCallId) {
+        database.ref(`calls/${currentCallId}`).remove()
+            .catch(err => console.log('Erro ao remover call:', err));
+        currentCallId = null;
+    }
+    
+    isMuted = false;
+    isSpeakerOn = false;
+    btnMute.classList.remove('active');
+    btnSpeaker.classList.remove('active');
+}
+
+function stopCallTimer() {
+    if (callTimerInterval) {
+        clearInterval(callTimerInterval);
+        callTimerInterval = null;
+    }
+    callTimer.textContent = '00:00';
+}
+
+function showNotification(title, message, icon) {
+    // Usa SweetAlert para notificação
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer);
+            toast.addEventListener('mouseleave', Swal.resumeTimer);
         }
     });
     
-    setTimeout(() => {
-        if (!callAnswered && isCallActive) {
-            update(callRef, { status: 'missed' });
-            endCall();
-            Swal.fire({
-                icon: 'info',
-                title: 'Chamada não atendida',
-                text: `${user.fullName} não atendeu`,
-                confirmButtonColor: '#1a73e8'
-            });
+    Toast.fire({
+        icon: 'info',
+        title: title,
+        text: message
+    });
+}
+
+// Escutar chamadas recebidas
+function listenIncomingCalls() {
+    if (!currentUser) return;
+    
+    const callsRef = database.ref('calls');
+    callsRef.on('child_added', async (snapshot) => {
+        const call = snapshot.val();
+        if (call && call.to === currentUser.uid && call.status === 'calling' && !callIncoming.classList.contains('active')) {
+            receberChamada(call);
         }
-    }, 15000);
+    });
+}
+
+// ============================================
+// EVENTOS DE CHAMADA
+// ============================================
+if (convCall) {
+    convCall.addEventListener('click', startAudioCall);
 }
 
 if (convVideo) {
     convVideo.addEventListener('click', startVideoCall);
 }
 
-// ============================================
-// ESCUTAR CHAMADAS ENTRANTES
-// ============================================
-function listenIncomingCalls() {
-    if (!currentUser) return;
-    
-    onValue(ref(database, `calls/${currentUser.uid}`), async (snapshot) => {
-        const data = snapshot.val();
-        if (!data) return;
-        
-        for (const [fromUid, callData] of Object.entries(data)) {
-            if (callData.status === 'calling' && callData.to === currentUser.uid) {
-                const fromUser = allUsers[fromUid];
-                if (!fromUser) continue;
-                
-                const isVideo = callData.type === 'video';
-                
-                const result = await Swal.fire({
-                    title: isVideo ? '📹 Chamada de vídeo' : '📞 Chamada de áudio',
-                    text: `${fromUser.fullName || 'Usuário'} está chamando você`,
-                    icon: 'info',
-                    showCancelButton: true,
-                    confirmButtonText: 'Atender',
-                    cancelButtonText: 'Recusar',
-                    confirmButtonColor: '#2ed573',
-                    cancelButtonColor: '#ea4335',
-                    timer: 15000,
-                    timerProgressBar: true,
-                    background: '#ffffff',
-                    allowOutsideClick: false
-                });
-                
-                const callRef = ref(database, `calls/${currentUser.uid}/${fromUid}`);
-                if (result.isConfirmed) {
-                    await update(callRef, { status: 'answered' });
-                    if (!conversationView.classList.contains('active')) {
-                        openConversation(fromUid);
-                    }
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Chamada conectada!',
-                        text: `Você atendeu a chamada de ${fromUser.fullName}`,
-                        timer: 1500,
-                        showConfirmButton: false
-                    });
-                } else {
-                    await update(callRef, { status: 'rejected' });
-                }
-            }
+if (btnEndCall) {
+    btnEndCall.addEventListener('click', endCall);
+}
+
+if (btnAcceptCall) {
+    btnAcceptCall.addEventListener('click', aceitarChamada);
+}
+
+if (btnDeclineCall) {
+    btnDeclineCall.addEventListener('click', () => {
+        callIncoming.classList.remove('active');
+        if (currentCallId) {
+            database.ref(`calls/${currentCallId}`).update({ status: 'rejected' });
+            setTimeout(() => {
+                database.ref(`calls/${currentCallId}`).remove();
+            }, 1000);
+            currentCallId = null;
         }
     });
 }
 
+if (btnMute) {
+    btnMute.addEventListener('click', () => {
+        if (localStream) {
+            isMuted = !isMuted;
+            localStream.getAudioTracks().forEach(track => {
+                track.enabled = !isMuted;
+            });
+            btnMute.classList.toggle('active');
+            btnMute.innerHTML = isMuted ? '<i class="fas fa-microphone-slash"></i>' : '<i class="fas fa-microphone"></i>';
+        }
+    });
+}
+
+if (btnSpeaker) {
+    btnSpeaker.addEventListener('click', () => {
+        isSpeakerOn = !isSpeakerOn;
+        btnSpeaker.classList.toggle('active');
+        btnSpeaker.innerHTML = isSpeakerOn ? '<i class="fas fa-volume-off"></i>' : '<i class="fas fa-volume-up"></i>';
+    });
+}
+
 // ============================================
-// NOVA CONVERSA - MOSTRA TODOS OS USUÁRIOS
+// NOVA CONVERSA
 // ============================================
 if (btnNewChat) {
     btnNewChat.addEventListener('click', async () => {
         await loadUsers();
         
-        // Mostra TODOS os usuários exceto o atual
         const usersList = Object.keys(allUsers).filter(uid => {
             if (uid === currentUser.uid) return false;
             return true;
@@ -1915,7 +2209,6 @@ if (btnNewChat) {
 }
 
 window.startNewChat = function(uid) {
-    // Se já tem conversa, só abre
     if (chats[uid]) {
         friendsListPage.classList.remove('active');
         document.body.style.overflow = 'auto';
@@ -1948,22 +2241,6 @@ if (closeFriendsList) {
 }
 
 // ============================================
-// CALL MUTE
-// ============================================
-if (callMute) {
-    callMute.addEventListener('click', function() {
-        this.classList.toggle('active');
-        this.innerHTML = this.classList.contains('active') ? 
-            '<i class="fas fa-microphone-slash"></i>' : 
-            '<i class="fas fa-microphone"></i>';
-    });
-}
-
-if (callEnd) {
-    callEnd.addEventListener('click', endCall);
-}
-
-// ============================================
 // NOTIFICAÇÕES
 // ============================================
 if (btnNotifications) {
@@ -1977,9 +2254,6 @@ if (btnNotifications) {
     });
 }
 
-// ============================================
-// MAIS OPÇÕES
-// ============================================
 if (convMore) {
     convMore.addEventListener('click', function() {
         if (!currentChatUser) return;
@@ -2068,7 +2342,7 @@ window.openProfile = openProfile;
 window.closeProfilePage = closeProfilePage;
 window.startChatFromProfile = startChatFromProfile;
 
-console.log('🚀 Zonne - Chat com Stickers animados!');
+console.log('🚀 Zonne - Chat com chamadas WebRTC!');
 console.log('✅ Sistema pronto!');
 </script>
 </body>
