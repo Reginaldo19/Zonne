@@ -382,7 +382,7 @@
             text-align: right;
         }
         
-        /* STICKER MENSAGEM - TAMANHO FIXO */
+        /* STICKER MENSAGEM */
         .message.sticker-msg {
             max-width: 120px;
             padding: 6px 8px;
@@ -639,7 +639,7 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
         
-        /* CALL OVERLAY - IGUAL AO AFRIMOVILE */
+        /* CALL OVERLAY */
         .call-overlay {
             position: absolute;
             top: 0;
@@ -1132,7 +1132,7 @@
             </div>
         </div>
         
-        <!-- CALL OVERLAY - IGUAL AO AFRIMOVILE -->
+        <!-- CALL OVERLAY -->
         <div class="call-overlay" id="callOverlay">
             <div class="call-videos">
                 <video id="remoteVideo" autoplay playsinline></video>
@@ -1410,7 +1410,6 @@ document.querySelectorAll('.sticker').forEach(el => {
         const emoji = this.textContent.trim();
         if (messageInput) {
             messageInput.value = emoji;
-            // Envia automaticamente se for sticker
             setTimeout(() => sendMessage(), 100);
         }
         if (stickersPopup) stickersPopup.classList.remove('active');
@@ -1689,7 +1688,6 @@ async function sendMessage() {
     const uid = currentChatUser.uid;
     const chatId = [currentUser.uid, uid].sort().join('_');
     
-    // Verifica se é sticker (emoji único)
     const isSticker = /^[\u{1F600}-\u{1F9FF}\u{2764}\u{1F940}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]$/u.test(text) && text.length <= 2;
     
     if (sendBtn) {
@@ -1745,7 +1743,7 @@ if (messageInput) {
 }
 
 // ============================================
-// CHAMADA - IGUAL AO AFRIMOVILE
+// CHAMADA WEBRTC - CORRIGIDA
 // ============================================
 async function startAudioCall() {
     if (!currentChatUser) {
@@ -1762,7 +1760,6 @@ async function startAudioCall() {
         callStatusText.textContent = 'Chamando...';
         callOverlay.classList.add('active');
         
-        // Pega mídia
         const constraints = { audio: true, video: false };
         localStream = await navigator.mediaDevices.getUserMedia(constraints);
         localVideo.srcObject = localStream;
@@ -1782,7 +1779,8 @@ async function startAudioCall() {
 
         peerConnection.onicecandidate = (event) => {
             if (event.candidate) {
-                database.ref(`calls/${callId}/candidates`).push(event.candidate.toJSON())
+                const candidatesRef = ref(database, `calls/${callId}/candidates`);
+                push(candidatesRef, event.candidate.toJSON())
                     .catch(err => console.log('Erro ao salvar candidate:', err));
             }
         };
@@ -1798,7 +1796,7 @@ async function startAudioCall() {
         const offer = await peerConnection.createOffer();
         await peerConnection.setLocalDescription(offer);
 
-        await database.ref(`calls/${callId}`).set({
+        await set(ref(database, `calls/${callId}`), {
             from: currentUser.uid,
             fromName: currentUserData?.fullName || 'Usuário',
             to: destino,
@@ -1809,8 +1807,8 @@ async function startAudioCall() {
         });
 
         // Escuta answer
-        const callRef = database.ref(`calls/${callId}`);
-        callRef.on('value', async (snapshot) => {
+        const callRef = ref(database, `calls/${callId}`);
+        onValue(callRef, async (snapshot) => {
             const data = snapshot.val();
             if (data && data.answer && peerConnection) {
                 try {
@@ -1826,10 +1824,16 @@ async function startAudioCall() {
         });
 
         // Escuta candidatos
-        database.ref(`calls/${callId}/candidates`).on('child_added', (snapshot) => {
-            if (peerConnection) {
-                peerConnection.addIceCandidate(new RTCIceCandidate(snapshot.val()))
-                    .catch(err => console.log('Erro ao add candidate:', err));
+        const candidatesRef = ref(database, `calls/${callId}/candidates`);
+        onValue(candidatesRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data && peerConnection) {
+                Object.values(data).forEach(candidate => {
+                    try {
+                        peerConnection.addIceCandidate(new RTCIceCandidate(candidate))
+                            .catch(err => console.log('Erro ao add candidate:', err));
+                    } catch (e) {}
+                });
             }
         });
 
@@ -1874,7 +1878,8 @@ async function startVideoCall() {
 
         peerConnection.onicecandidate = (event) => {
             if (event.candidate) {
-                database.ref(`calls/${callId}/candidates`).push(event.candidate.toJSON())
+                const candidatesRef = ref(database, `calls/${callId}/candidates`);
+                push(candidatesRef, event.candidate.toJSON())
                     .catch(err => console.log('Erro ao salvar candidate:', err));
             }
         };
@@ -1890,7 +1895,7 @@ async function startVideoCall() {
         const offer = await peerConnection.createOffer();
         await peerConnection.setLocalDescription(offer);
 
-        await database.ref(`calls/${callId}`).set({
+        await set(ref(database, `calls/${callId}`), {
             from: currentUser.uid,
             fromName: currentUserData?.fullName || 'Usuário',
             to: destino,
@@ -1900,8 +1905,8 @@ async function startVideoCall() {
             timestamp: Date.now()
         });
 
-        const callRef = database.ref(`calls/${callId}`);
-        callRef.on('value', async (snapshot) => {
+        const callRef = ref(database, `calls/${callId}`);
+        onValue(callRef, async (snapshot) => {
             const data = snapshot.val();
             if (data && data.answer && peerConnection) {
                 try {
@@ -1916,10 +1921,16 @@ async function startVideoCall() {
             }
         });
 
-        database.ref(`calls/${callId}/candidates`).on('child_added', (snapshot) => {
-            if (peerConnection) {
-                peerConnection.addIceCandidate(new RTCIceCandidate(snapshot.val()))
-                    .catch(err => console.log('Erro ao add candidate:', err));
+        const candidatesRef = ref(database, `calls/${callId}/candidates`);
+        onValue(candidatesRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data && peerConnection) {
+                Object.values(data).forEach(candidate => {
+                    try {
+                        peerConnection.addIceCandidate(new RTCIceCandidate(candidate))
+                            .catch(err => console.log('Erro ao add candidate:', err));
+                    } catch (e) {}
+                });
             }
         });
 
@@ -1942,15 +1953,12 @@ async function receberChamada(data) {
     incomingType.textContent = data.type === 'video' ? '📹 Videochamada' : '📞 Chamada de voz';
     callIncoming.classList.add('active');
     currentCallId = [currentUser.uid, data.from].sort().join('_');
-    
-    // Toca som de chamada (simulado)
-    showNotification('Chamada recebida', `${fromUser?.fullName || 'Alguém'} está chamando`, '📞');
 }
 
 async function aceitarChamada() {
     callIncoming.classList.remove('active');
     
-    const snapshot = await database.ref(`calls/${currentCallId}`).once('value');
+    const snapshot = await get(ref(database, `calls/${currentCallId}`));
     const data = snapshot.val();
     if (!data) return;
     
@@ -1982,7 +1990,8 @@ async function aceitarChamada() {
 
         peerConnection.onicecandidate = (event) => {
             if (event.candidate) {
-                database.ref(`calls/${currentCallId}/candidates`).push(event.candidate.toJSON())
+                const candidatesRef = ref(database, `calls/${currentCallId}/candidates`);
+                push(candidatesRef, event.candidate.toJSON())
                     .catch(err => console.log('Erro ao salvar candidate:', err));
             }
         };
@@ -1999,15 +2008,21 @@ async function aceitarChamada() {
         const answer = await peerConnection.createAnswer();
         await peerConnection.setLocalDescription(answer);
 
-        await database.ref(`calls/${currentCallId}`).update({
+        await update(ref(database, `calls/${currentCallId}`), {
             answer: answer,
             status: 'connected'
         });
 
-        database.ref(`calls/${currentCallId}/candidates`).on('child_added', (snapshot) => {
-            if (peerConnection) {
-                peerConnection.addIceCandidate(new RTCIceCandidate(snapshot.val()))
-                    .catch(err => console.log('Erro ao add candidate:', err));
+        const candidatesRef = ref(database, `calls/${currentCallId}/candidates`);
+        onValue(candidatesRef, (snapshot) => {
+            const cands = snapshot.val();
+            if (cands && peerConnection) {
+                Object.values(cands).forEach(candidate => {
+                    try {
+                        peerConnection.addIceCandidate(new RTCIceCandidate(candidate))
+                            .catch(err => console.log('Erro ao add candidate:', err));
+                    } catch (e) {}
+                });
             }
         });
 
@@ -2052,7 +2067,7 @@ function endCall() {
     stopCallTimer();
     
     if (currentCallId) {
-        database.ref(`calls/${currentCallId}`).remove()
+        remove(ref(database, `calls/${currentCallId}`))
             .catch(err => console.log('Erro ao remover call:', err));
         currentCallId = null;
     }
@@ -2071,37 +2086,20 @@ function stopCallTimer() {
     callTimer.textContent = '00:00';
 }
 
-function showNotification(title, message, icon) {
-    // Usa SweetAlert para notificação
-    const Toast = Swal.mixin({
-        toast: true,
-        position: 'top',
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        didOpen: (toast) => {
-            toast.addEventListener('mouseenter', Swal.stopTimer);
-            toast.addEventListener('mouseleave', Swal.resumeTimer);
-        }
-    });
-    
-    Toast.fire({
-        icon: 'info',
-        title: title,
-        text: message
-    });
-}
-
 // Escutar chamadas recebidas
 function listenIncomingCalls() {
     if (!currentUser) return;
     
-    const callsRef = database.ref('calls');
-    callsRef.on('child_added', async (snapshot) => {
-        const call = snapshot.val();
-        if (call && call.to === currentUser.uid && call.status === 'calling' && !callIncoming.classList.contains('active')) {
-            receberChamada(call);
-        }
+    const callsRef = ref(database, 'calls');
+    onValue(callsRef, (snapshot) => {
+        const data = snapshot.val();
+        if (!data) return;
+        
+        Object.entries(data).forEach(([callId, call]) => {
+            if (call && call.to === currentUser.uid && call.status === 'calling' && !callIncoming.classList.contains('active')) {
+                receberChamada(call);
+            }
+        });
     });
 }
 
@@ -2128,9 +2126,9 @@ if (btnDeclineCall) {
     btnDeclineCall.addEventListener('click', () => {
         callIncoming.classList.remove('active');
         if (currentCallId) {
-            database.ref(`calls/${currentCallId}`).update({ status: 'rejected' });
+            update(ref(database, `calls/${currentCallId}`), { status: 'rejected' });
             setTimeout(() => {
-                database.ref(`calls/${currentCallId}`).remove();
+                remove(ref(database, `calls/${currentCallId}`));
             }, 1000);
             currentCallId = null;
         }
