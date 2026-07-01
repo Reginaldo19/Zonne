@@ -244,6 +244,7 @@
         }
         .footer-text a { color: #1a73e8; text-decoration: none; font-weight: 500; }
         
+        /* CARD DE RESUMO - ETAPA 4 */
         .resumo-card {
             background: #f8f9fa;
             border-radius: 16px;
@@ -311,22 +312,6 @@
             .container-custom { padding: 14px; }
             .logo { font-size: 22px; }
             .step-title { font-size: 20px; }
-        }
-
-        .login-hint {
-            background: #e8f0fe;
-            border-radius: 8px;
-            padding: 10px 14px;
-            margin-bottom: 16px;
-            font-size: 13px;
-            color: #1a73e8;
-            border-left: 3px solid #1a73e8;
-        }
-        .login-hint i {
-            margin-right: 8px;
-        }
-        .login-hint strong {
-            font-weight: 700;
         }
     </style>
 </head>
@@ -410,15 +395,16 @@
         </div>
 
         <div class="form-group">
-            <label><i class="fas fa-camera"></i> Foto (opcional)</label>
+            <label><i class="fas fa-camera"></i> Foto</label>
             <div class="photo-upload" id="photoUpload">
                 <div class="photo-preview" id="photoPreview"><i class="fas fa-user"></i></div>
                 <div>
                     <div class="upload-text"><i class="fas fa-cloud-upload-alt"></i> Adicionar foto</div>
-                    <div class="upload-sub" style="font-size:12px;color:#9e9e9e;">PNG, JPG até 5MB (opcional)</div>
+                    <div class="upload-sub" style="font-size:12px;color:#9e9e9e;">PNG, JPG até 5MB</div>
                 </div>
                 <input type="file" id="fileChooser" accept="image/*" />
             </div>
+            <div class="error-message" id="photoError">Adicione uma foto</div>
         </div>
 
         <div class="btn-group">
@@ -461,6 +447,7 @@
         <div class="step-title"><i class="fas fa-check-circle" style="color:#1a73e8;margin-right:8px;"></i>Confirme seus dados</div>
         <div class="step-subtitle">Verifique se todas as informações estão corretas</div>
 
+        <!-- CARD DE RESUMO -->
         <div class="resumo-card" id="resumoCard">
             <div class="resumo-foto" id="resumoFoto">
                 <div class="foto-placeholder"><i class="fas fa-user"></i></div>
@@ -526,15 +513,9 @@
         <div class="step-title"><i class="fas fa-sign-in-alt" style="color:#1a73e8;margin-right:8px;"></i>Bem-vindo de volta</div>
         <div class="step-subtitle">Entre na sua conta Zonne</div>
 
-        <div class="login-hint">
-            <i class="fas fa-info-circle"></i> 
-            Digite seu <strong>número de telefone</strong> (ex: 948480666) ou <strong>email</strong> (ex: phone_948480666@zonne.app)
-        </div>
-
         <div class="form-group">
-            <label><i class="fas fa-phone"></i> Telefone ou Email</label>
-            <input type="text" class="form-control" id="loginEmail" placeholder="948480666 ou phone_948480666@zonne.app" />
-            <div class="input-hint">Digite apenas os números do telefone ou o email completo</div>
+            <label><i class="fas fa-envelope"></i> E-mail ou telefone</label>
+            <input type="text" class="form-control" id="loginEmail" placeholder="email@exemplo.com ou telefone" />
         </div>
 
         <div class="form-group">
@@ -592,11 +573,12 @@ const firebaseConfig = {
     appId: "1:189544295:web:369c23d5026b1848caf852"
 };
 
+// Inicializar Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const database = getDatabase(app);
 
-console.log('✅ Firebase inicializado!');
+console.log('✅ Firebase inicializado com sucesso!');
 
 // ============================================
 // DOM ELEMENTOS
@@ -627,6 +609,7 @@ const photoPreview = document.getElementById('photoPreview');
 const photoUpload = document.getElementById('photoUpload');
 const nameError = document.getElementById('nameError');
 const usernameError = document.getElementById('usernameError');
+const photoError = document.getElementById('photoError');
 
 // Step 3
 const step3Back = document.getElementById('step3Back');
@@ -638,7 +621,7 @@ const passwordError = document.getElementById('passwordError');
 const confirmError = document.getElementById('confirmError');
 const birthError = document.getElementById('birthError');
 
-// Step 4
+// Step 4 - Resumo
 const step4Back = document.getElementById('step4Back');
 const step4Finish = document.getElementById('step4Finish');
 const resumoFoto = document.getElementById('resumoFoto');
@@ -657,6 +640,7 @@ const loginEmail = document.getElementById('loginEmail');
 const loginPassword = document.getElementById('loginPassword');
 const forgotPassword = document.getElementById('forgotPassword');
 
+// Variáveis
 let currentStep = 1;
 let photoBase64 = null;
 let userData = {};
@@ -803,7 +787,7 @@ phoneInput.addEventListener('input', function() {
 });
 
 // ============================================
-// FOTO DE PERFIL (OPCIONAL)
+// FOTO DE PERFIL
 // ============================================
 photoUpload.addEventListener('click', () => photoInput.click());
 
@@ -820,6 +804,7 @@ photoInput.addEventListener('change', function(e) {
     reader.onload = function(event) {
         photoBase64 = event.target.result;
         photoPreview.innerHTML = `<img src="${photoBase64}" alt="Foto" />`;
+        photoError.classList.remove('show');
         console.log('✅ Foto carregada');
     };
     reader.readAsDataURL(file);
@@ -867,6 +852,7 @@ step2Next.addEventListener('click', function() {
     
     nameError.classList.remove('show');
     usernameError.classList.remove('show');
+    photoError.classList.remove('show');
     
     let hasError = false;
     
@@ -886,11 +872,17 @@ step2Next.addEventListener('click', function() {
         hasError = true;
     }
     
+    if (!photoBase64) {
+        photoError.textContent = 'Adicione uma foto de perfil';
+        photoError.classList.add('show');
+        hasError = true;
+    }
+    
     if (hasError) return;
     
     userData.fullName = name;
     userData.username = user;
-    userData.photo = photoBase64 || '';
+    userData.photo = photoBase64;
     
     console.log('✅ Dados Step 2 salvos:', userData);
     goToStep(3);
@@ -934,6 +926,7 @@ step3Next.addEventListener('click', function() {
 
     if (hasError) return;
 
+    // Verificar idade
     const birthDateObj = new Date(birth);
     let age = new Date().getFullYear() - birthDateObj.getFullYear();
     const monthDiff = new Date().getMonth() - birthDateObj.getMonth();
@@ -974,15 +967,18 @@ step4Finish.addEventListener('click', async function() {
         const email = `phone_${userData.rawPhone}@zonne.app`;
         console.log('📧 Email:', email);
 
+        // Verificar se já existe
         const methods = await fetchSignInMethodsForEmail(auth, email);
         if (methods.length > 0) {
             throw new Error('Este número já está cadastrado');
         }
 
+        // Criar usuário no Firebase Auth
         const userCred = await createUserWithEmailAndPassword(auth, email, userData.password);
         const uid = userCred.user.uid;
         console.log('✅ Usuário criado no Auth:', uid);
 
+        // Salvar todos os dados no Realtime Database
         const userDataCompleto = {
             uid: uid,
             fullName: userData.fullName,
@@ -991,8 +987,9 @@ step4Finish.addEventListener('click', async function() {
             countryCode: userData.countryCode,
             country: userData.country,
             phone: userData.rawPhone,
-            photo: userData.photo || '',
+            photo: userData.photo,
             birthDate: userData.birthDate,
+            password: userData.password,
             email: email,
             createdAt: serverTimestamp(),
             lastSeen: serverTimestamp(),
@@ -1054,13 +1051,13 @@ step4Finish.addEventListener('click', async function() {
 });
 
 // ============================================
-// LOGIN - ACEITA NÚMERO OU EMAIL
+// LOGIN
 // ============================================
 async function doLogin() {
-    const input = loginEmail.value.trim();
+    const email = loginEmail.value.trim();
     const pwd = loginPassword.value.trim();
 
-    if (!input || !pwd) {
+    if (!email || !pwd) {
         await Swal.fire({ icon: 'warning', title: 'Atenção', text: 'Preencha todos os campos' });
         return;
     }
@@ -1069,24 +1066,10 @@ async function doLogin() {
     loginBtn.innerHTML = '<span class="loading-spinner"></span> Entrando...';
 
     try {
-        let loginEmailValue = input;
-        
-        // Se NÃO tiver @, é número de telefone
-        if (!input.includes('@')) {
-            const phoneClean = input.replace(/\D/g, '');
-            if (phoneClean.length < 8) {
-                throw new Error('Digite um número de telefone válido (mínimo 8 dígitos)');
-            }
-            // Converte para o formato correto: phone_948480666@zonne.app
+        let loginEmailValue = email;
+        if (!email.includes('@')) {
+            const phoneClean = email.replace(/\D/g, '');
             loginEmailValue = `phone_${phoneClean}@zonne.app`;
-            console.log('📱 Login com telefone:', loginEmailValue);
-        } else {
-            // Se tiver @, verifica se está no formato correto
-            if (!input.startsWith('phone_') || !input.endsWith('@zonne.app')) {
-                // Se for um email normal, tenta fazer login mesmo assim
-                console.log('📧 Login com email:', input);
-            }
-            loginEmailValue = input;
         }
 
         const userCred = await signInWithEmailAndPassword(auth, loginEmailValue, pwd);
@@ -1120,8 +1103,6 @@ async function doLogin() {
             errorMessage = 'Senha incorreta. Tente novamente.';
         } else if (error.code === 'auth/too-many-requests') {
             errorMessage = 'Muitas tentativas. Aguarde um momento.';
-        } else if (error.code === 'auth/invalid-email') {
-            errorMessage = 'Email ou telefone inválido.';
         }
         
         await Swal.fire({
@@ -1136,38 +1117,25 @@ async function doLogin() {
     }
 }
 
-// ============================================
-// EVENTOS DO LOGIN
-// ============================================
 loginBtn.addEventListener('click', doLogin);
-
 loginPassword.addEventListener('keydown', function(e) {
     if (e.key === 'Enter') doLogin();
-});
-
-loginEmail.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') {
-        document.getElementById('loginPassword').focus();
-    }
 });
 
 // ============================================
 // ESQUECEU SENHA
 // ============================================
 forgotPassword.addEventListener('click', async function() {
-    const input = loginEmail.value.trim();
-    if (!input) {
+    const email = loginEmail.value.trim();
+    if (!email) {
         await Swal.fire({ icon: 'warning', title: 'Atenção', text: 'Digite seu e-mail ou telefone' });
         return;
     }
 
     try {
-        let recoveryEmail = input;
-        if (!input.includes('@')) {
-            const phoneClean = input.replace(/\D/g, '');
-            if (phoneClean.length < 8) {
-                throw new Error('Número inválido');
-            }
+        let recoveryEmail = email;
+        if (!email.includes('@')) {
+            const phoneClean = email.replace(/\D/g, '');
             recoveryEmail = `phone_${phoneClean}@zonne.app`;
         }
 
@@ -1219,9 +1187,6 @@ document.addEventListener('keydown', function(e) {
 onAuthStateChanged(auth, (user) => {
     if (user) {
         console.log('👤 Usuário logado:', user.email);
-        if (window.location.pathname.includes('index.html') || window.location.pathname === '/') {
-            window.location.href = "zonne.html";
-        }
     } else {
         console.log('👤 Nenhum usuário logado');
     }
@@ -1232,10 +1197,9 @@ onAuthStateChanged(auth, (user) => {
 // ============================================
 console.log('🚀 Zonne iniciado!');
 console.log('📌 4 etapas: Telefone → Perfil → Senha → Resumo');
-console.log('📱 Login: digite número (948480666) ou email (phone_948480666@zonne.app)');
-console.log('✅ Sistema pronto!');
 
 if (step1) step1.classList.add('active');
+console.log('✅ Sistema pronto!');
 </script>
 </body>
 </html>
