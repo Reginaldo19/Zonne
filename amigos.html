@@ -1,0 +1,1556 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SocialConnect - Amigos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        /* (mesmo CSS anterior, mantido) */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0f;
+            color: #fff;
+            min-height: 100vh;
+            padding-bottom: 70px;
+        }
+        .top-bar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10, 10, 15, 0.92);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .top-bar .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 18px;
+            color: #fff;
+            cursor: pointer;
+        }
+        .top-bar .logo i {
+            font-size: 22px;
+            background: linear-gradient(135deg, #5850ec, #764ba2);
+            padding: 7px 8px;
+            border-radius: 10px;
+            color: #fff;
+        }
+        .top-bar .actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .top-bar .actions .icon-btn {
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.4);
+            font-size: 18px;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.3s;
+            padding: 4px;
+        }
+        .top-bar .actions .icon-btn:hover { color: #fff; }
+        .top-bar .actions .icon-btn .badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #e74c3c;
+            color: #fff;
+            font-size: 9px;
+            font-weight: 700;
+            min-width: 17px;
+            height: 17px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+        }
+        .top-bar .avatar-mini {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid rgba(255,255,255,0.06);
+            cursor: pointer;
+            transition: border 0.3s;
+            flex-shrink: 0;
+        }
+        .top-bar .avatar-mini:hover { border-color: #5850ec; }
+        .top-bar .avatar-mini img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .top-bar .avatar-mini .fallback {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 0 20px;
+        }
+
+        .page-header {
+            padding: 16px 16px 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .page-header h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+        }
+        .page-header .search-box {
+            display: flex;
+            align-items: center;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 30px;
+            padding: 6px 14px;
+            flex: 1;
+            max-width: 280px;
+        }
+        .page-header .search-box i {
+            color: rgba(255,255,255,0.2);
+            font-size: 14px;
+            margin-right: 8px;
+        }
+        .page-header .search-box input {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 13px;
+            outline: none;
+            font-family: 'Inter', sans-serif;
+            width: 100%;
+        }
+        .page-header .search-box input::placeholder {
+            color: rgba(255,255,255,0.2);
+        }
+
+        .tabs {
+            display: flex;
+            padding: 0 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            margin-bottom: 12px;
+        }
+        .tabs button {
+            flex: 1;
+            background: none;
+            border: none;
+            padding: 12px 0;
+            font-size: 13px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.3);
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            position: relative;
+            transition: color 0.3s;
+        }
+        .tabs button.active {
+            color: #5850ec;
+        }
+        .tabs button.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 20%;
+            right: 20%;
+            height: 2px;
+            background: #5850ec;
+            border-radius: 2px;
+        }
+        .tabs button:hover { color: rgba(255,255,255,0.6); }
+        .tabs button .tab-badge {
+            background: #e74c3c;
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 1px 7px;
+            border-radius: 30px;
+            margin-left: 6px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        .friends-list {
+            padding: 0 16px;
+        }
+
+        .friend-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 14px;
+            padding: 10px 14px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+        .friend-card:hover {
+            border-color: rgba(255,255,255,0.08);
+        }
+        .friend-card .avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+            border: 2px solid rgba(255,255,255,0.04);
+            cursor: pointer;
+        }
+        .friend-card .avatar:hover { border-color: #5850ec; }
+        .friend-card .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .friend-card .avatar .fallback {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 600;
+            color: #fff;
+        }
+        .friend-card .info {
+            flex: 1;
+            min-width: 0;
+        }
+        .friend-card .info .name {
+            font-weight: 600;
+            font-size: 15px;
+            color: #fff;
+            cursor: pointer;
+        }
+        .friend-card .info .name:hover { color: #5850ec; }
+        .friend-card .info .username {
+            font-size: 13px;
+            color: rgba(255,255,255,0.3);
+        }
+        .friend-card .actions {
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+        .friend-card .actions button {
+            background: none;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        .friend-card .actions .btn-add {
+            background: #5850ec;
+            color: #fff;
+        }
+        .friend-card .actions .btn-add:hover { background: #764ba2; }
+        .friend-card .actions .btn-add.requested {
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.4);
+            cursor: default;
+        }
+        .friend-card .actions .btn-add.requested:hover { background: rgba(255,255,255,0.06); }
+        .friend-card .actions .btn-unfollow {
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.4);
+        }
+        .friend-card .actions .btn-unfollow:hover {
+            background: rgba(231,76,60,0.15);
+            color: #e74c3c;
+        }
+        .friend-card .actions .btn-follow {
+            background: #5850ec;
+            color: #fff;
+        }
+        .friend-card .actions .btn-follow:hover { background: #764ba2; }
+        .friend-card .actions .btn-unfriend {
+            background: rgba(255,255,255,0.04);
+            color: rgba(255,255,255,0.2);
+            padding: 6px 10px;
+        }
+        .friend-card .actions .btn-unfriend:hover {
+            background: rgba(231,76,60,0.15);
+            color: #e74c3c;
+        }
+        .friend-card .actions .btn-profile {
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.5);
+            padding: 6px 10px;
+        }
+        .friend-card .actions .btn-profile:hover {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+        }
+        .friend-card .actions .btn-accept {
+            background: #2ecc71;
+            color: #fff;
+        }
+        .friend-card .actions .btn-accept:hover { background: #27ae60; }
+        .friend-card .actions .btn-reject {
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.5);
+        }
+        .friend-card .actions .btn-reject:hover {
+            background: rgba(231,76,60,0.2);
+            color: #e74c3c;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: rgba(255,255,255,0.15);
+        }
+        .empty-state i { font-size: 40px; margin-bottom: 12px; }
+        .empty-state h3 { color: rgba(255,255,255,0.3); font-weight: 500; font-size: 16px; }
+        .empty-state p { font-size: 13px; margin-top: 4px; }
+
+        .loading-spinner {
+            text-align: center;
+            padding: 40px 0;
+            color: rgba(255,255,255,0.1);
+        }
+        .loading-spinner i { font-size: 28px; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255,255,255,0.04);
+            display: flex;
+            justify-content: space-around;
+            padding: 6px 0 env(safe-area-inset-bottom, 8px) 0;
+        }
+        .bottom-nav .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.25);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px 16px;
+            transition: color 0.3s;
+            position: relative;
+            font-family: 'Inter', sans-serif;
+        }
+        .bottom-nav .nav-item span {
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+        .bottom-nav .nav-item.active {
+            color: #5850ec;
+        }
+        .bottom-nav .nav-item:hover { color: rgba(255,255,255,0.6); }
+        .bottom-nav .nav-item .badge {
+            position: absolute;
+            top: -2px;
+            right: 6px;
+            background: #e74c3c;
+            color: #fff;
+            font-size: 8px;
+            font-weight: 700;
+            min-width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+        }
+        .bottom-nav .nav-item .nav-icon {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .bottom-nav .nav-item .nav-icon .plus-circle {
+            background: linear-gradient(135deg, #5850ec, #764ba2);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: #fff;
+            margin-top: -14px;
+            box-shadow: 0 4px 20px rgba(88,80,236,0.3);
+            transition: transform 0.3s;
+        }
+        .bottom-nav .nav-item .nav-icon .plus-circle:hover {
+            transform: scale(1.05);
+        }
+
+        .user-card-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .user-card-overlay.active { display: flex; }
+
+        .user-card {
+            background: #14141e;
+            border-radius: 24px;
+            max-width: 380px;
+            width: 100%;
+            padding: 28px 24px 24px;
+            border: 1px solid rgba(255,255,255,0.06);
+            text-align: center;
+            position: relative;
+            animation: cardPop 0.3s ease;
+        }
+        @keyframes cardPop {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .user-card .close-card {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.2);
+            font-size: 22px;
+            cursor: pointer;
+        }
+        .user-card .close-card:hover { color: rgba(255,255,255,0.5); }
+        .user-card .avatar-large {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 12px;
+            border: 3px solid rgba(255,255,255,0.06);
+        }
+        .user-card .avatar-large img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .user-card .avatar-large .fallback {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: 700;
+            color: #fff;
+        }
+        .user-card .name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+        }
+        .user-card .username {
+            font-size: 14px;
+            color: rgba(255,255,255,0.3);
+        }
+        .user-card .bio {
+            font-size: 14px;
+            color: rgba(255,255,255,0.5);
+            margin: 6px 0 14px;
+        }
+        .user-card .stats {
+            display: flex;
+            justify-content: center;
+            gap: 28px;
+            margin-bottom: 16px;
+        }
+        .user-card .stats .stat {
+            text-align: center;
+        }
+        .user-card .stats .stat .number {
+            font-weight: 700;
+            font-size: 17px;
+            color: #fff;
+        }
+        .user-card .stats .stat .label {
+            font-size: 11px;
+            color: rgba(255,255,255,0.3);
+        }
+        .user-card .card-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .user-card .card-actions button {
+            padding: 8px 20px;
+            border-radius: 30px;
+            border: none;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+        }
+        .user-card .card-actions .btn-add {
+            background: #5850ec;
+            color: #fff;
+        }
+        .user-card .card-actions .btn-add:hover { background: #764ba2; }
+        .user-card .card-actions .btn-add.requested {
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.4);
+            cursor: default;
+        }
+        .user-card .card-actions .btn-add.requested:hover { background: rgba(255,255,255,0.06); }
+        .user-card .card-actions .btn-unfollow {
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.4);
+        }
+        .user-card .card-actions .btn-unfollow:hover {
+            background: rgba(231,76,60,0.15);
+            color: #e74c3c;
+        }
+        .user-card .card-actions .btn-follow {
+            background: #5850ec;
+            color: #fff;
+        }
+        .user-card .card-actions .btn-follow:hover { background: #764ba2; }
+        .user-card .card-actions .btn-unfriend {
+            background: rgba(255,255,255,0.04);
+            color: rgba(255,255,255,0.2);
+        }
+        .user-card .card-actions .btn-unfriend:hover {
+            background: rgba(231,76,60,0.15);
+            color: #e74c3c;
+        }
+        .user-card .card-actions .btn-profile {
+            background: rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.5);
+        }
+        .user-card .card-actions .btn-profile:hover {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 0; }
+            .page-header { flex-direction: column; align-items: stretch; }
+            .page-header .search-box { max-width: 100%; }
+            .friend-card { padding: 8px 12px; flex-wrap: wrap; }
+            .friend-card .actions { width: 100%; justify-content: flex-start; }
+            .friend-card .actions button { flex: 1; text-align: center; }
+            .bottom-nav .nav-item { padding: 2px 10px; font-size: 18px; }
+            .bottom-nav .nav-item span { font-size: 8px; }
+            .bottom-nav .nav-item .nav-icon .plus-circle { width: 34px; height: 34px; font-size: 18px; margin-top: -10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="top-bar">
+        <div class="logo" onclick="window.location.href='feed.html'">
+            <i class="fas fa-users"></i>
+            <span>SocialConnect</span>
+        </div>
+        <div class="actions">
+            <button class="icon-btn" onclick="window.location.href='notificacoes.html'">
+                <i class="fas fa-bell"></i>
+                <span class="badge" id="notifBadge" style="display:none;">0</span>
+            </button>
+            <button class="icon-btn active" onclick="window.location.href='amigos.html'">
+                <i class="fas fa-users"></i>
+                <span class="badge" id="friendBadge" style="display:none;">0</span>
+            </button>
+            <div class="avatar-mini" id="userAvatar" onclick="window.location.href='perfil.html'">
+                <div class="fallback" style="background:#5850ec;"><i class="fas fa-user"></i></div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <h2><i class="fas fa-user-friends" style="color:#5850ec;margin-right:8px;"></i>Amigos</h2>
+            <div class="search-box" id="searchBox">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Pesquisar...">
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="active" data-tab="friends" onclick="switchTab('friends')">
+                <i class="fas fa-user-friends"></i> Amigos
+            </button>
+            <button data-tab="requests" onclick="switchTab('requests')">
+                <i class="fas fa-user-plus"></i> Solicitações
+                <span class="tab-badge" id="requestBadge" style="display:none;">0</span>
+            </button>
+            <button data-tab="discover" onclick="switchTab('discover')">
+                <i class="fas fa-compass"></i> Descobrir
+            </button>
+        </div>
+
+        <div id="tabFriends" class="tab-content active">
+            <div class="friends-list" id="friendsList">
+                <div class="loading-spinner"><i class="fas fa-spinner"></i></div>
+            </div>
+        </div>
+
+        <div id="tabRequests" class="tab-content">
+            <div class="friends-list" id="requestsList">
+                <div class="loading-spinner"><i class="fas fa-spinner"></i></div>
+            </div>
+        </div>
+
+        <div id="tabDiscover" class="tab-content">
+            <div class="friends-list" id="discoverList">
+                <div class="loading-spinner"><i class="fas fa-spinner"></i></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== USER CARD ===== -->
+    <div class="user-card-overlay" id="userCardOverlay" onclick="if(event.target===this) closeUserCard()">
+        <div class="user-card" id="userCardContent"></div>
+    </div>
+
+    <nav class="bottom-nav">
+        <button class="nav-item" onclick="window.location.href='feed.html'">
+            <div class="nav-icon"><i class="fas fa-home"></i></div>
+            <span>Início</span>
+        </button>
+        <button class="nav-item" onclick="window.location.href='explorar.html'">
+            <div class="nav-icon"><i class="fas fa-compass"></i></div>
+            <span>Explorar</span>
+        </button>
+        <button class="nav-item" onclick="window.location.href='feed.html'">
+            <div class="nav-icon">
+                <div class="plus-circle"><i class="fas fa-plus"></i></div>
+            </div>
+            <span>Novo</span>
+        </button>
+        <button class="nav-item" onclick="window.location.href='chat.html'">
+            <div class="nav-icon"><i class="fas fa-envelope"></i></div>
+            <span>Mensagens</span>
+        </button>
+        <button class="nav-item" onclick="window.location.href='perfil.html'">
+            <div class="nav-icon"><i class="fas fa-user"></i></div>
+            <span>Perfil</span>
+        </button>
+    </nav>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+    (function() {
+        'use strict';
+
+        const SUPABASE_URL = 'https://cfanqigkvfpigjvjjbon.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmYW5xaWdrdmZwaWdqdmpqYm9uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM4NzI5NzIsImV4cCI6MjA5OTQ0ODk3Mn0.UDyNusIz7PNaz4-n-Bpgn2LJCUi6fIw6tW0QrsJEii0';
+
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let currentUser = null;
+        let currentProfile = null;
+        let friends = [];
+        let pendingRequests = [];
+        let discoverUsers = [];
+        let filteredFriends = [];
+        let filteredDiscover = [];
+        let currentTab = 'friends';
+        // Map para saber se o usuário segue cada amigo
+        let followsMap = new Map(); // key: user_id, value: true/false
+
+        const friendsList = document.getElementById('friendsList');
+        const requestsList = document.getElementById('requestsList');
+        const discoverList = document.getElementById('discoverList');
+        const searchInput = document.getElementById('searchInput');
+        const searchBox = document.getElementById('searchBox');
+
+        // ===== AUTH =====
+        async function checkAuth() {
+            const { data, error } = await supabase.auth.getSession();
+            if (error || !data.session) {
+                window.location.href = 'index.html';
+                return;
+            }
+            currentUser = data.session.user;
+            await loadProfile();
+            await loadData();
+            await loadNotifications();
+        }
+
+        async function loadProfile() {
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', currentUser.id)
+                .single();
+
+            if (error) {
+                console.error('Erro ao carregar perfil:', error);
+                return;
+            }
+            currentProfile = data;
+            updateUI();
+        }
+
+        function updateUI() {
+            if (!currentProfile) return;
+            const avatarEl = document.getElementById('userAvatar');
+            if (currentProfile.avatar_url) {
+                avatarEl.innerHTML = `<img src="${currentProfile.avatar_url}" alt="Avatar">`;
+            } else {
+                const color = currentProfile.avatar_color || '#5850ec';
+                const initial = (currentProfile.full_name || 'U')[0].toUpperCase();
+                avatarEl.innerHTML = `<div class="fallback" style="background:${color};">${initial}</div>`;
+            }
+        }
+
+        // ===== LOAD ALL DATA =====
+        async function loadData() {
+            await Promise.all([
+                loadFriends(),
+                loadPendingRequests(),
+                loadDiscoverUsers(),
+                loadFollowsMap()
+            ]);
+            updateRequestBadge();
+            updateFriendBadge();
+            if (currentTab === 'friends') renderFriends();
+            else if (currentTab === 'requests') renderRequests();
+            else if (currentTab === 'discover') renderDiscover();
+        }
+
+        // ===== FOLLOWS MAP =====
+        async function loadFollowsMap() {
+            const { data, error } = await supabase
+                .from('follows')
+                .select('followed_id')
+                .eq('follower_id', currentUser.id);
+
+            if (error) {
+                console.error('Erro ao carregar follows:', error);
+                followsMap = new Map();
+                return;
+            }
+            followsMap = new Map(data.map(f => [f.followed_id, true]));
+        }
+
+        // ===== FRIENDS =====
+        async function loadFriends() {
+            const { data: friendData, error } = await supabase
+                .from('friends')
+                .select('friend_id')
+                .eq('user_id', currentUser.id);
+
+            if (error) {
+                console.error('Erro ao carregar amigos:', error);
+                friends = [];
+                filteredFriends = [];
+                return;
+            }
+
+            const friendIds = (friendData || []).map(f => f.friend_id);
+
+            if (friendIds.length === 0) {
+                friends = [];
+                filteredFriends = [];
+                return;
+            }
+
+            const { data: profiles, error: profileError } = await supabase
+                .from('profiles')
+                .select('*')
+                .in('id', friendIds);
+
+            if (profileError) {
+                console.error('Erro ao carregar perfis:', profileError);
+                friends = [];
+                filteredFriends = [];
+                return;
+            }
+
+            friends = profiles || [];
+            filteredFriends = [...friends];
+        }
+
+        function renderFriends() {
+            if (filteredFriends.length === 0) {
+                friendsList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-user-friends"></i>
+                        <h3>Nenhum amigo</h3>
+                        <p>Adicione novos amigos na aba "Descobrir"</p>
+                    </div>
+                `;
+                return;
+            }
+
+            friendsList.innerHTML = filteredFriends.map(friend => {
+                const avatarUrl = friend.avatar_url;
+                const color = friend.avatar_color || '#5850ec';
+                const initial = (friend.full_name || 'U')[0].toUpperCase();
+                const isFollowing = followsMap.has(friend.id); // se o usuário atual segue este amigo
+
+                return `
+                    <div class="friend-card" data-user-id="${friend.id}">
+                        <div class="avatar" onclick="openUserCard('${friend.id}')">
+                            ${avatarUrl ? `<img src="${avatarUrl}" alt="Avatar">` :
+                            `<div class="fallback" style="background:${color};">${initial}</div>`}
+                        </div>
+                        <div class="info">
+                            <div class="name" onclick="openUserCard('${friend.id}')">${friend.full_name || 'Usuário'}</div>
+                            <div class="username">@${friend.username || 'usuario'}</div>
+                        </div>
+                        <div class="actions">
+                            ${isFollowing ? `
+                                <button class="btn-unfollow" onclick="event.stopPropagation(); unfollowUser('${friend.id}')">
+                                    <i class="fas fa-user-minus"></i> Parar de seguir
+                                </button>
+                            ` : `
+                                <button class="btn-follow" onclick="event.stopPropagation(); followUser('${friend.id}')">
+                                    <i class="fas fa-user-plus"></i> Seguir
+                                </button>
+                            `}
+                            <button class="btn-unfriend" onclick="event.stopPropagation(); unfriendUser('${friend.id}')">
+                                <i class="fas fa-user-slash"></i> Desfazer amizade
+                            </button>
+                            <button class="btn-profile" onclick="event.stopPropagation(); openUserCard('${friend.id}')">
+                                <i class="fas fa-user"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ===== PENDING REQUESTS =====
+        async function loadPendingRequests() {
+            const { data, error } = await supabase
+                .from('friend_requests')
+                .select(`
+                    *,
+                    sender:sender_id (id, full_name, username, avatar_url, avatar_color)
+                `)
+                .eq('receiver_id', currentUser.id)
+                .eq('status', 'pending');
+
+            if (error) {
+                console.error('Erro ao carregar solicitações:', error);
+                pendingRequests = [];
+                return;
+            }
+
+            pendingRequests = data || [];
+        }
+
+        function renderRequests() {
+            if (pendingRequests.length === 0) {
+                requestsList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-user-plus"></i>
+                        <h3>Nenhuma solicitação</h3>
+                        <p>Você não tem pedidos de amizade pendentes.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            requestsList.innerHTML = pendingRequests.map(req => {
+                const sender = req.sender || {};
+                const avatarUrl = sender.avatar_url;
+                const color = sender.avatar_color || '#5850ec';
+                const initial = (sender.full_name || 'U')[0].toUpperCase();
+
+                return `
+                    <div class="friend-card" data-request-id="${req.id}">
+                        <div class="avatar" onclick="openUserCard('${sender.id}')">
+                            ${avatarUrl ? `<img src="${avatarUrl}" alt="Avatar">` :
+                            `<div class="fallback" style="background:${color};">${initial}</div>`}
+                        </div>
+                        <div class="info">
+                            <div class="name" onclick="openUserCard('${sender.id}')">${sender.full_name || 'Usuário'}</div>
+                            <div class="username">@${sender.username || 'usuario'}</div>
+                        </div>
+                        <div class="actions">
+                            <button class="btn-accept" onclick="event.stopPropagation(); acceptRequest('${req.id}', '${sender.id}')">
+                                <i class="fas fa-check"></i> Aceitar
+                            </button>
+                            <button class="btn-reject" onclick="event.stopPropagation(); rejectRequest('${req.id}')">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ===== DISCOVER =====
+        async function loadDiscoverUsers() {
+            const { data: allProfiles, error } = await supabase
+                .from('profiles')
+                .select('*')
+                .neq('id', currentUser.id);
+
+            if (error) {
+                console.error('Erro ao carregar perfis para descobrir:', error);
+                discoverUsers = [];
+                filteredDiscover = [];
+                return;
+            }
+
+            // IDs dos amigos (para não mostrar na lista de descubra)
+            const friendIds = friends.map(f => f.id);
+            // IDs com solicitação pendente (enviada ou recebida)
+            const { data: requestsData } = await supabase
+                .from('friend_requests')
+                .select('sender_id, receiver_id')
+                .or(`sender_id.eq.${currentUser.id},receiver_id.eq.${currentUser.id}`)
+                .eq('status', 'pending');
+
+            const pendingIds = new Set();
+            if (requestsData) {
+                requestsData.forEach(r => {
+                    if (r.sender_id === currentUser.id) pendingIds.add(r.receiver_id);
+                    else if (r.receiver_id === currentUser.id) pendingIds.add(r.sender_id);
+                });
+            }
+
+            discoverUsers = allProfiles.filter(p => 
+                !friendIds.includes(p.id) &&
+                !pendingIds.has(p.id)
+            );
+
+            filteredDiscover = [...discoverUsers];
+        }
+
+        function renderDiscover() {
+            if (filteredDiscover.length === 0) {
+                discoverList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-compass"></i>
+                        <h3>Ninguém para adicionar</h3>
+                        <p>Você já adicionou todos os usuários disponíveis.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            discoverList.innerHTML = filteredDiscover.map(user => {
+                const avatarUrl = user.avatar_url;
+                const color = user.avatar_color || '#5850ec';
+                const initial = (user.full_name || 'U')[0].toUpperCase();
+                const isFollowing = followsMap.has(user.id);
+
+                return `
+                    <div class="friend-card" data-user-id="${user.id}">
+                        <div class="avatar" onclick="openUserCard('${user.id}')">
+                            ${avatarUrl ? `<img src="${avatarUrl}" alt="Avatar">` :
+                            `<div class="fallback" style="background:${color};">${initial}</div>`}
+                        </div>
+                        <div class="info">
+                            <div class="name" onclick="openUserCard('${user.id}')">${user.full_name || 'Usuário'}</div>
+                            <div class="username">@${user.username || 'usuario'}</div>
+                        </div>
+                        <div class="actions">
+                            <button class="btn-add" onclick="event.stopPropagation(); sendFriendRequest('${user.id}')">
+                                <i class="fas fa-user-plus"></i> Adicionar
+                            </button>
+                            ${isFollowing ? `
+                                <button class="btn-unfollow" onclick="event.stopPropagation(); unfollowUser('${user.id}')">
+                                    <i class="fas fa-user-minus"></i> Parar de seguir
+                                </button>
+                            ` : `
+                                <button class="btn-follow" onclick="event.stopPropagation(); followUser('${user.id}')">
+                                    <i class="fas fa-user-plus"></i> Seguir
+                                </button>
+                            `}
+                            <button class="btn-profile" onclick="event.stopPropagation(); openUserCard('${user.id}')">
+                                <i class="fas fa-user"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ===== ACTIONS =====
+
+        // --- Seguir (unilateral) ---
+        window.followUser = async function(userId) {
+            try {
+                const { error } = await supabase
+                    .from('follows')
+                    .insert({ follower_id: currentUser.id, followed_id: userId });
+
+                if (error) throw error;
+
+                // Atualizar contadores de seguidores/seguindo
+                await updateFollowCounts(currentUser.id, userId, 'increment');
+
+                followsMap.set(userId, true);
+                // Recarregar as listas para refletir
+                await loadData();
+                if (currentTab === 'friends') renderFriends();
+                else if (currentTab === 'discover') renderDiscover();
+                Swal.fire('Sucesso', 'Agora você segue este usuário.', 'success');
+            } catch (error) {
+                console.error('Erro ao seguir:', error);
+                Swal.fire('Erro', 'Não foi possível seguir.', 'error');
+            }
+        };
+
+        // --- Parar de seguir (unilateral) ---
+        window.unfollowUser = async function(userId) {
+            try {
+                const { error } = await supabase
+                    .from('follows')
+                    .delete()
+                    .eq('follower_id', currentUser.id)
+                    .eq('followed_id', userId);
+
+                if (error) throw error;
+
+                await updateFollowCounts(currentUser.id, userId, 'decrement');
+
+                followsMap.delete(userId);
+                await loadData();
+                if (currentTab === 'friends') renderFriends();
+                else if (currentTab === 'discover') renderDiscover();
+                Swal.fire('Feito', 'Você parou de seguir este usuário.', 'success');
+            } catch (error) {
+                console.error('Erro ao parar de seguir:', error);
+                Swal.fire('Erro', 'Não foi possível parar de seguir.', 'error');
+            }
+        };
+
+        // --- Enviar solicitação de amizade ---
+        window.sendFriendRequest = async function(userId) {
+            try {
+                const { error } = await supabase
+                    .from('friend_requests')
+                    .insert({
+                        sender_id: currentUser.id,
+                        receiver_id: userId,
+                        status: 'pending'
+                    });
+
+                if (error) throw error;
+
+                await loadDiscoverUsers();
+                renderDiscover();
+                updateRequestBadge();
+                Swal.fire('Solicitação enviada!', 'Aguardando resposta do usuário.', 'success');
+            } catch (error) {
+                console.error('Erro ao enviar solicitação:', error);
+                Swal.fire('Erro', 'Não foi possível enviar a solicitação.', 'error');
+            }
+        };
+
+        // --- Aceitar solicitação ---
+        window.acceptRequest = async function(requestId, senderId) {
+            try {
+                // Atualizar status
+                const { error: updateError } = await supabase
+                    .from('friend_requests')
+                    .update({ status: 'accepted' })
+                    .eq('id', requestId);
+
+                if (updateError) throw updateError;
+
+                // Criar amizade (bilateral)
+                await supabase
+                    .from('friends')
+                    .insert([
+                        { user_id: currentUser.id, friend_id: senderId },
+                        { user_id: senderId, friend_id: currentUser.id }
+                    ]);
+
+                // Automaticamente ambos se seguem (se não seguirem já)
+                // Adicionar follows em ambas as direções se não existirem
+                const { data: follow1 } = await supabase
+                    .from('follows')
+                    .select('id')
+                    .eq('follower_id', currentUser.id)
+                    .eq('followed_id', senderId)
+                    .maybeSingle();
+
+                if (!follow1) {
+                    await supabase
+                        .from('follows')
+                        .insert({ follower_id: currentUser.id, followed_id: senderId });
+                    await updateFollowCounts(currentUser.id, senderId, 'increment');
+                }
+
+                const { data: follow2 } = await supabase
+                    .from('follows')
+                    .select('id')
+                    .eq('follower_id', senderId)
+                    .eq('followed_id', currentUser.id)
+                    .maybeSingle();
+
+                if (!follow2) {
+                    await supabase
+                        .from('follows')
+                        .insert({ follower_id: senderId, followed_id: currentUser.id });
+                    await updateFollowCounts(senderId, currentUser.id, 'increment');
+                }
+
+                // Atualizar followsMap
+                followsMap.set(senderId, true);
+
+                await loadData();
+                if (currentTab === 'friends') renderFriends();
+                else if (currentTab === 'requests') renderRequests();
+                else if (currentTab === 'discover') renderDiscover();
+
+                updateRequestBadge();
+                updateFriendBadge();
+
+                Swal.fire('Sucesso', 'Agora vocês são amigos!', 'success');
+            } catch (error) {
+                console.error('Erro ao aceitar solicitação:', error);
+                Swal.fire('Erro', 'Não foi possível aceitar a solicitação.', 'error');
+            }
+        };
+
+        // --- Rejeitar solicitação ---
+        window.rejectRequest = async function(requestId) {
+            try {
+                const { error } = await supabase
+                    .from('friend_requests')
+                    .delete()
+                    .eq('id', requestId);
+
+                if (error) throw error;
+
+                await loadData();
+                if (currentTab === 'requests') renderRequests();
+                updateRequestBadge();
+                Swal.fire('Solicitação rejeitada', '', 'info');
+            } catch (error) {
+                console.error('Erro ao rejeitar solicitação:', error);
+                Swal.fire('Erro', 'Não foi possível rejeitar a solicitação.', 'error');
+            }
+        };
+
+        // --- Desfazer amizade (com confirmação) ---
+        window.unfriendUser = async function(userId) {
+            try {
+                const result = await Swal.fire({
+                    title: 'Desfazer amizade?',
+                    text: 'Isso removerá a amizade e vocês deixarão de se seguir mutuamente.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#e74c3c',
+                    cancelButtonColor: '#555',
+                    confirmButtonText: 'Sim, desfazer',
+                    cancelButtonText: 'Cancelar'
+                });
+
+                if (!result.isConfirmed) return;
+
+                // Remover registros de friends (ambas direções)
+                await supabase
+                    .from('friends')
+                    .delete()
+                    .eq('user_id', currentUser.id)
+                    .eq('friend_id', userId);
+
+                await supabase
+                    .from('friends')
+                    .delete()
+                    .eq('user_id', userId)
+                    .eq('friend_id', currentUser.id);
+
+                // Remover follows (ambas direções) também, pois amizade implica seguir
+                await supabase
+                    .from('follows')
+                    .delete()
+                    .eq('follower_id', currentUser.id)
+                    .eq('followed_id', userId);
+
+                await supabase
+                    .from('follows')
+                    .delete()
+                    .eq('follower_id', userId)
+                    .eq('followed_id', currentUser.id);
+
+                // Atualizar contadores (decrementar followers/following para ambos)
+                await updateFollowCounts(currentUser.id, userId, 'decrement');
+                await updateFollowCounts(userId, currentUser.id, 'decrement');
+
+                followsMap.delete(userId);
+
+                await loadData();
+                if (currentTab === 'friends') renderFriends();
+                else if (currentTab === 'discover') renderDiscover();
+                updateFriendBadge();
+                closeUserCard();
+
+                Swal.fire('Amizade desfeita', 'Vocês não são mais amigos.', 'success');
+            } catch (error) {
+                console.error('Erro ao desfazer amizade:', error);
+                Swal.fire('Erro', 'Não foi possível desfazer a amizade.', 'error');
+            }
+        };
+
+        // ===== UPDATE FOLLOW COUNTERS =====
+        async function updateFollowCounts(userId, targetId, action) {
+            const increment = action === 'increment' ? 1 : -1;
+
+            // Atualizar following_count do usuário que seguiu
+            const { data: userProfile } = await supabase
+                .from('profiles')
+                .select('following_count')
+                .eq('id', userId)
+                .single();
+
+            if (userProfile) {
+                const newFollowing = Math.max(0, (userProfile.following_count || 0) + increment);
+                await supabase
+                    .from('profiles')
+                    .update({ following_count: newFollowing })
+                    .eq('id', userId);
+            }
+
+            // Atualizar followers_count do alvo
+            const { data: targetProfile } = await supabase
+                .from('profiles')
+                .select('followers_count')
+                .eq('id', targetId)
+                .single();
+
+            if (targetProfile) {
+                const newFollowers = Math.max(0, (targetProfile.followers_count || 0) + increment);
+                await supabase
+                    .from('profiles')
+                    .update({ followers_count: newFollowers })
+                    .eq('id', targetId);
+            }
+        }
+
+        // ===== USER CARD =====
+        window.openUserCard = async function(userId) {
+            const overlay = document.getElementById('userCardOverlay');
+            const content = document.getElementById('userCardContent');
+            
+            overlay.classList.add('active');
+            content.innerHTML = '<div style="text-align:center;padding:20px;color:rgba(255,255,255,0.2);"><i class="fas fa-spinner fa-spin"></i> Carregando...</div>';
+
+            const { data: profile, error } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', userId)
+                .single();
+
+            if (error || !profile) {
+                content.innerHTML = '<div style="text-align:center;padding:20px;color:rgba(255,255,255,0.2);">Perfil não encontrado</div>';
+                return;
+            }
+
+            const isOwn = userId === currentUser.id;
+            let isFriend = false;
+            let hasPendingRequest = false;
+            let isFollowing = false;
+
+            if (!isOwn) {
+                const { data: friendData } = await supabase
+                    .from('friends')
+                    .select('id')
+                    .eq('user_id', currentUser.id)
+                    .eq('friend_id', userId)
+                    .maybeSingle();
+                isFriend = !!friendData;
+
+                const { data: reqData } = await supabase
+                    .from('friend_requests')
+                    .select('status')
+                    .eq('sender_id', currentUser.id)
+                    .eq('receiver_id', userId)
+                    .maybeSingle();
+                hasPendingRequest = reqData && reqData.status === 'pending';
+
+                isFollowing = followsMap.has(userId);
+            }
+
+            const avatarUrl = profile.avatar_url;
+            const color = profile.avatar_color || '#5850ec';
+            const initial = (profile.full_name || 'U')[0].toUpperCase();
+
+            let actionHtml = '';
+            if (!isOwn) {
+                if (isFriend) {
+                    actionHtml = `
+                        ${isFollowing ? `
+                            <button class="btn-unfollow" onclick="unfollowUser('${userId}')">
+                                <i class="fas fa-user-minus"></i> Parar de seguir
+                            </button>
+                        ` : `
+                            <button class="btn-follow" onclick="followUser('${userId}')">
+                                <i class="fas fa-user-plus"></i> Seguir
+                            </button>
+                        `}
+                        <button class="btn-unfriend" onclick="unfriendUser('${userId}')">
+                            <i class="fas fa-user-slash"></i> Desfazer amizade
+                        </button>
+                    `;
+                } else if (hasPendingRequest) {
+                    actionHtml = `
+                        <button class="btn-add requested" onclick="cancelFriendRequest('${userId}')">
+                            <i class="fas fa-clock"></i> Solicitado
+                        </button>
+                        ${isFollowing ? `
+                            <button class="btn-unfollow" onclick="unfollowUser('${userId}')">
+                                <i class="fas fa-user-minus"></i> Parar de seguir
+                            </button>
+                        ` : `
+                            <button class="btn-follow" onclick="followUser('${userId}')">
+                                <i class="fas fa-user-plus"></i> Seguir
+                            </button>
+                        `}
+                    `;
+                } else {
+                    actionHtml = `
+                        <button class="btn-add" onclick="sendFriendRequest('${userId}')">
+                            <i class="fas fa-user-plus"></i> Adicionar
+                        </button>
+                        ${isFollowing ? `
+                            <button class="btn-unfollow" onclick="unfollowUser('${userId}')">
+                                <i class="fas fa-user-minus"></i> Parar de seguir
+                            </button>
+                        ` : `
+                            <button class="btn-follow" onclick="followUser('${userId}')">
+                                <i class="fas fa-user-plus"></i> Seguir
+                            </button>
+                        `}
+                    `;
+                }
+            }
+
+            content.innerHTML = `
+                <button class="close-card" onclick="closeUserCard()">&times;</button>
+                <div class="avatar-large">
+                    ${avatarUrl ? `<img src="${avatarUrl}" alt="Avatar">` :
+                    `<div class="fallback" style="background:${color};">${initial}</div>`}
+                </div>
+                <div class="name">${profile.full_name || 'Usuário'}</div>
+                <div class="username">@${profile.username || 'usuario'}</div>
+                ${profile.bio ? `<div class="bio">${escapeHtml(profile.bio)}</div>` : ''}
+                <div class="stats">
+                    <div class="stat">
+                        <div class="number">${profile.followers_count || 0}</div>
+                        <div class="label">Seguidores</div>
+                    </div>
+                    <div class="stat">
+                        <div class="number">${profile.following_count || 0}</div>
+                        <div class="label">Seguindo</div>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    ${actionHtml}
+                    <button class="btn-profile" onclick="closeUserCard(); window.location.href='perfil.html?id=${userId}'">
+                        <i class="fas fa-user"></i> Ver perfil
+                    </button>
+                </div>
+            `;
+        };
+
+        window.closeUserCard = function() {
+            document.getElementById('userCardOverlay').classList.remove('active');
+        };
+
+        window.cancelFriendRequest = async function(userId) {
+            try {
+                await supabase
+                    .from('friend_requests')
+                    .delete()
+                    .eq('sender_id', currentUser.id)
+                    .eq('receiver_id', userId)
+                    .eq('status', 'pending');
+
+                await loadData();
+                if (currentTab === 'discover') renderDiscover();
+                if (currentTab === 'friends') renderFriends();
+                updateRequestBadge();
+                closeUserCard();
+                Swal.fire('Solicitação cancelada', '', 'info');
+            } catch (error) {
+                console.error('Erro ao cancelar solicitação:', error);
+                Swal.fire('Erro', 'Não foi possível cancelar a solicitação.', 'error');
+            }
+        };
+
+        // ===== SEARCH =====
+        searchInput.addEventListener('input', function() {
+            const term = this.value.toLowerCase().trim();
+            if (currentTab === 'friends') {
+                if (!term) {
+                    filteredFriends = [...friends];
+                } else {
+                    filteredFriends = friends.filter(f => 
+                        (f.full_name && f.full_name.toLowerCase().includes(term)) ||
+                        (f.username && f.username.toLowerCase().includes(term))
+                    );
+                }
+                renderFriends();
+            } else if (currentTab === 'discover') {
+                if (!term) {
+                    filteredDiscover = [...discoverUsers];
+                } else {
+                    filteredDiscover = discoverUsers.filter(u => 
+                        (u.full_name && u.full_name.toLowerCase().includes(term)) ||
+                        (u.username && u.username.toLowerCase().includes(term))
+                    );
+                }
+                renderDiscover();
+            }
+        });
+
+        // ===== TABS =====
+        window.switchTab = function(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tabs button').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.tab === tab);
+            });
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.toggle('active', el.id === 'tab' + tab.charAt(0).toUpperCase() + tab.slice(1));
+            });
+            searchInput.value = '';
+            if (tab === 'friends') {
+                filteredFriends = [...friends];
+                renderFriends();
+            } else if (tab === 'requests') {
+                renderRequests();
+            } else if (tab === 'discover') {
+                filteredDiscover = [...discoverUsers];
+                renderDiscover();
+            }
+        };
+
+        // ===== BADGES =====
+        function updateRequestBadge() {
+            const badge = document.getElementById('requestBadge');
+            const count = pendingRequests.length;
+            if (count > 0) {
+                badge.style.display = 'inline';
+                badge.textContent = count > 9 ? '9+' : count;
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        async function updateFriendBadge() {
+            const { count, error } = await supabase
+                .from('friends')
+                .select('id', { count: 'exact', head: true })
+                .eq('user_id', currentUser.id);
+
+            if (error) return;
+            const badge = document.getElementById('friendBadge');
+            if (count > 0) {
+                badge.style.display = 'flex';
+                badge.textContent = count > 9 ? '9+' : count;
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        // ===== NOTIFICATIONS BADGE =====
+        async function loadNotifications() {
+            const { data, error } = await supabase
+                .from('notifications')
+                .select('id')
+                .eq('user_id', currentUser.id)
+                .eq('read', false);
+
+            if (error) return;
+
+            const badge = document.getElementById('notifBadge');
+            if (data && data.length > 0) {
+                badge.style.display = 'flex';
+                badge.textContent = data.length > 9 ? '9+' : data.length;
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        // ===== UTILS =====
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // ===== INIT =====
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+            setInterval(loadNotifications, 30000);
+            setInterval(updateFriendBadge, 60000);
+        });
+
+        // Expor funções globais
+        window.openUserCard = openUserCard;
+        window.closeUserCard = closeUserCard;
+        window.sendFriendRequest = sendFriendRequest;
+        window.cancelFriendRequest = cancelFriendRequest;
+        window.followUser = followUser;
+        window.unfollowUser = unfollowUser;
+        window.unfriendUser = unfriendUser;
+        window.acceptRequest = acceptRequest;
+        window.rejectRequest = rejectRequest;
+        window.switchTab = switchTab;
+
+        console.log('✅ SocialConnect Amigos carregado!');
+    })();
+    </script>
+</body>
+</html>
