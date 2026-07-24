@@ -932,7 +932,7 @@
                 }
 
                 setTimeout(() => {
-                    window.location.href = 'dashboard.html';
+                    window.location.href = 'feed.html';
                 }, 2000);
 
             } catch (error) {
@@ -1049,7 +1049,7 @@
                     const session = JSON.parse(saved);
                     const { data, error } = await supabaseClient.auth.setSession(session);
                     if (!error && data.session) {
-                        window.location.href = 'dashboard.html';
+                        window.location.href = 'feed.html';
                     }
                 }
             } catch (e) {
