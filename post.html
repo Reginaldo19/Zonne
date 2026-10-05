@@ -373,24 +373,195 @@
             background: rgba(255, 255, 255, 0.3);
         }
 
-        /* ===== ÁUDIO ===== */
-        .audio-player-wrap {
-            background: var(--card-bg);
+        /* ===== ÁUDIO + IMAGEM OVERLAY (post com foto + áudio) ===== */
+        .audio-img-overlay {
+            position: relative;
+            width: 100%;
+            background: #000;
             border-radius: var(--radius);
-            padding: 20px 16px 16px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        .audio-img-overlay img {
+            width: 100%;
+            display: block;
+            max-height: 500px;
+            object-fit: cover;
+        }
+        .audio-img-overlay .audio-bg-avatar {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+            z-index: 2;
+            background: #12121c;
+        }
+        .audio-img-overlay .audio-bg-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            max-height: none;
+        }
+        .audio-img-overlay .audio-bg-avatar .fallback {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+        }
+        .audio-img-overlay .audio-disc-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #3a3a5a, #1a1a2e);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1), 0 4px 16px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            transition: transform 0.1s linear;
+        }
+        .audio-img-overlay .audio-disc-badge.spinning {
+            animation: spinDisc 4s linear infinite;
+        }
+        .audio-img-overlay .audio-disc-badge::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #2a2a3a;
+            border: 1.5px solid rgba(255, 255, 255, 0.15);
+        }
+        .audio-img-overlay .audio-disc-badge i {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.15);
+            z-index: 2;
+        }
+        .audio-img-overlay .audio-overlay-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 60px 16px 16px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.6) 40%, transparent 100%);
+        }
+        .audio-img-overlay .audio-overlay-controls .audio-controls {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(12px);
+            border-radius: 40px;
+            padding: 8px 14px 8px 8px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .audio-img-overlay .audio-overlay-controls .audio-controls .play-btn {
+            background: linear-gradient(135deg, #6c63ff, #9b4dff);
+            border: none;
+            color: #fff;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all var(--transition);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px var(--accent-glow);
+        }
+        .audio-img-overlay .audio-overlay-controls .audio-controls .play-btn:hover {
+            transform: scale(1.08);
+        }
+        .audio-img-overlay .audio-overlay-controls .audio-controls .a-progress {
+            flex: 1;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 5px;
+            cursor: pointer;
+            position: relative;
+        }
+        .audio-img-overlay .audio-overlay-controls .audio-controls .a-progress .a-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6c63ff, #9b4dff);
+            border-radius: 5px;
+            width: 0%;
+        }
+        .audio-img-overlay .audio-overlay-controls .audio-controls .a-time {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            min-width: 72px;
+            font-variant-numeric: tabular-nums;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        /* ===== ÁUDIO APENAS (foto de perfil como fundo) ===== */
+        .audio-player-wrap {
+            position: relative;
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin-bottom: 8px;
+            background: var(--card-bg);
+            min-height: 160px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 12px;
+            justify-content: center;
+            padding: 28px 20px 20px;
+        }
+        .audio-player-wrap .audio-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            margin-bottom: 8px;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.35;
+            filter: blur(18px) brightness(0.6);
+            z-index: 0;
+            pointer-events: none;
+            transform: scale(1.1);
+        }
+        .audio-player-wrap .audio-bg-fallback {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.35;
+            pointer-events: none;
+        }
+        .audio-player-wrap .audio-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            width: 100%;
         }
         .audio-player-wrap .disc {
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
             background: radial-gradient(circle at 30% 30%, #3a3a5a, #1a1a2e);
-            box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.04), 0 8px 32px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.08), 0 8px 32px rgba(0, 0, 0, 0.6);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -401,15 +572,15 @@
         .audio-player-wrap .disc::after {
             content: '';
             position: absolute;
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             background: #2a2a3a;
-            border: 2px solid rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.15);
         }
         .audio-player-wrap .disc .disc-icon {
-            font-size: 40px;
-            color: rgba(255, 255, 255, 0.1);
+            font-size: 36px;
+            color: rgba(255, 255, 255, 0.15);
             z-index: 2;
         }
         .audio-player-wrap .disc.spinning {
@@ -426,15 +597,20 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(8px);
+            padding: 10px 16px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
         }
         .audio-player-wrap .audio-controls .play-btn {
             background: var(--accent);
             border: none;
             color: #fff;
-            width: 48px;
-            height: 48px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
-            font-size: 20px;
+            font-size: 18px;
             cursor: pointer;
             transition: all var(--transition);
             flex-shrink: 0;
@@ -461,9 +637,9 @@
             width: 0%;
         }
         .audio-player-wrap .audio-controls .a-time {
-            font-size: 14px;
+            font-size: 13px;
             color: var(--text-secondary);
-            min-width: 80px;
+            min-width: 72px;
             font-variant-numeric: tabular-nums;
             text-align: center;
         }
@@ -542,8 +718,54 @@
             font-size: 20px;
         }
 
+        /* ===== NOTIFICAÇÃO DE MENSAGENS NÃO CONFIRMADAS ===== */
+        .comment-input-fixed .msg-badge {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 20px;
+            cursor: pointer;
+            transition: all var(--transition);
+            flex-shrink: 0;
+            margin-right: 4px;
+        }
+        .comment-input-fixed .msg-badge:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+        }
+        .comment-input-fixed .msg-badge .dot {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 5px;
+            border-radius: 20px;
+            background: #ff4757;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--bg);
+            box-shadow: 0 2px 8px rgba(255, 71, 87, 0.4);
+            animation: pulseDot 2s infinite;
+        }
+        @keyframes pulseDot {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
         /* ============================================================
-           COMENTÁRIOS – NOVO DESIGN MELHORADO
+           COMENTÁRIOS – NOVO DESIGN MELHORADO (COM ÁUDIO)
            ============================================================ */
         .comments-section {
             margin-top: 16px;
@@ -642,7 +864,61 @@
             margin-top: 2px;
         }
 
-        /* ===== INPUT DE COMENTÁRIO MELHORADO ===== */
+        /* Mini player de áudio no comentário */
+        .comment-audio {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 6px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 30px;
+            padding: 6px 12px 6px 6px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            max-width: 280px;
+        }
+        .comment-audio .ca-play {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: none;
+            color: #fff;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: all 0.2s;
+            box-shadow: 0 2px 10px var(--accent-glow);
+        }
+        .comment-audio .ca-play:hover {
+            transform: scale(1.06);
+        }
+        .comment-audio .ca-progress {
+            flex: 1;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 4px;
+            cursor: pointer;
+            position: relative;
+            min-width: 60px;
+        }
+        .comment-audio .ca-progress .ca-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 4px;
+            width: 0%;
+        }
+        .comment-audio .ca-time {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-variant-numeric: tabular-nums;
+            min-width: 32px;
+            text-align: right;
+        }
+
+        /* ===== INPUT DE COMENTÁRIO MELHORADO (COM ÁUDIO) ===== */
         .comment-input-fixed {
             position: fixed;
             bottom: 0;
@@ -653,7 +929,7 @@
             border-top: 1px solid var(--border);
             padding: 10px 16px;
             display: flex;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
             z-index: 50;
         }
@@ -690,6 +966,36 @@
         }
         .comment-input-fixed .input-wrapper textarea::placeholder {
             color: rgba(255, 255, 255, 0.2);
+        }
+
+        .comment-input-fixed .audio-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all var(--transition);
+            flex-shrink: 0;
+        }
+        .comment-input-fixed .audio-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+        }
+        .comment-input-fixed .audio-btn.recording {
+            background: #ff4757;
+            border-color: #ff4757;
+            color: #fff;
+            animation: pulseRec 1s infinite;
+        }
+        @keyframes pulseRec {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.5); }
+            50% { box-shadow: 0 0 0 10px rgba(255, 71, 87, 0); }
         }
 
         .comment-input-fixed .send-btn {
@@ -1058,12 +1364,16 @@
             .post-actions button { font-size: 20px !important; padding: 8px 6px; }
             .post-actions .like-btn { font-size: 20px; }
             .post-actions .count-badge { font-size: 14px; }
-            .audio-player-wrap .disc { width: 90px; height: 90px; }
+            .audio-player-wrap .disc { width: 80px; height: 80px; }
+            .audio-player-wrap .disc .disc-icon { font-size: 28px; }
             .video-wrapper .play-overlay .play-btn-large { width: 56px; height: 56px; font-size: 26px; }
             .comment-input-fixed { padding: 8px 12px; }
             .comment-input-fixed .input-wrapper { height: 40px; padding: 0 12px; }
             .comment-input-fixed .input-wrapper textarea { font-size: 13px; }
             .comment-input-fixed .send-btn { width: 40px; height: 40px; font-size: 16px; }
+            .comment-input-fixed .audio-btn { width: 40px; height: 40px; font-size: 16px; }
+            .comment-input-fixed .msg-badge { width: 40px; height: 40px; font-size: 18px; }
+            .comment-input-fixed .msg-badge .dot { min-width: 16px; height: 16px; font-size: 9px; }
             .post-text.has-bg { font-size: 18px; min-height: 100px; padding: 20px 14px; }
             .post-text { font-size: 14px; padding: 10px 14px; }
             .more-menu { right: -10px; min-width: 160px; }
@@ -1071,6 +1381,7 @@
             .report-card-overlay .report-body .report-options button { font-size: 13px; padding: 6px 12px; }
             .comment-item { padding: 10px 0; }
             .comment-item .avatar-mini { width: 30px; height: 30px; }
+            .comment-audio .ca-play { width: 30px; height: 30px; font-size: 11px; }
         }
     </style>
 </head>
@@ -1084,8 +1395,15 @@
             </div>
         </div>
 
-        <!-- Input de comentário fixo (apenas texto) -->
+        <!-- Input de comentário fixo (texto + áudio + notificação de mensagens) -->
         <div class="comment-input-fixed">
+            <div class="msg-badge" id="msgBadge" title="Mensagens não confirmadas">
+                <i class="far fa-envelope"></i>
+                <span class="dot" id="msgDot" style="display:none;">0</span>
+            </div>
+            <button class="audio-btn" id="audioCommentBtn" title="Gravar áudio">
+                <i class="fas fa-microphone"></i>
+            </button>
             <div class="input-wrapper">
                 <textarea id="commentInput" rows="1" placeholder="Escreva um comentário…"></textarea>
             </div>
@@ -1128,8 +1446,7 @@
         <div class="user-card" id="userCardContent"></div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         (function() {
             'use strict';
@@ -1155,6 +1472,53 @@
             let reelsPosts = [];
             let currentReelsIndex = 0;
 
+            // ===== GRAVAÇÃO DE ÁUDIO =====
+            let mediaRecorder = null;
+            let audioChunks = [];
+            let isRecording = false;
+            let recordingStartTime = 0;
+            let recordingTimerInterval = null;
+
+            // ===== MAPA GLOBAL DE PLAYERS =====
+            const activeAudioPlayers = new Set();
+
+            // ===== NOTIFICAÇÃO DE MENSAGENS (por chat_members + chat_id) =====
+            async function loadUnreadMessagesCount() {
+                if (!currentUser) return;
+                try {
+                    // Passo 1: chats do usuário
+                    const { data: memberships, error: memError } = await supabase
+                        .from('chat_members')
+                        .select('chat_id')
+                        .eq('user_id', currentUser.id);
+                    if (memError || !memberships || memberships.length === 0) {
+                        document.getElementById('msgDot').style.display = 'none';
+                        return;
+                    }
+                    const chatIds = memberships.map(m => m.chat_id);
+
+                    // Passo 2: contar não lidas
+                    const { data: unread, error: msgError } = await supabase
+                        .from('messages')
+                        .select('id')
+                        .in('chat_id', chatIds)
+                        .neq('sender_id', currentUser.id)
+                        .is('read_at', null);
+                    if (msgError) throw msgError;
+
+                    const count = unread ? unread.length : 0;
+                    const badge = document.getElementById('msgDot');
+                    if (count > 0) {
+                        badge.textContent = count > 99 ? '99+' : count;
+                        badge.style.display = 'flex';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                } catch (e) {
+                    console.warn('Erro ao carregar mensagens não lidas:', e);
+                }
+            }
+
             // ===== AUTH =====
             async function checkAuth() {
                 const { data, error } = await supabase.auth.getSession();
@@ -1164,6 +1528,7 @@
                 }
                 currentUser = data.session.user;
                 await loadProfile();
+                await loadUnreadMessagesCount();
                 await loadPost();
             }
 
@@ -1190,7 +1555,8 @@
                             <p>Verifique a URL e tente novamente.</p>
                         </div>
                     `;
-                    return window.location.href = 'feed.html';
+                    setTimeout(() => window.location.href = 'feed.html', 1500);
+                    return;
                 }
 
                 container.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner"></i></div>';
@@ -1264,7 +1630,22 @@
                 }
             }
 
-            // ===== RENDER POST =====
+            // ============================================================
+            // FORMATAÇÃO DE TEMPO (BLINDADA CONTRA NaN)
+            // ============================================================
+            function formatDuration(seconds) {
+                if (seconds === null || seconds === undefined) return '0:00';
+                let s = Number(seconds);
+                if (!isFinite(s) || isNaN(s) || s < 0) return '0:00';
+                s = Math.floor(s);
+                const m = Math.floor(s / 60);
+                const sec = s % 60;
+                return m + ':' + sec.toString().padStart(2, '0');
+            }
+
+            // ============================================================
+            // RENDER POST
+            // ============================================================
             function renderPost() {
                 const post = postData;
                 const profile = post.profiles || {};
@@ -1281,7 +1662,31 @@
                 const isSaved = savedPosts.has(post.id);
 
                 let mediaHtml = '';
-                if (post.media_url) {
+
+                // ✅ PRIORIDADE 1: ÁUDIO + IMAGEM (foto + áudio)
+                if (post.audio_url && post.media_url) {
+                    mediaHtml = `
+                        <div class="audio-img-overlay" data-audio="${post.audio_url}" data-duration="${post.audio_duration || 0}">
+                            <img src="${post.media_url}" alt="Imagem" loading="lazy" />
+                            <div class="audio-bg-avatar">
+                                ${avatarUrl ? `<img src="${avatarUrl}" alt="Avatar">` : 
+                                `<div class="fallback" style="background:${avatarColor};">${initial}</div>`}
+                            </div>
+                            <div class="audio-disc-badge">
+                                <i class="fas fa-music"></i>
+                            </div>
+                            <div class="audio-overlay-controls">
+                                <div class="audio-controls">
+                                    <button class="play-btn"><i class="fas fa-play"></i></button>
+                                    <div class="a-progress"><div class="a-fill"></div></div>
+                                    <span class="a-time">0:00 / ${formatDuration(post.audio_duration)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+                // ✅ PRIORIDADE 2: MÍDIA (imagem, vídeo ou áudio)
+                else if (post.media_url) {
                     if (post.media_type === 'image') {
                         mediaHtml =
                             `<div style="border-radius:var(--radius);overflow:hidden;margin-bottom:8px;background:rgba(255,255,255,0.02);max-height:500px;display:flex;align-items:center;justify-content:center;"><img src="${post.media_url}" alt="Imagem" style="width:100%;max-height:500px;object-fit:cover;" loading="lazy" /></div>`;
@@ -1296,13 +1701,17 @@
                         `;
                     } else if (post.media_type === 'audio') {
                         const duration = post.audio_duration || 0;
+                        const bgUrl = avatarUrl || null;
                         mediaHtml = `
                             <div class="audio-player-wrap" data-audio="${post.media_url}" data-duration="${duration}">
-                                <div class="disc"><div class="disc-icon"><i class="fas fa-music"></i></div></div>
-                                <div class="audio-controls">
-                                    <button class="play-btn"><i class="fas fa-play"></i></button>
-                                    <div class="a-progress"><div class="a-fill"></div></div>
-                                    <span class="a-time">0:00 / ${formatDuration(duration)}</span>
+                                ${bgUrl ? `<img class="audio-bg" src="${bgUrl}" alt="" loading="lazy" />` : `<div class="audio-bg-fallback" style="background:${avatarColor};"></div>`}
+                                <div class="audio-content">
+                                    <div class="disc"><div class="disc-icon"><i class="fas fa-music"></i></div></div>
+                                    <div class="audio-controls">
+                                        <button class="play-btn"><i class="fas fa-play"></i></button>
+                                        <div class="a-progress"><div class="a-fill"></div></div>
+                                        <span class="a-time">0:00 / ${formatDuration(duration)}</span>
+                                    </div>
                                 </div>
                             </div>
                         `;
@@ -1372,8 +1781,9 @@
                     </div>
                 `;
 
-                // Inicializar áudio
+                // Inicializar players de áudio (áudio-only E áudio+imagem)
                 initAudioPlayers();
+
                 // Like
                 document.querySelector('.like-btn').onclick = () => toggleLike(post.id);
 
@@ -1390,8 +1800,183 @@
                     }
                 });
 
-                // Input e envio de comentário (apenas texto)
                 setupCommentInput();
+                loadUnreadMessagesCount();
+            }
+
+            // ============================================================
+            // PLAYER DE ÁUDIO (POST) – BLINDADO
+            // ============================================================
+            function pauseAllAudioPlayers(except) {
+                activeAudioPlayers.forEach(player => {
+                    if (player !== except && player.audio && !player.audio.paused) {
+                        try {
+                            player.audio.pause();
+                            player.audio.currentTime = 0;
+                        } catch(e) {}
+                        if (player.playBtn) player.playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                        if (player.disc) player.disc.classList.remove('spinning');
+                        if (player.discBadge) player.discBadge.classList.remove('spinning');
+                        if (player.fill) player.fill.style.width = '0%';
+                        if (player.timeDisplay && player.safeDuration > 0) {
+                            player.timeDisplay.textContent = '0:00 / ' + formatDuration(player.safeDuration);
+                        }
+                    }
+                });
+            }
+
+            function setupAudioPlayer(config) {
+                const { audioUrl, playBtn, progress, fill, timeDisplay, disc, discBadge, declaredDuration } = config;
+                if (!audioUrl) return;
+
+                const audio = new Audio();
+                audio.preload = 'metadata';
+                audio.src = audioUrl;
+
+                const player = {
+                    audio,
+                    playBtn,
+                    fill,
+                    timeDisplay,
+                    disc,
+                    discBadge,
+                    progress,
+                    safeDuration: declaredDuration || 0
+                };
+                activeAudioPlayers.add(player);
+
+                audio.addEventListener('loadedmetadata', () => {
+                    if (isFinite(audio.duration) && audio.duration > 0) {
+                        player.safeDuration = audio.duration;
+                        if (timeDisplay) {
+                            timeDisplay.textContent = '0:00 / ' + formatDuration(audio.duration);
+                        }
+                    } else {
+                        if (timeDisplay && player.safeDuration > 0) {
+                            timeDisplay.textContent = '0:00 / ' + formatDuration(player.safeDuration);
+                        }
+                    }
+                });
+
+                audio.addEventListener('canplay', () => {
+                    if (isFinite(audio.duration) && audio.duration > 0) {
+                        player.safeDuration = audio.duration;
+                    }
+                });
+
+                audio.addEventListener('timeupdate', () => {
+                    const dur = (isFinite(audio.duration) && audio.duration > 0) ? audio.duration : player.safeDuration;
+                    if (!dur || !isFinite(dur) || dur <= 0) {
+                        if (timeDisplay) timeDisplay.textContent = '0:00 / ' + formatDuration(player.safeDuration);
+                        return;
+                    }
+                    const pct = (audio.currentTime / dur) * 100;
+                    if (isFinite(pct) && fill) {
+                        fill.style.width = Math.max(0, Math.min(100, pct)) + '%';
+                    }
+                    if (timeDisplay) {
+                        timeDisplay.textContent = formatDuration(audio.currentTime) + ' / ' + formatDuration(dur);
+                    }
+                });
+
+                audio.addEventListener('ended', () => {
+                    playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                    if (disc) disc.classList.remove('spinning');
+                    if (discBadge) discBadge.classList.remove('spinning');
+                    if (fill) fill.style.width = '0%';
+                    if (timeDisplay) {
+                        timeDisplay.textContent = '0:00 / ' + formatDuration(player.safeDuration);
+                    }
+                });
+
+                audio.addEventListener('error', (e) => {
+                    console.error('Erro ao carregar áudio:', audioUrl, e);
+                    playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                    if (timeDisplay) timeDisplay.textContent = '0:00 / ' + formatDuration(player.safeDuration);
+                });
+
+                playBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (!audio.paused) {
+                        audio.pause();
+                        playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                        if (disc) disc.classList.remove('spinning');
+                        if (discBadge) discBadge.classList.remove('spinning');
+                    } else {
+                        pauseAllAudioPlayers(player);
+                        const playPromise = audio.play();
+                        if (playPromise && playPromise.catch) {
+                            playPromise.catch(err => {
+                                console.error('Erro ao tocar áudio:', err);
+                                playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                            });
+                        }
+                        playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                        if (disc) disc.classList.add('spinning');
+                        if (discBadge) discBadge.classList.add('spinning');
+                    }
+                });
+
+                progress.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const dur = (isFinite(audio.duration) && audio.duration > 0) ? audio.duration : player.safeDuration;
+                    if (!dur || !isFinite(dur) || dur <= 0) return;
+                    const rect = progress.getBoundingClientRect();
+                    const pct = (e.clientX - rect.left) / rect.width;
+                    if (isFinite(pct)) {
+                        audio.currentTime = Math.max(0, Math.min(1, pct)) * dur;
+                    }
+                });
+
+                return player;
+            }
+
+            function initAudioPlayers() {
+                // Áudio apenas (com disco)
+                document.querySelectorAll('.audio-player-wrap').forEach(wrap => {
+                    const audioUrl = wrap.dataset.audio;
+                    const declaredDuration = parseFloat(wrap.dataset.duration) || 0;
+                    const playBtn = wrap.querySelector('.play-btn');
+                    const progress = wrap.querySelector('.a-progress');
+                    const fill = wrap.querySelector('.a-fill');
+                    const timeDisplay = wrap.querySelector('.a-time');
+                    const disc = wrap.querySelector('.disc');
+
+                    setupAudioPlayer({
+                        audioUrl,
+                        playBtn,
+                        progress,
+                        fill,
+                        timeDisplay,
+                        disc,
+                        discBadge: null,
+                        declaredDuration
+                    });
+                });
+
+                // Áudio + imagem (overlay)
+                document.querySelectorAll('.audio-img-overlay').forEach(overlay => {
+                    const audioUrl = overlay.dataset.audio;
+                    const declaredDuration = parseFloat(overlay.dataset.duration) || 0;
+                    const ctrl = overlay.querySelector('.audio-controls');
+                    if (!ctrl) return;
+                    const playBtn = ctrl.querySelector('.play-btn');
+                    const progress = ctrl.querySelector('.a-progress');
+                    const fill = ctrl.querySelector('.a-fill');
+                    const timeDisplay = ctrl.querySelector('.a-time');
+                    const discBadge = overlay.querySelector('.audio-disc-badge');
+
+                    setupAudioPlayer({
+                        audioUrl,
+                        playBtn,
+                        progress,
+                        fill,
+                        timeDisplay,
+                        disc: null,
+                        discBadge,
+                        declaredDuration
+                    });
+                });
             }
 
             // ===== TOGGLE SAVE =====
@@ -1472,11 +2057,12 @@
             });
 
             // ============================================================
-            // SETUP DO INPUT DE COMENTÁRIO (apenas texto)
+            // INPUT DE COMENTÁRIO
             // ============================================================
             function setupCommentInput() {
                 const textarea = document.getElementById('commentInput');
                 const sendBtn = document.getElementById('sendCommentBtn');
+                const audioBtn = document.getElementById('audioCommentBtn');
 
                 textarea.addEventListener('input', function() {
                     this.style.height = 'auto';
@@ -1491,108 +2077,275 @@
                 });
 
                 sendBtn.addEventListener('click', sendComment);
+
+                audioBtn.addEventListener('click', toggleRecording);
+
+                document.getElementById('msgBadge').addEventListener('click', function() {
+                    window.location.href = 'chat.html';
+                });
             }
 
-// ===== ENVIAR COMENTÁRIO (apenas texto) =====
-async function sendComment() {
-    const textarea = document.getElementById('commentInput');
-    const content = textarea.value.trim();
+            // ===== GRAVAÇÃO DE ÁUDIO =====
+            async function toggleRecording() {
+                const audioBtn = document.getElementById('audioCommentBtn');
+                if (isRecording) {
+                    stopRecording();
+                    return;
+                }
 
-    if (!content) {
-        textarea.focus();
-        return;
-    }
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
 
-    sendBtn.disabled = true;
-    sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                    mediaRecorder.addEventListener('dataavailable', event => {
+                        audioChunks.push(event.data);
+                    });
 
-    try {
-        const { error } = await supabase.from('comments').insert({
-            post_id: postData.id,
-            user_id: currentUser.id,
-            content: content
-        });
+                    mediaRecorder.addEventListener('stop', async () => {
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                        const reader = new FileReader();
+                        reader.readAsDataURL(audioBlob);
+                        reader.onloadend = async () => {
+                            const base64Audio = reader.result.split(',')[1];
+                            await sendAudioComment(base64Audio, audioBlob.size);
+                        };
+                        stream.getTracks().forEach(track => track.stop());
+                    });
 
-        if (error) throw error;
+                    mediaRecorder.start();
+                    isRecording = true;
+                    recordingStartTime = Date.now();
+                    audioBtn.classList.add('recording');
+                    audioBtn.innerHTML = '<i class="fas fa-stop"></i>';
 
-        textarea.value = '';
-        textarea.style.height = 'auto';
-        loadComments();
+                    recordingTimerInterval = setInterval(() => {
+                        const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
+                        audioBtn.title = `Gravando… ${elapsed}s (clique para parar)`;
+                    }, 1000);
 
-        postData.comments_count = (postData.comments_count || 0) + 1;
-        const countSpan = document.querySelector('.comment-count');
-        if (countSpan) countSpan.textContent = postData.comments_count;
+                } catch (err) {
+                    console.error('Erro ao acessar microfone:', err);
+                    alert('Não foi possível acessar o microfone. Verifique as permissões.');
+                }
+            }
 
-        setTimeout(() => {
-            scrollEl.scrollTop = scrollEl.scrollHeight;
-        }, 100);
+            function stopRecording() {
+                if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                    mediaRecorder.stop();
+                }
+                isRecording = false;
+                const audioBtn = document.getElementById('audioCommentBtn');
+                audioBtn.classList.remove('recording');
+                audioBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+                audioBtn.title = 'Gravar áudio';
+                if (recordingTimerInterval) {
+                    clearInterval(recordingTimerInterval);
+                    recordingTimerInterval = null;
+                }
+            }
 
-    } catch (e) {
-        alert('Erro ao comentar: ' + e.message);
-    }
+            async function sendAudioComment(base64Audio, fileSize) {
+                if (!currentUser || !postData) return;
 
-    sendBtn.disabled = false;
-    sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
-}
+                const sendBtn = document.getElementById('sendCommentBtn');
+                sendBtn.disabled = true;
+                sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
-            // ===== PLAYER DE ÁUDIO =====
-            function initAudioPlayers() {
-                document.querySelectorAll('.audio-player-wrap').forEach(wrap => {
+                try {
+                    const fileName = `comment_audio_${Date.now()}.webm`;
+                    const { data: uploadData, error: uploadError } = await supabase.storage
+                        .from('comments-audio')
+                        .upload(fileName, base64ToBlob(base64Audio, 'audio/webm'), {
+                            contentType: 'audio/webm'
+                        });
+
+                    if (uploadError) throw uploadError;
+
+                    const { data: urlData } = supabase.storage
+                        .from('comments-audio')
+                        .getPublicUrl(fileName);
+
+                    const audioUrl = urlData.publicUrl;
+
+                    const { error } = await supabase.from('comments').insert({
+                        post_id: postData.id,
+                        user_id: currentUser.id,
+                        content: '',
+                        audio_url: audioUrl,
+                        audio_duration: 0
+                    });
+
+                    if (error) throw error;
+
+                    loadComments();
+                    postData.comments_count = (postData.comments_count || 0) + 1;
+                    const countSpan = document.querySelector('.comment-count');
+                    if (countSpan) countSpan.textContent = postData.comments_count;
+
+                } catch (e) {
+                    alert('Erro ao enviar áudio: ' + e.message);
+                }
+
+                sendBtn.disabled = false;
+                sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+            }
+
+            function base64ToBlob(base64, mimeType) {
+                const byteCharacters = atob(base64);
+                const byteNumbers = new Array(byteCharacters.length);
+                for (let i = 0; i < byteCharacters.length; i++) {
+                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                }
+                return new Blob([new Uint8Array(byteNumbers)], { type: mimeType });
+            }
+
+            // ===== ENVIAR COMENTÁRIO (texto) =====
+            async function sendComment() {
+                const textarea = document.getElementById('commentInput');
+                const content = textarea.value.trim();
+
+                if (!content) {
+                    textarea.focus();
+                    return;
+                }
+
+                sendBtn.disabled = true;
+                sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+                try {
+                    const { error } = await supabase.from('comments').insert({
+                        post_id: postData.id,
+                        user_id: currentUser.id,
+                        content: content
+                    });
+
+                    if (error) throw error;
+
+                    textarea.value = '';
+                    textarea.style.height = 'auto';
+                    loadComments();
+
+                    postData.comments_count = (postData.comments_count || 0) + 1;
+                    const countSpan = document.querySelector('.comment-count');
+                    if (countSpan) countSpan.textContent = postData.comments_count;
+
+                    setTimeout(() => {
+                        scrollEl.scrollTop = scrollEl.scrollHeight;
+                    }, 100);
+
+                } catch (e) {
+                    alert('Erro ao comentar: ' + e.message);
+                }
+
+                sendBtn.disabled = false;
+                sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+            }
+
+            // ============================================================
+            // COMENTÁRIOS
+            // ============================================================
+            async function loadComments() {
+                const containerList = document.getElementById('commentsList');
+                if (!containerList) return;
+
+                const { data, error } = await supabase
+                    .from('comments')
+                    .select(`
+                        *,
+                        profiles:user_id (id, full_name, username, avatar_url, avatar_color)
+                    `)
+                    .eq('post_id', postData.id)
+                    .order('created_at', { ascending: true })
+                    .limit(50);
+
+                if (error || !data || data.length === 0) {
+                    containerList.innerHTML =
+                        '<div style="text-align:center;padding:20px 0;color:var(--text-secondary);font-size:14px;"><i class="fas fa-comment-slash" style="display:block;font-size:28px;margin-bottom:8px;color:rgba(255,255,255,0.08);"></i>Nenhum comentário. Seja o primeiro!</div>';
+                    return;
+                }
+
+                containerList.innerHTML = data.map(c => {
+                    const p = c.profiles || {};
+                    const av = p.avatar_url || null;
+                    const color = p.avatar_color || '#6c63ff';
+                    const initial = (p.full_name || 'U')[0].toUpperCase();
+
+                    let audioHtml = '';
+                    if (c.audio_url) {
+                        audioHtml = `
+                            <div class="comment-audio" data-audio="${c.audio_url}">
+                                <button class="ca-play"><i class="fas fa-play"></i></button>
+                                <div class="ca-progress"><div class="ca-fill"></div></div>
+                                <span class="ca-time">0:00</span>
+                            </div>
+                        `;
+                    }
+
+                    return `
+                        <div class="comment-item">
+                            <div class="avatar-mini" onclick="openUserCard('${p.id}')">
+                                ${av ? `<img src="${av}" alt="Avatar">` :
+                                `<div class="fallback" style="background:${color};">${initial}</div>`}
+                            </div>
+                            <div class="comment-body">
+                                <div class="comment-header">
+                                    <span class="name" onclick="openUserCard('${p.id}')">${p.full_name || 'Usuário'}</span>
+                                    <span class="time">${getTimeAgo(c.created_at)}</span>
+                                </div>
+                                ${c.content ? `<div class="text">${escapeHtml(c.content)}</div>` : ''}
+                                ${audioHtml}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                initCommentAudioPlayers();
+            }
+
+            function initCommentAudioPlayers() {
+                document.querySelectorAll('.comment-audio').forEach(wrap => {
                     const audioUrl = wrap.dataset.audio;
-                    const playBtn = wrap.querySelector('.play-btn');
-                    const progress = wrap.querySelector('.a-progress');
-                    const fill = wrap.querySelector('.a-fill');
-                    const timeDisplay = wrap.querySelector('.a-time');
-                    const disc = wrap.querySelector('.disc');
+                    const playBtn = wrap.querySelector('.ca-play');
+                    const progress = wrap.querySelector('.ca-progress');
+                    const fill = wrap.querySelector('.ca-fill');
+                    const timeDisplay = wrap.querySelector('.ca-time');
 
                     let audio = new Audio(audioUrl);
                     let isPlaying = false;
-
-                    const pauseOthers = () => {
-                        document.querySelectorAll('.audio-player-wrap').forEach(other => {
-                            if (other !== wrap && other._audio && !other._audio.paused) {
-                                other._audio.pause();
-                                other._playBtn.innerHTML = '<i class="fas fa-play"></i>';
-                                other._disc.classList.remove('spinning');
-                            }
-                        });
-                    };
-
-                    audio.addEventListener('loadedmetadata', () => {
-                        const dur = Math.floor(audio.duration);
-                        timeDisplay.textContent = `0:00 / ${formatDuration(dur)}`;
-                    });
 
                     playBtn.addEventListener('click', (e) => {
                         e.stopPropagation();
                         if (isPlaying) {
                             audio.pause();
                             playBtn.innerHTML = '<i class="fas fa-play"></i>';
-                            disc.classList.remove('spinning');
                             isPlaying = false;
                         } else {
-                            pauseOthers();
+                            document.querySelectorAll('.comment-audio').forEach(other => {
+                                if (other !== wrap && other._audio && !other._audio.paused) {
+                                    other._audio.pause();
+                                    other._playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                                    other._playing = false;
+                                }
+                            });
                             audio.play().catch(() => {});
                             playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                            disc.classList.add('spinning');
                             isPlaying = true;
                         }
                     });
 
                     audio.addEventListener('timeupdate', () => {
+                        if (!audio.duration) return;
                         const pct = (audio.currentTime / audio.duration) * 100;
                         fill.style.width = pct + '%';
-                        timeDisplay.textContent =
-                            `${formatDuration(Math.floor(audio.currentTime))} / ${formatDuration(Math.floor(audio.duration))}`;
+                        timeDisplay.textContent = formatDuration(Math.floor(audio.currentTime));
                     });
 
                     audio.addEventListener('ended', () => {
                         playBtn.innerHTML = '<i class="fas fa-play"></i>';
-                        disc.classList.remove('spinning');
                         isPlaying = false;
                         fill.style.width = '0%';
-                        timeDisplay.textContent =
-                            `0:00 / ${formatDuration(Math.floor(audio.duration))}`;
+                        timeDisplay.textContent = '0:00';
                     });
 
                     progress.addEventListener('click', (e) => {
@@ -1603,12 +2356,12 @@ async function sendComment() {
 
                     wrap._audio = audio;
                     wrap._playBtn = playBtn;
-                    wrap._disc = disc;
+                    wrap._playing = false;
                 });
             }
 
             // ============================================================
-            // REELS (mesmo código do feed)
+            // REELS
             // ============================================================
             window.openReels = function(postId) {
                 let videoPosts = [];
@@ -1701,19 +2454,6 @@ async function sendComment() {
                             <i class="fas fa-share-alt"></i>
                         </button>
                     </div>
-                    <div class="reels-comments-card" id="comments-card-${post.id}" style="display:none;position:absolute;bottom:0;left:0;right:0;max-height:65%;background:rgba(18,18,28,0.96);backdrop-filter:blur(16px);border-radius:24px 24px 0 0;padding:24px 20px 28px;z-index:20;overflow-y:auto;animation:slideUp 0.3s ease;">
-                        <div class="comments-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.06);">
-                            <h4 style="font-size:18px;font-weight:700;color:#f0f0f5;">Comentários</h4>
-                            <button class="close-comments" data-postid="${post.id}" style="background:none;border:none;color:#a0a0b8;font-size:24px;cursor:pointer;">&times;</button>
-                        </div>
-                        <div class="comments-list" id="comments-list-${post.id}" style="max-height:240px;overflow-y:auto;">
-                            <div style="text-align:center;padding:12px;color:#a0a0b8;font-size:13px;">Carregando…</div>
-                        </div>
-                        <div class="comments-input" style="display:flex;gap:12px;margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.04);">
-                            <input type="text" placeholder="Escreva um comentário…" id="comment-input-${post.id}" style="flex:1;background:rgba(255,255,255,0.04);border:1px solid #1e1e2e;border-radius:30px;padding:12px 18px;color:#f0f0f5;font-size:15px;outline:none;font-family:var(--font);">
-                            <button class="send-comment" data-postid="${post.id}" style="background:#6c63ff;border:none;color:#fff;padding:12px 24px;border-radius:30px;font-weight:700;font-size:15px;cursor:pointer;transition:all 0.3s;font-family:var(--font);box-shadow:0 4px 16px rgba(108,99,255,0.2);">Enviar</button>
-                        </div>
-                    </div>
                 `;
             }
 
@@ -1799,109 +2539,7 @@ async function sendComment() {
                         }
                     };
                 });
-
-                document.querySelectorAll('.reels-comment-toggle').forEach(btn => {
-                    btn.onclick = function(e) {
-                        e.stopPropagation();
-                        const postId = this.dataset.postid;
-                        const card = document.getElementById(`comments-card-${postId}`);
-                        if (card) {
-                            card.style.display = card.style.display === 'none' ? 'block' : 'none';
-                            if (card.style.display === 'block') loadReelsComments(postId);
-                        }
-                    };
-                });
-
-                document.querySelectorAll('.close-comments').forEach(btn => {
-                    btn.onclick = function(e) {
-                        e.stopPropagation();
-                        const postId = this.dataset.postid;
-                        const card = document.getElementById(`comments-card-${postId}`);
-                        if (card) card.style.display = 'none';
-                    };
-                });
-
-                document.querySelectorAll('.send-comment').forEach(btn => {
-                    btn.onclick = function(e) {
-                        e.stopPropagation();
-                        const postId = this.dataset.postid;
-                        const input = document.getElementById(`comment-input-${postId}`);
-                        const content = input.value.trim();
-                        if (!content) return;
-                        submitReelsComment(postId, content);
-                    };
-                });
-
-                document.querySelectorAll('.comments-input input').forEach(input => {
-                    input.addEventListener('keypress', function(e) {
-                        if (e.key === 'Enter') {
-                            const postId = this.id.replace('comment-input-', '');
-                            const content = this.value.trim();
-                            if (content) submitReelsComment(postId, content);
-                        }
-                    });
-                });
             }
-
-            async function loadReelsComments(postId) {
-                const container = document.getElementById(`comments-list-${postId}`);
-                if (!container) return;
-                const { data, error } = await supabase
-                    .from('comments')
-                    .select(`
-                        *,
-                        profiles:user_id (id, full_name, username, avatar_url, avatar_color)
-                    `)
-                    .eq('post_id', postId)
-                    .order('created_at', { ascending: false })
-                    .limit(20);
-                if (error || !data || data.length === 0) {
-                    container.innerHTML =
-                        '<div style="text-align:center;padding:12px;color:#a0a0b8;font-size:13px;">Sem comentários</div>';
-                    return;
-                }
-                container.innerHTML = data.map(c => {
-                    const p = c.profiles || {};
-                    const av = p.avatar_url || null;
-                    const color = p.avatar_color || '#6c63ff';
-                    const initial = (p.full_name || 'U')[0].toUpperCase();
-                    return `
-                        <div class="comment-item" style="display:flex;gap:14px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.02);">
-                            <div class="avatar-mini" style="width:36px;height:36px;border-radius:50%;overflow:hidden;flex-shrink:0;">
-                                ${av ? `<img src="${av}" alt="Avatar">` :
-                                `<div class="fallback" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:#fff;background:${color};">${initial}</div>`}
-                            </div>
-                            <div class="comment-body" style="flex:1;">
-                                <span class="name" style="font-weight:700;font-size:14px;color:#f0f0f5;">${p.full_name || 'Usuário'}</span>
-                                <div class="text" style="font-size:14px;color:rgba(255,255,255,0.7);line-height:1.4;">${escapeHtml(c.content)}</div>
-                                <div class="time" style="font-size:11px;color:rgba(255,255,255,0.25);">${getTimeAgo(c.created_at)}</div>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            }
-
-            async function submitReelsComment(postId, content) {
-    if (!currentUser) return;
-    try {
-        const { error } = await supabase.from('comments').insert({
-            post_id: postId,
-            user_id: currentUser.id,
-            content: content
-        });
-        if (error) throw error;
-        const input = document.getElementById(`comment-input-${postId}`);
-        if (input) input.value = '';
-        loadReelsComments(postId);
-        const post = reelsPosts.find(p => p.id === postId);
-        if (post) {
-            post.comments_count = (post.comments_count || 0) + 1;
-            const commentBtn = document.querySelector(
-                `.reels-comment-toggle[data-postid="${postId}"] .reels-count`);
-            if (commentBtn) commentBtn.textContent = post.comments_count;
-        }
-    } catch (e) { console.error(e); }
-}
 
             window.closeReels = function() {
                 document.getElementById('reelsOverlay').classList.remove('active');
@@ -1960,53 +2598,6 @@ async function sendComment() {
                 else navigator.clipboard.writeText(url).then(() => alert('Link copiado!')).catch(() => alert(
                     'Compartilhe: ' + url));
             };
-
-            // ============================================================
-            // COMENTÁRIOS (principal) – renderização melhorada
-            // ============================================================
-            async function loadComments() {
-                const containerList = document.getElementById('commentsList');
-                if (!containerList) return;
-
-                const { data, error } = await supabase
-                    .from('comments')
-                    .select(`
-                        *,
-                        profiles:user_id (id, full_name, username, avatar_url, avatar_color)
-                    `)
-                    .eq('post_id', postData.id)
-                    .order('created_at', { ascending: true })
-                    .limit(50);
-
-                if (error || !data || data.length === 0) {
-                    containerList.innerHTML =
-                        '<div style="text-align:center;padding:20px 0;color:var(--text-secondary);font-size:14px;"><i class="fas fa-comment-slash" style="display:block;font-size:28px;margin-bottom:8px;color:rgba(255,255,255,0.08);"></i>Nenhum comentário. Seja o primeiro!</div>';
-                    return;
-                }
-
-                containerList.innerHTML = data.map(c => {
-                    const p = c.profiles || {};
-                    const av = p.avatar_url || null;
-                    const color = p.avatar_color || '#6c63ff';
-                    const initial = (p.full_name || 'U')[0].toUpperCase();
-
-                    return `
-                        <div class="comment-item">
-                            <div class="avatar-mini" onclick="openUserCard('${p.id}')">
-                                ${av ? `<img src="${av}" alt="Avatar">` :
-                                `<div class="fallback" style="background:${color};">${initial}</div>`}
-                            </div>
-                            <div class="comment-body">
-                                <div class="comment-header">
-                                    <span class="name" onclick="openUserCard('${p.id}')">${p.full_name || 'Usuário'}</span>
-                                    <span class="time">${getTimeAgo(c.created_at)}</span>
-                                </div>
-                                <div class="text">${escapeHtml(c.content || '')}</div>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            }
 
             // ============================================================
             // USER CARD
@@ -2111,7 +2702,7 @@ async function sendComment() {
             };
 
             window.goToUserProfile = function(userId) {
-                document.getElementById('moreMenu').classList.remove('active');
+                document.getElementById('moreMenu')?.classList.remove('active');
                 window.location.href = `perfil.html?id=${userId}`;
             };
             window.goToMyProfile = function() {
@@ -2133,12 +2724,6 @@ async function sendComment() {
                 return new Date(date).toLocaleDateString('pt-BR');
             }
 
-            function formatDuration(seconds) {
-                const m = Math.floor(seconds / 60);
-                const s = seconds % 60;
-                return `${m}:${s.toString().padStart(2, '0')}`;
-            }
-
             function escapeHtml(text) {
                 const div = document.createElement('div');
                 div.textContent = text;
@@ -2150,6 +2735,7 @@ async function sendComment() {
             // ============================================================
             document.addEventListener('DOMContentLoaded', () => {
                 checkAuth();
+                setInterval(loadUnreadMessagesCount, 30000);
             });
 
             // Expor funções globais
