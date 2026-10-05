@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Zonne - Notificações</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0a0f;
+      color: #fff;
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding-bottom: 80px;
+    }
+    /* top-bar igual ao chat */
+    .top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10, 10, 15, 0.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .top-bar .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 18px;
+      color: #fff;
+      cursor: pointer;
+    }
+    .top-bar .logo i {
+      font-size: 22px;
+      background: linear-gradient(135deg, #5850ec, #764ba2);
+      padding: 7px 8px;
+      border-radius: 10px;
+      color: #fff;
+    }
+    .top-bar .actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .top-bar .actions .icon-btn {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 18px;
+      cursor: pointer;
+      position: relative;
+      transition: color 0.3s;
+      padding: 4px;
+    }
+    .top-bar .actions .icon-btn:hover {
+      color: #fff;
+    }
+    .top-bar .actions .icon-btn .badge {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      background: #e74c3c;
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
+      min-width: 17px;
+      height: 17px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+    }
+    .top-bar .avatar-mini {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid rgba(255, 255, 255, 0.06);
+      cursor: pointer;
+      transition: border 0.3s;
+      flex-shrink: 0;
+    }
+    .top-bar .avatar-mini:hover {
+      border-color: #5850ec;
+    }
+    .top-bar .avatar-mini img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .top-bar .avatar-mini .fallback {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    /* Container principal */
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 12px 16px 20px;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .page-header h2 {
+      font-weight: 700;
+      font-size: 20px;
+      color: #fff;
+    }
+    .page-header .mark-all-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 30px;
+      padding: 6px 14px;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: 'Inter', sans-serif;
+    }
+    .page-header .mark-all-btn:hover {
+      background: rgba(88, 80, 236, 0.15);
+      border-color: #5850ec;
+      color: #fff;
+    }
+    .page-header .mark-all-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    /* Filtros rápidos */
+    .filter-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+    .filter-tabs::-webkit-scrollbar {
+      display: none;
+    }
+    .filter-tabs button {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid transparent;
+      border-radius: 30px;
+      padding: 6px 16px;
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      white-space: nowrap;
+      font-family: 'Inter', sans-serif;
+      flex-shrink: 0;
+    }
+    .filter-tabs button.active {
+      background: rgba(88, 80, 236, 0.15);
+      border-color: #5850ec;
+      color: #fff;
+    }
+    .filter-tabs button:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    /* Lista de notificações */
+    .notifications-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .notification-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .notification-item:hover {
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .notification-item.unread {
+      background: rgba(88, 80, 236, 0.06);
+      border-color: rgba(88, 80, 236, 0.15);
+    }
+    .notification-item.unread::before {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #5850ec;
+    }
+    .notification-item .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: rgba(255, 255, 255, 0.04);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: rgba(255, 255, 255, 0.3);
+    }
+    .notification-item .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .notification-item .avatar .fallback {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 16px;
+      color: #fff;
+    }
+    .notification-item .content {
+      flex: 1;
+      min-width: 0;
+    }
+    .notification-item .content .text {
+      font-size: 14px;
+      line-height: 1.4;
+      color: rgba(255, 255, 255, 0.85);
+    }
+    .notification-item .content .text strong {
+      color: #fff;
+      font-weight: 600;
+    }
+    .notification-item .content .time {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.25);
+      margin-top: 2px;
+    }
+    .notification-item .action-icon {
+      flex-shrink: 0;
+      font-size: 18px;
+      color: rgba(255, 255, 255, 0.15);
+      margin-left: 4px;
+    }
+
+    /* Estado vazio */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: rgba(255, 255, 255, 0.15);
+    }
+    .empty-state i {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+    .empty-state h3 {
+      font-weight: 500;
+      font-size: 18px;
+      color: rgba(255, 255, 255, 0.3);
+    }
+    .empty-state p {
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    /* Loading */
+    .loading-placeholder {
+      display: flex;
+      justify-content: center;
+      padding: 40px 0;
+      color: rgba(255, 255, 255, 0.1);
+      font-size: 14px;
+    }
+    .loading-placeholder i {
+      margin-right: 8px;
+    }
+
+    /* Bottom nav (igual ao chat) */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(10, 10, 15, 0.95);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+      display: flex;
+      justify-content: space-around;
+      padding: 6px 0 env(safe-area-inset-bottom, 8px) 0;
+    }
+    .bottom-nav .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.25);
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px 16px;
+      transition: color 0.3s;
+      position: relative;
+      font-family: 'Inter', sans-serif;
+    }
+    .bottom-nav .nav-item span {
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+    }
+    .bottom-nav .nav-item.active {
+      color: #5850ec;
+    }
+    .bottom-nav .nav-item:hover {
+      color: rgba(255, 255, 255, 0.6);
+    }
+    .bottom-nav .nav-item .badge {
+      position: absolute;
+      top: -2px;
+      right: 6px;
+      background: #e74c3c;
+      color: #fff;
+      font-size: 8px;
+      font-weight: 700;
+      min-width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+    }
+    .bottom-nav .nav-item .nav-icon {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .bottom-nav .nav-item .nav-icon .plus-circle {
+      background: linear-gradient(135deg, #5850ec, #764ba2);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: #fff;
+      margin-top: -14px;
+      box-shadow: 0 4px 20px rgba(88, 80, 236, 0.3);
+      transition: transform 0.3s;
+    }
+    .bottom-nav .nav-item .nav-icon .plus-circle:hover {
+      transform: scale(1.05);
+    }
+
+    /* Responsividade */
+    @media (max-width: 480px) {
+      .top-bar .logo span {
+        display: none;
+      }
+      .page-header h2 {
+        font-size: 18px;
+      }
+      .notification-item {
+        padding: 10px 12px;
+      }
+      .notification-item .avatar {
+        width: 34px;
+        height: 34px;
+        font-size: 14px;
+      }
+      .notification-item .content .text {
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top-bar">
+    <div class="logo" onclick="window.location.href='feed.html'">
+      <i class="fas fa-users"></i>
+      <span>Zonne</span>
+    </div>
+    <div class="actions">
+      <button class="icon-btn" onclick="window.location.href='notificacoes.html'">
+        <i class="fas fa-bell"></i>
+        <span class="badge" id="notifBadge" style="display:none;">0</span>
+      </button>
+      <button class="icon-btn" onclick="window.location.href='amigos.html'">
+        <i class="fas fa-users"></i>
+        <span class="badge" id="friendBadge" style="display:none;">0</span>
+      </button>
+      <div class="avatar-mini" id="userAvatar" onclick="window.location.href='perfil.html'">
+        <div class="fallback" style="background:#5850ec;"><i class="fas fa-user"></i></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="page-header">
+      <h2><i class="fas fa-bell" style="color:#5850ec;margin-right:8px;"></i>Notificações</h2>
+      <button class="mark-all-btn" id="markAllBtn" onclick="markAllAsRead()">Marcar todas como lidas</button>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filter-tabs" id="filterTabs">
+      <button class="active" data-filter="all">Todas</button>
+      <button data-filter="like">Curtidas</button>
+      <button data-filter="comment">Comentários</button>
+      <button data-filter="follow">Seguidores</button>
+      <button data-filter="message">Mensagens</button>
+    </div>
+
+    <!-- Lista -->
+    <div class="notifications-list" id="notificationsList">
+      <div class="loading-placeholder"><i class="fas fa-spinner fa-spin"></i> Carregando...</div>
+    </div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <button class="nav-item" onclick="window.location.href='feed.html'">
+      <div class="nav-icon"><i class="fas fa-home"></i></div>
+      <span>Início</span>
+    </button>
+    <button class="nav-item" onclick="window.location.href='explorar.html'">
+      <div class="nav-icon"><i class="fas fa-compass"></i></div>
+      <span>Explorar</span>
+    </button>
+    <button class="nav-item" onclick="window.location.href='criar-post.html'">
+      <div class="nav-icon"><div class="plus-circle"><i class="fas fa-plus"></i></div></div>
+      <span>Novo</span>
+    </button>
+    <button class="nav-item" onclick="window.location.href='chat.html'">
+      <div class="nav-icon"><i class="fas fa-comment-dots"></i></div>
+      <span>Chat</span>
+    </button>
+    <button class="nav-item active" onclick="window.location.href='notificacoes.html'">
+      <div class="nav-icon"><i class="fas fa-bell"></i></div>
+      <span>Notif.</span>
+    </button>
+  </nav>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+  </script>
+  <script>
+    (function() {
+      'use strict';
+
+      const SUPABASE_URL = 'https://cfanqigkvfpigjvjjbon.supabase.co';
+      const SUPABASE_ANON_KEY =
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmYW5xaWdrdmZwaWdqdmpqYm9uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM4NzI5NzIsImV4cCI6MjA5OTQ0ODk3Mn0.UDyNusIz7PNaz4-n-Bpgn2LJCUi6fIw6tW0QrsJEii0';
+
+      const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+      let currentUser = null;
+      let notifications = [];
+      let currentFilter = 'all';
+      let profileCache = new Map();
+
+      // DOM refs
+      const listEl = document.getElementById('notificationsList');
+      const filterTabs = document.getElementById('filterTabs');
+      const markAllBtn = document.getElementById('markAllBtn');
+      const notifBadge = document.getElementById('notifBadge');
+
+      // ===== AUTENTICAÇÃO =====
+      async function checkAuth() {
+        const { data, error } = await supabase.auth.getSession();
+        if (error || !data.session) {
+          window.location.href = 'index.html';
+          return;
+        }
+        currentUser = data.session.user;
+        await loadProfile();
+        await loadNotifications();
+        setupRealtime();
+        setupFilterTabs();
+        updateBadge();
+        // Atualizar a cada 30s
+        setInterval(() => {
+          loadNotifications(false);
+        }, 30000);
+      }
+
+      async function loadProfile() {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', currentUser.id)
+          .single();
+        if (error) return;
+        const avatarEl = document.getElementById('userAvatar');
+        if (data.avatar_url) {
+          avatarEl.innerHTML = `<img src="${data.avatar_url}" alt="Avatar">`;
+        } else {
+          const color = data.avatar_color || '#5850ec';
+          const initial = (data.full_name || 'U')[0].toUpperCase();
+          avatarEl.innerHTML = `<div class="fallback" style="background:${color};">${initial}</div>`;
+        }
+      }
+
+      // ===== CARREGAR NOTIFICAÇÕES =====
+      async function loadNotifications(showLoading = true) {
+        if (showLoading) {
+          listEl.innerHTML = `<div class="loading-placeholder"><i class="fas fa-spinner fa-spin"></i> Carregando...</div>`;
+        }
+        const { data, error } = await supabase
+          .from('notifications')
+          .select('*')
+          .eq('user_id', currentUser.id)
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          console.error('Erro ao carregar notificações:', error);
+          listEl.innerHTML =
+            `<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>Erro ao carregar</h3><p>Tente novamente mais tarde.</p></div>`;
+          return;
+        }
+
+        notifications = data || [];
+
+        // Buscar dados dos remetentes (sender_id)
+        const senderIds = notifications.map(n => n.sender_id).filter(id => id && !profileCache.has(id));
+        if (senderIds.length > 0) {
+          const { data: profiles, error: pError } = await supabase
+            .from('profiles')
+            .select('*')
+            .in('id', senderIds);
+          if (!pError && profiles) {
+            profiles.forEach(p => profileCache.set(p.id, p));
+          }
+        }
+
+        renderNotifications();
+        updateBadge();
+      }
+
+      // ===== RENDERIZAR =====
+      function renderNotifications() {
+        const filtered = getFilteredNotifications();
+        if (filtered.length === 0) {
+          listEl.innerHTML = `
+                <div class="empty-state">
+                  <i class="fas fa-bell-slash"></i>
+                  <h3>Nenhuma notificação</h3>
+                  <p>Você está em dia!</p>
+                </div>
+              `;
+          return;
+        }
+
+        // Agrupar por data (hoje, ontem, esta semana, etc.)
+        const groups = groupByDate(filtered);
+        let html = '';
+        for (const [label, items] of Object.entries(groups)) {
+          html += `<div style="margin-top:12px;font-size:12px;color:rgba(255,255,255,0.2);font-weight:500;padding-left:4px;">${label}</div>`;
+          items.forEach(notif => {
+            html += renderNotificationItem(notif);
+          });
+        }
+        listEl.innerHTML = html;
+      }
+
+      function renderNotificationItem(notif) {
+        const sender = notif.sender_id ? profileCache.get(notif.sender_id) : null;
+        const senderName = sender ? sender.full_name || 'Usuário' : 'Alguém';
+        const senderAvatar = sender ? sender.avatar_url : null;
+        const senderColor = sender ? sender.avatar_color || '#5850ec' : '#5850ec';
+        const initial = senderName[0].toUpperCase();
+
+        let icon = 'fa-bell';
+        let text = '';
+        let actionLink = '#';
+
+        switch (notif.type) {
+          case 'like':
+            icon = 'fa-heart';
+            text = `<strong>${senderName}</strong> curtiu seu post.`;
+            actionLink = notif.reference_id ? `post.html?id=${notif.reference_id}` : '#';
+            break;
+          case 'comment':
+            icon = 'fa-comment';
+            text = `<strong>${senderName}</strong> comentou: "${notif.content || ''}"`;
+            actionLink = notif.reference_id ? `post.html?id=${notif.reference_id}` : '#';
+            break;
+          case 'follow':
+            icon = 'fa-user-plus';
+            text = `<strong>${senderName}</strong> começou a te seguir.`;
+            actionLink = sender ? `perfil.html?id=${sender.id}` : '#';
+            break;
+          case 'message':
+            icon = 'fa-envelope';
+            text = `<strong>${senderName}</strong> te enviou uma mensagem.`;
+            actionLink = 'chat.html';
+            break;
+          default:
+            text = notif.content || 'Nova notificação';
+            actionLink = '#';
+        }
+
+        const timeAgo = getTimeAgo(notif.created_at);
+        const unreadClass = notif.read ? '' : 'unread';
+
+        return `
+              <div class="notification-item ${unreadClass}" data-id="${notif.id}" onclick="handleNotificationClick('${notif.id}', '${actionLink}')">
+                <div class="avatar">
+                  ${senderAvatar ? `<img src="${senderAvatar}" alt="${senderName}">` :
+                  `<div class="fallback" style="background:${senderColor};">${initial}</div>`}
+                </div>
+                <div class="content">
+                  <div class="text">${text}</div>
+                  <div class="time">${timeAgo}</div>
+                </div>
+                <div class="action-icon">
+                  <i class="fas ${icon}"></i>
+                </div>
+              </div>
+            `;
+      }
+
+      // ===== FILTROS =====
+      function getFilteredNotifications() {
+        if (currentFilter === 'all') return notifications;
+        return notifications.filter(n => n.type === currentFilter);
+      }
+
+      function setupFilterTabs() {
+        const buttons = filterTabs.querySelectorAll('button');
+        buttons.forEach(btn => {
+          btn.addEventListener('click', function() {
+            buttons.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            currentFilter = this.dataset.filter;
+            renderNotifications();
+          });
+        });
+      }
+
+      // ===== AGRUPAR POR DATA =====
+      function groupByDate(items) {
+        const groups = {};
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+        const weekAgo = new Date(today);
+        weekAgo.setDate(weekAgo.getDate() - 7);
+
+        items.forEach(item => {
+          const date = new Date(item.created_at);
+          let label = '';
+          if (date >= today) label = 'Hoje';
+          else if (date >= yesterday) label = 'Ontem';
+          else if (date >= weekAgo) label = 'Esta semana';
+          else label = 'Anterior';
+
+          if (!groups[label]) groups[label] = [];
+          groups[label].push(item);
+        });
+
+        // Ordenar labels (Hoje, Ontem, Esta semana, Anterior)
+        const order = ['Hoje', 'Ontem', 'Esta semana', 'Anterior'];
+        const sorted = {};
+        order.forEach(key => {
+          if (groups[key]) sorted[key] = groups[key];
+        });
+        return sorted;
+      }
+
+      // ===== MARCAR COMO LIDA =====
+      async function markAllAsRead() {
+        const unread = notifications.filter(n => !n.read);
+        if (unread.length === 0) {
+          Swal.fire({
+            icon: 'info',
+            title: 'Tudo lido!',
+            text: 'Você não tem notificações não lidas.',
+            confirmButtonColor: '#5850ec',
+            background: '#14141e',
+            color: '#fff'
+          });
+          return;
+        }
+
+        markAllBtn.disabled = true;
+        markAllBtn.textContent = 'Atualizando...';
+
+        try {
+          const ids = unread.map(n => n.id);
+          const { error } = await supabase
+            .from('notifications')
+            .update({ read: true })
+            .in('id', ids);
+          if (error) throw error;
+
+          // Atualizar local
+          notifications.forEach(n => { if (!n.read) n.read = true; });
+          renderNotifications();
+          updateBadge();
+          Swal.fire({
+            icon: 'success',
+            title: 'Pronto!',
+            text: 'Todas as notificações foram marcadas como lidas.',
+            timer: 2000,
+            showConfirmButton: false,
+            background: '#14141e',
+            color: '#fff'
+          });
+        } catch (error) {
+          console.error('Erro ao marcar todas como lidas:', error);
+          Swal.fire('Erro', 'Não foi possível atualizar.', 'error');
+        } finally {
+          markAllBtn.disabled = false;
+          markAllBtn.textContent = 'Marcar todas como lidas';
+        }
+      }
+
+      // ===== CLIQUE NA NOTIFICAÇÃO =====
+      window.handleNotificationClick = async function(id, link) {
+        try {
+          // Marcar como lida se não estiver
+          const notif = notifications.find(n => n.id === id);
+          if (notif && !notif.read) {
+            await supabase
+              .from('notifications')
+              .update({ read: true })
+              .eq('id', id);
+            notif.read = true;
+            renderNotifications();
+            updateBadge();
+          }
+          // Redirecionar
+          if (link && link !== '#') {
+            window.location.href = link;
+          } else {
+            // Se não tiver link, só marca como lida
+          }
+        } catch (error) {
+          console.error('Erro ao processar notificação:', error);
+        }
+      };
+
+      // ===== BADGE =====
+      function updateBadge() {
+        const unread = notifications.filter(n => !n.read).length;
+        if (unread > 0) {
+          notifBadge.style.display = 'flex';
+          notifBadge.textContent = unread > 9 ? '9+' : unread;
+        } else {
+          notifBadge.style.display = 'none';
+        }
+      }
+
+      // ===== TEMPO REAL =====
+      function setupRealtime() {
+        const channel = supabase
+          .channel('notifications_channel')
+          .on('postgres_changes', {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'notifications',
+            filter: `user_id=eq.${currentUser.id}`
+          }, async (payload) => {
+            const newNotif = payload.new;
+            // Evitar duplicação
+            if (!notifications.some(n => n.id === newNotif.id)) {
+              // Buscar perfil do sender se não estiver em cache
+              if (newNotif.sender_id && !profileCache.has(newNotif.sender_id)) {
+                const { data } = await supabase
+                  .from('profiles')
+                  .select('*')
+                  .eq('id', newNotif.sender_id)
+                  .single();
+                if (data) profileCache.set(newNotif.sender_id, data);
+              }
+              notifications.unshift(newNotif);
+              renderNotifications();
+              updateBadge();
+            }
+          })
+          .on('postgres_changes', {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'notifications',
+            filter: `user_id=eq.${currentUser.id}`
+          }, (payload) => {
+            const updated = payload.new;
+            const index = notifications.findIndex(n => n.id === updated.id);
+            if (index !== -1) {
+              notifications[index] = { ...notifications[index], ...updated };
+              renderNotifications();
+              updateBadge();
+            }
+          })
+          .subscribe();
+      }
+
+      // ===== UTILITÁRIOS =====
+      function getTimeAgo(date) {
+        const diff = Date.now() - new Date(date).getTime();
+        const minutes = Math.floor(diff / 60000);
+        const hours = Math.floor(diff / 3600000);
+        const days = Math.floor(diff / 86400000);
+        if (minutes < 1) return 'agora';
+        if (minutes < 60) return `${minutes}m`;
+        if (hours < 24) return `${hours}h`;
+        if (days < 7) return `${days}d`;
+        return new Date(date).toLocaleDateString('pt-BR');
+      }
+
+      // ===== INICIALIZAÇÃO =====
+      document.addEventListener('DOMContentLoaded', checkAuth);
+
+      // Expor funções globalmente (para onclick)
+      window.markAllAsRead = markAllAsRead;
+      window.handleNotificationClick = handleNotificationClick;
+
+    })();
+  </script>
+</body>
+</html>

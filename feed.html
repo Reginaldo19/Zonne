@@ -1,0 +1,4373 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Zonne · Feed</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet" />
+    <style>
+        /* ===== RESET & VARIÁVEIS ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0b0b12;
+            --card-bg: #12121c;
+            --border: #1e1e2e;
+            --text: #f0f0f5;
+            --text-secondary: #a0a0b8;
+            --accent: #6c63ff;
+            --accent-glow: rgba(108, 99, 255, 0.2);
+            --radius: 16px;
+            --transition: 0.25s ease;
+            --font: 'Inter', system-ui, sans-serif;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 80px;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
+        }
+
+        /* ===== TOP BAR ===== */
+        .top-bar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(11, 11, 18, 0.92);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 10px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .top-bar .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 19px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .top-bar .logo i {
+            font-size: 22px;
+            background: linear-gradient(135deg, #6c63ff, #9b4dff);
+            padding: 7px 9px;
+            border-radius: 12px;
+            color: #fff;
+            box-shadow: 0 4px 16px var(--accent-glow);
+        }
+
+        .top-bar .actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .top-bar .actions .icon-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 19px;
+            cursor: pointer;
+            position: relative;
+            padding: 6px;
+            border-radius: 50%;
+            transition: background var(--transition), color var(--transition);
+        }
+
+        .top-bar .actions .icon-btn:hover {
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+        }
+
+        .top-bar .actions .icon-btn .badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #ff4757;
+            color: #fff;
+            font-size: 9px;
+            font-weight: 700;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 5px;
+            border: 2px solid var(--bg);
+        }
+
+        .top-bar .avatar-mini {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.06);
+            cursor: pointer;
+            transition: border var(--transition), transform var(--transition);
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .top-bar .avatar-mini:hover {
+            border-color: var(--accent);
+            transform: scale(1.05);
+        }
+
+        .top-bar .avatar-mini img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .top-bar .avatar-mini .fallback {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: 600;
+            color: #fff;
+            background: var(--accent);
+        }
+
+        .top-bar .avatar-mini .badge-avatar {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            background: #ff4757;
+            color: #fff;
+            font-size: 9px;
+            font-weight: 700;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 5px;
+            border: 2px solid var(--bg);
+        }
+
+        /* ===== FEED ===== */
+        .container {
+            max-width: 100%;
+            padding: 0 12px 20px;
+        }
+
+        /* ===== STORIES ===== */
+        .stories-row {
+            display: flex;
+            gap: 14px;
+            padding: 16px 6px 20px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .stories-row::-webkit-scrollbar {
+            display: none;
+        }
+
+        .story-item {
+            flex-shrink: 0;
+            width: 72px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform var(--transition);
+        }
+
+        .story-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .story-item .story-circle {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            padding: 3px;
+            background: linear-gradient(135deg, #6c63ff, #9b4dff);
+            margin-bottom: 5px;
+            position: relative;
+            transition: box-shadow var(--transition);
+        }
+
+        .story-item .story-circle:hover {
+            box-shadow: 0 0 0 4px var(--accent-glow);
+        }
+
+        .story-item .story-circle .inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            overflow: hidden;
+            background: #14141e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--bg);
+            position: relative;
+        }
+
+        .story-item .story-circle .inner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .story-item .story-circle .inner .fallback {
+            font-size: 28px;
+            color: rgba(255, 255, 255, 0.15);
+            font-weight: 600;
+        }
+
+        .story-item .story-circle .inner .story-text-preview {
+            font-size: 10px;
+            color: #fff;
+            text-align: center;
+            padding: 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            font-weight: 600;
+            line-height: 1.2;
+            word-break: break-word;
+        }
+
+        .story-item .story-name {
+            font-size: 11px;
+            color: var(--text-secondary);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 72px;
+        }
+
+        .story-item.add-story .story-circle {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .story-item.add-story .story-circle .inner {
+            border: 2px dashed rgba(255, 255, 255, 0.12);
+            font-size: 24px;
+            color: rgba(255, 255, 255, 0.15);
+        }
+
+        .story-item.add-story .story-name {
+            color: var(--accent);
+        }
+
+        /* ===== CREATE POST MINI ===== */
+        .create-post {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 12px 16px;
+            margin: 0 0 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: border var(--transition), background var(--transition);
+        }
+
+        .create-post:hover {
+            border-color: rgba(255, 255, 255, 0.12);
+            background: #18182a;
+        }
+
+        .create-post .avatar-mini {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .create-post .avatar-mini img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .create-post .avatar-mini .fallback {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+            font-weight: 600;
+            color: #fff;
+            background: var(--accent);
+        }
+
+        .create-post input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 40px;
+            padding: 10px 18px;
+            color: var(--text);
+            font-size: 14px;
+            outline: none;
+            font-family: var(--font);
+            transition: all var(--transition);
+            cursor: pointer;
+        }
+
+        .create-post input::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* ===== POST CARD ===== */
+        .post-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 0;
+            margin: 0 0 18px;
+            overflow: hidden;
+            transition: all var(--transition);
+            animation: fadeUp 0.4s ease forwards;
+            opacity: 0;
+        }
+
+        .post-card:hover {
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        @keyframes fadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .post-card .post-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 16px 8px;
+        }
+
+        .post-card .post-header .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+            border: 2px solid rgba(255, 255, 255, 0.04);
+            cursor: pointer;
+            transition: border var(--transition);
+        }
+
+        .post-card .post-header .avatar:hover {
+            border-color: var(--accent);
+        }
+
+        .post-card .post-header .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .post-card .post-header .avatar .fallback {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .post-card .post-header .user-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .post-card .post-header .user-info .name {
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--text);
+            cursor: pointer;
+            transition: color var(--transition);
+        }
+
+        .post-card .post-header .user-info .name:hover {
+            color: var(--accent);
+        }
+
+        .post-card .post-header .user-info .username {
+            font-size: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .post-card .post-header .time {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.25);
+            flex-shrink: 0;
+        }
+
+        /* ===== CONTEÚDO ===== */
+        .post-card .post-content-wrapper {
+            padding: 0 16px 12px;
+        }
+
+        .post-card .post-content-wrapper .post-text {
+            font-size: 15px;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.85);
+            word-break: break-word;
+            white-space: pre-wrap;
+            padding: 12px 16px;
+            margin: 0 -16px;
+            background: transparent;
+        }
+
+        /* ===== MÍDIA ===== */
+        .post-card .post-media {
+            width: 100%;
+            background: #000;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .post-card .post-media img {
+            width: 100%;
+            display: block;
+            max-height: 500px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .post-card .post-media .video-wrapper {
+            position: relative;
+            width: 100%;
+            background: #000;
+        }
+
+        .post-card .post-media .video-wrapper video {
+            width: 100%;
+            display: block;
+            max-height: 500px;
+            object-fit: cover;
+            background: #000;
+        }
+
+        .post-card .post-media .video-wrapper .play-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.2);
+            transition: background 0.3s;
+            cursor: pointer;
+        }
+
+        .post-card .post-media .video-wrapper .play-overlay:hover {
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .post-card .post-media .video-wrapper .play-overlay .play-btn-large {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            font-size: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .post-card .post-media .video-wrapper .play-overlay .play-btn-large:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .post-card .post-media .audio-player-wrap {
+            background: #12121c;
+            padding: 20px 16px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .post-card .post-media .audio-player-wrap .disc {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #3a3a5a, #1a1a2e);
+            box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.04), 0 8px 32px rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.1s linear;
+            will-change: transform;
+            position: relative;
+        }
+
+        .post-card .post-media .audio-player-wrap .disc::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #2a2a3a;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .post-card .post-media .audio-player-wrap .disc .disc-icon {
+            font-size: 40px;
+            color: rgba(255, 255, 255, 0.1);
+            z-index: 2;
+        }
+
+        .post-card .post-media .audio-player-wrap .disc.spinning {
+            animation: spinDisc 4s linear infinite;
+        }
+
+        @keyframes spinDisc {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .post-card .post-media .audio-player-wrap .audio-controls {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .post-card .post-media .audio-player-wrap .audio-controls .play-btn {
+            background: var(--accent);
+            border: none;
+            color: #fff;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all var(--transition);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px var(--accent-glow);
+        }
+
+        .post-card .post-media .audio-player-wrap .audio-controls .play-btn:hover {
+            transform: scale(1.06);
+        }
+
+        .post-card .post-media .audio-player-wrap .audio-controls .a-progress {
+            flex: 1;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .post-card .post-media .audio-player-wrap .audio-controls .a-progress .a-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 4px;
+            width: 0%;
+        }
+
+        .post-card .post-media .audio-player-wrap .audio-controls .a-time {
+            font-size: 14px;
+            color: var(--text-secondary);
+            min-width: 80px;
+            font-variant-numeric: tabular-nums;
+            text-align: center;
+        }
+
+        /* ===== BOTÕES DE AÇÃO ===== */
+        .post-card .post-actions {
+            display: flex;
+            border-top: 1px solid var(--border);
+            padding: 10px 16px;
+            margin: 0 0 6px;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .post-card .post-actions .action-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .post-card .post-actions button {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 25px !important;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-family: var(--font);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 12px 10px;
+            border-radius: 10px;
+        }
+
+        .post-card .post-actions button:hover {
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+        }
+
+        .post-card .post-actions .like-btn {
+            font-size: 24px;
+            color: var(--text-secondary);
+            padding: 0 4px;
+        }
+
+        .post-card .post-actions .like-btn.liked {
+            color: #ff4757;
+        }
+
+        .post-card .post-actions .like-btn.liked i {
+            animation: heartPop 0.4s ease;
+        }
+
+        @keyframes heartPop {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.3);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .post-card .post-actions .count-badge {
+            font-size: 15px;
+            color: var(--text-secondary);
+            min-width: 20px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .post-card .post-actions .count-badge.liked-count {
+            color: #ff4757;
+        }
+
+        .post-card .post-actions .share-btn {
+            font-size: 20px;
+        }
+
+        /* ===== REELS OVERLAY ===== */
+        .reels-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 1000;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .reels-overlay.active {
+            display: flex;
+        }
+
+        .reels-overlay .reels-wrapper {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        .reels-overlay .reels-wrapper .reels-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: #000;
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .reels-overlay .reels-wrapper .reels-slide .reels-video-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .reels-overlay .reels-wrapper .reels-slide .reels-video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            max-height: 100vh;
+        }
+
+        .reels-overlay .reels-wrapper .reels-slide .reels-close-top {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            z-index: 20;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 30px;
+            cursor: pointer;
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
+            transition: color 0.3s;
+        }
+
+        .reels-overlay .reels-wrapper .reels-slide .reels-close-top:hover {
+            color: #fff;
+        }
+
+        .reels-overlay .reels-wrapper .reels-slide .reels-bottom {
+            position: absolute;
+            bottom: 30px;
+            left: 20px;
+            right: 80px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
+        }
+
+        .reels-overlay .reels-wrapper .reels-slide .reels-bottom .reels-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .reels-overlay .reels-wrapper .reels-slide .reels-bottom .reels-user .reels-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            flex-shrink: 0;
+        }
+
+        .reels-overlay .reels-wrapper .reels-slide .reels-bottom .reels-user .reels-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .reels-overlay .reels-wrapper .reels-slide .reels-bottom .reels-user .reels-avatar .fallback {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+            background: var(--accent);
+        }
+
+        .reels-overlay .reels-wrapper .reels-slide .reels-bottom .reels-user .reels-name {
+            color: #fff;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .reels-overlay .reels-wrapper .reels-slide .reels-bottom .reels-caption {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 15px;
+            font-family: var(--font);
+            font-weight: 400;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-break: break-word;
+            padding: 6px 14px;
+            border-radius: 12px;
+            backdrop-filter: blur(4px);
+            display: inline-block;
+            max-width: 100%;
+        }
+
+        .reels-overlay .reels-wrapper .reels-slide .reels-actions {
+            position: absolute;
+            bottom: 40px;
+            right: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+            z-index: 10;
+            align-items: center;
+        }
+
+        .reels-overlay .reels-wrapper .reels-slide .reels-actions button {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 40px !important;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            transition: transform 0.2s, color 0.2s;
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
+        }
+
+        .reels-overlay .reels-wrapper .reels-slide .reels-actions button:hover {
+            transform: scale(1.1);
+        }
+
+        .reels-overlay .reels-wrapper .reels-slide .reels-actions button .reels-count {
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .reels-overlay .reels-wrapper .reels-slide .reels-actions .reels-like-btn.liked {
+            color: #ff4757;
+        }
+
+        /* ===== LOADING / EMPTY ===== */
+        .loading-spinner {
+            text-align: center;
+            padding: 50px 0;
+            color: var(--text-secondary);
+        }
+
+        .loading-spinner i {
+            font-size: 30px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 44px;
+            margin-bottom: 12px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state h3 {
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 17px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        /* ===== BOTTOM NAV ===== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(11, 11, 18, 0.95);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            padding: 4px 0 env(safe-area-inset-bottom, 8px) 0;
+        }
+
+        .bottom-nav .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 22px;
+            cursor: pointer;
+            padding: 4px 14px;
+            transition: color var(--transition), transform var(--transition);
+            position: relative;
+            font-family: var(--font);
+        }
+
+        .bottom-nav .nav-item span {
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        .bottom-nav .nav-item.active {
+            color: var(--accent);
+        }
+
+        .bottom-nav .nav-item:hover {
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .bottom-nav .nav-item .badge-nav {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #ff4757;
+            color: #fff;
+            font-size: 9px;
+            font-weight: 700;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 5px;
+            border: 2px solid var(--bg);
+        }
+
+        .bottom-nav .nav-item .nav-icon .plus-circle {
+            background: linear-gradient(135deg, #6c63ff, #9b4dff);
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #fff;
+            margin-top: -16px;
+            box-shadow: 0 6px 24px var(--accent-glow);
+            transition: transform var(--transition);
+        }
+
+        .bottom-nav .nav-item .nav-icon .plus-circle:hover {
+            transform: scale(1.06);
+        }
+
+        /* ===== CREATE POST PAGE ===== */
+        .page {
+            display: none;
+            max-width: 100%;
+            padding: 16px 12px 40px;
+            min-height: 80vh;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .page .back-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 15px;
+            cursor: pointer;
+            padding: 8px 0 16px;
+            font-family: var(--font);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color var(--transition);
+        }
+
+        .page .back-btn:hover {
+            color: #fff;
+        }
+
+        .create-post-page textarea {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 14px;
+            color: var(--text);
+            font-size: 15px;
+            resize: vertical;
+            min-height: 130px;
+            font-family: var(--font);
+            outline: none;
+            transition: border var(--transition);
+        }
+
+        .create-post-page textarea:focus {
+            border-color: var(--accent);
+        }
+
+        .create-post-page .media-actions {
+            display: flex;
+            gap: 10px;
+            margin: 14px 0;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .create-post-page .media-actions button {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            padding: 8px 18px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 13px;
+            font-family: var(--font);
+            transition: all var(--transition);
+        }
+
+        .create-post-page .media-actions button:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+        }
+
+        .create-post-page .media-status {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .create-post-page .mention-custom {
+            position: relative;
+            margin: 8px 0;
+        }
+
+        .create-post-page .mention-custom input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            padding: 10px 16px;
+            color: var(--text);
+            font-size: 14px;
+            outline: none;
+            font-family: var(--font);
+            transition: border var(--transition);
+        }
+
+        .create-post-page .mention-custom input:focus {
+            border-color: var(--accent);
+        }
+
+        .create-post-page .mention-custom .mention-dropdown {
+            display: none;
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            max-height: 180px;
+            overflow-y: auto;
+            z-index: 50;
+            padding: 4px 0;
+        }
+
+        .create-post-page .mention-custom .mention-dropdown.active {
+            display: block;
+        }
+
+        .create-post-page .mention-custom .mention-dropdown .mention-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 14px;
+            cursor: pointer;
+            transition: background var(--transition);
+        }
+
+        .create-post-page .mention-custom .mention-dropdown .mention-item:hover {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .create-post-page .mention-custom .mention-dropdown .mention-item img {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .create-post-page .mention-custom .mention-dropdown .mention-item .fallback {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: #fff;
+            background: var(--accent);
+        }
+
+        .create-post-page .mention-custom .mention-dropdown .mention-item .name {
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        .create-post-page .mention-custom .mention-dropdown .mention-item .username {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .create-post-page .preview-container {
+            display: none;
+            margin-bottom: 14px;
+            border-radius: var(--radius);
+            overflow: hidden;
+            max-height: 300px;
+            background: #000;
+        }
+
+        .create-post-page .preview-container img,
+        .create-post-page .preview-container video {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+        }
+
+        .create-post-page .audio-selector {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin: 10px 0;
+            display: none;
+        }
+
+        .create-post-page .audio-selector .audio-options {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .create-post-page .audio-selector .audio-options button {
+            flex: 1;
+            min-width: 120px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text);
+            cursor: pointer;
+            font-family: var(--font);
+            transition: all var(--transition);
+        }
+
+        .create-post-page .audio-selector .audio-options button:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--accent);
+        }
+
+        .create-post-page .audio-selector .audio-options button i {
+            margin-right: 8px;
+        }
+
+        .create-post-page .audio-recorder {
+            display: none;
+            margin-top: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: var(--radius);
+            padding: 12px;
+        }
+
+        .create-post-page .audio-recorder .recorder-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .create-post-page .audio-recorder .recorder-controls .record-btn {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            border: none;
+            background: #ff4757;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all var(--transition);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .create-post-page .audio-recorder .recorder-controls .record-btn.recording {
+            animation: pulseRed 1.2s infinite;
+        }
+
+        @keyframes pulseRed {
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 0 8px rgba(255, 71, 87, 0);
+            }
+        }
+
+        .create-post-page .audio-recorder .recorder-controls .timer {
+            font-size: 15px;
+            color: var(--text-secondary);
+            min-width: 50px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .create-post-page .audio-recorder .recorder-controls .wave-visual {
+            flex: 1;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            min-width: 80px;
+        }
+
+        .create-post-page .audio-recorder .recorder-controls .wave-visual .bar {
+            flex: 1;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 4px;
+            transition: height 0.1s;
+        }
+
+        .create-post-page .audio-recorder .recorder-controls .wave-visual .bar.active {
+            background: var(--accent);
+        }
+
+        .create-post-page .audio-recorder .recorder-controls .controls-group {
+            display: flex;
+            gap: 6px;
+        }
+
+        .create-post-page .audio-recorder .recorder-controls .controls-group button {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--transition);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .create-post-page .audio-recorder .recorder-controls .controls-group button:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+        }
+
+        .create-post-page .audio-recorder .recorder-controls .controls-group button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .create-post-page .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #6c63ff, #9b4dff);
+            border: none;
+            border-radius: var(--radius);
+            color: #fff;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-family: var(--font);
+            box-shadow: 0 4px 20px var(--accent-glow);
+            margin-top: 12px;
+        }
+
+        .create-post-page .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px var(--accent-glow);
+        }
+
+        .create-post-page .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ===== EXPLORE ===== */
+        .explore-page .explore-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+        }
+
+        .explore-page .explore-grid .explore-item {
+            aspect-ratio: 1;
+            overflow: hidden;
+            border-radius: var(--radius);
+            cursor: pointer;
+            background: #000;
+            position: relative;
+            transition: transform var(--transition);
+        }
+
+        .explore-page .explore-grid .explore-item:hover {
+            transform: scale(1.02);
+            z-index: 2;
+        }
+
+        .explore-page .explore-grid .explore-item img,
+        .explore-page .explore-grid .explore-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .explore-page .explore-grid .explore-item .explore-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 10px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity var(--transition);
+        }
+
+        .explore-page .explore-grid .explore-item:hover .explore-overlay {
+            opacity: 1;
+        }
+
+        .explore-page .explore-grid .explore-item .explore-overlay span {
+            color: #fff;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+        }
+
+        .explore-page .explore-grid .explore-item .explore-overlay span i {
+            font-size: 14px;
+        }
+
+        /* ===== STORY FULLSCREEN ===== */
+        .story-fullscreen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .story-fullscreen.active {
+            display: flex;
+        }
+
+        .story-fullscreen .story-container {
+            width: 100%;
+            max-width: 480px;
+            height: 100%;
+            max-height: 100vh;
+            position: relative;
+            background: #12121c;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .story-fullscreen .story-progress {
+            display: flex;
+            gap: 4px;
+            padding: 10px 14px 0;
+            flex-shrink: 0;
+        }
+
+        .story-fullscreen .story-progress .p-bar {
+            flex: 1;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .story-fullscreen .story-progress .p-bar .p-fill {
+            height: 100%;
+            background: #fff;
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        .story-fullscreen .story-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            flex-shrink: 0;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), transparent);
+        }
+
+        .story-fullscreen .story-header .s-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .story-fullscreen .story-header .s-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .story-fullscreen .story-header .s-avatar .fallback {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+            background: var(--accent);
+        }
+
+        .story-fullscreen .story-header .s-name {
+            color: #fff;
+            font-weight: 600;
+            font-size: 15px;
+            flex: 1;
+        }
+
+        .story-fullscreen .story-header .s-time {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 12px;
+        }
+
+        .story-fullscreen .story-header .s-close {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 4px 8px;
+            transition: color var(--transition);
+        }
+
+        .story-fullscreen .story-header .s-close:hover {
+            color: #fff;
+        }
+
+        .story-fullscreen .story-header .s-delete {
+            background: none;
+            border: none;
+            color: #ff4757;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 4px 8px;
+            transition: color 0.3s;
+            margin-left: 4px;
+        }
+
+        .story-fullscreen .story-header .s-delete:hover {
+            color: #ff6b81;
+        }
+
+        .story-fullscreen .story-body {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .story-fullscreen .story-body img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .story-fullscreen .story-body video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: #000;
+        }
+
+        .story-fullscreen .story-body .story-text-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+        }
+
+        .story-fullscreen .story-body .story-text-container .story-text-content {
+            font-size: 28px;
+            font-weight: 600;
+            text-align: center;
+            color: #fff;
+            line-height: 1.6;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .story-fullscreen .story-body .story-caption {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            text-align: center;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+            white-space: pre-wrap;
+            word-break: break-word;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 16px;
+            border-radius: 12px;
+            backdrop-filter: blur(4px);
+        }
+
+        .story-fullscreen .story-nav {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 40%;
+            z-index: 10;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.1);
+            font-size: 30px;
+            transition: color 0.3s;
+        }
+
+        .story-fullscreen .story-nav:hover {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .story-fullscreen .story-nav.prev {
+            left: 0;
+        }
+
+        .story-fullscreen .story-nav.next {
+            right: 0;
+        }
+
+        /* ===== MODAL CRIAR STORY ===== */
+        .story-create-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(16px);
+            z-index: 400;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            flex-direction: column;
+        }
+
+        .story-create-overlay.active {
+            display: flex;
+        }
+
+        .story-create-overlay .story-create-box {
+            background: #14141e;
+            border-radius: 24px;
+            max-width: 400px;
+            width: 100%;
+            padding: 32px 24px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .story-create-overlay .story-create-box h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: var(--text);
+        }
+
+        .story-create-overlay .story-create-box .create-options {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .story-create-overlay .story-create-box .create-options button {
+            flex: 1;
+            min-width: 80px;
+            padding: 16px 8px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text);
+            cursor: pointer;
+            font-family: var(--font);
+            transition: all var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .story-create-overlay .story-create-box .create-options button:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--accent);
+        }
+
+        .story-create-overlay .story-create-box .create-options button i {
+            font-size: 28px;
+            color: var(--accent);
+        }
+
+        .story-create-overlay .story-create-box .create-close {
+            margin-top: 20px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 16px;
+            cursor: pointer;
+            padding: 8px 16px;
+            font-family: var(--font);
+            transition: color 0.3s;
+        }
+
+        .story-create-overlay .story-create-box .create-close:hover {
+            color: #fff;
+        }
+
+        /* ===== STORY TEXT EDITOR ===== */
+        .story-text-editor {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #1a1a2e;
+            z-index: 500;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .story-text-editor.active {
+            display: flex;
+        }
+
+        .story-text-editor .editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .story-text-editor .editor-header button {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px 8px;
+            transition: color 0.3s;
+        }
+
+        .story-text-editor .editor-header button:hover {
+            color: #fff;
+        }
+
+        .story-text-editor .editor-header .editor-title {
+            font-weight: 600;
+            font-size: 17px;
+            color: #fff;
+        }
+
+        .story-text-editor .editor-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding-top: 16px;
+        }
+
+        .story-text-editor .editor-body .color-picker-grid {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .story-text-editor .editor-body .color-picker-grid .color-opt {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .story-text-editor .editor-body .color-picker-grid .color-opt:hover {
+            transform: scale(1.1);
+        }
+
+        .story-text-editor .editor-body .color-picker-grid .color-opt.active {
+            border-color: #fff;
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        .story-text-editor .editor-body textarea {
+            width: 100%;
+            flex: 1;
+            background: rgba(255, 255, 255, 0.04);
+            border: none;
+            border-radius: var(--radius);
+            padding: 16px;
+            color: #fff;
+            font-size: 18px;
+            resize: none;
+            font-family: var(--font);
+            outline: none;
+            min-height: 150px;
+            white-space: pre-wrap;
+        }
+
+        .story-text-editor .editor-body textarea::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .story-text-editor .editor-body .btn-publish-story {
+            padding: 14px;
+            background: linear-gradient(135deg, #6c63ff, #9b4dff);
+            border: none;
+            border-radius: var(--radius);
+            color: #fff;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: var(--font);
+            box-shadow: 0 4px 20px var(--accent-glow);
+        }
+
+        .story-text-editor .editor-body .btn-publish-story:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px var(--accent-glow);
+        }
+
+        .story-text-editor .editor-body .btn-publish-story:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ===== STORY MEDIA PREVIEW ===== */
+        .story-media-preview {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 500;
+            flex-direction: column;
+        }
+
+        .story-media-preview.active {
+            display: flex;
+        }
+
+        .story-media-preview .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), transparent);
+            z-index: 10;
+        }
+
+        .story-media-preview .preview-header button {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 4px 8px;
+            transition: color 0.3s;
+        }
+
+        .story-media-preview .preview-header button:hover {
+            color: #fff;
+        }
+
+        .story-media-preview .preview-header .preview-title {
+            font-weight: 600;
+            font-size: 17px;
+            color: #fff;
+        }
+
+        .story-media-preview .preview-media {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .story-media-preview .preview-media img,
+        .story-media-preview .preview-media video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .story-media-preview .preview-caption {
+            padding: 16px 20px 24px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 10;
+        }
+
+        .story-media-preview .preview-caption textarea {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius);
+            padding: 12px;
+            color: #fff;
+            font-size: 15px;
+            resize: none;
+            min-height: 60px;
+            font-family: var(--font);
+            outline: none;
+            white-space: pre-wrap;
+        }
+
+        .story-media-preview .preview-caption textarea::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .story-media-preview .preview-caption .btn-publish-media {
+            padding: 12px;
+            background: linear-gradient(135deg, #6c63ff, #9b4dff);
+            border: none;
+            border-radius: var(--radius);
+            color: #fff;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: var(--font);
+            box-shadow: 0 4px 20px var(--accent-glow);
+        }
+
+        .story-media-preview .preview-caption .btn-publish-media:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px var(--accent-glow);
+        }
+
+        .story-media-preview .preview-caption .btn-publish-media:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ===== USER CARD OVERLAY ===== */
+        .user-card-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(6px);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .user-card-overlay.active {
+            display: flex;
+        }
+
+        .user-card {
+            background: #14141e;
+            border-radius: 24px;
+            max-width: 380px;
+            width: 100%;
+            padding: 28px 24px 24px;
+            border: 1px solid var(--border);
+            text-align: center;
+            position: relative;
+            animation: cardPop 0.3s ease;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+        }
+
+        @keyframes cardPop {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .user-card .close-card {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 24px;
+            cursor: pointer;
+            transition: color var(--transition);
+        }
+
+        .user-card .close-card:hover {
+            color: #fff;
+        }
+
+        .user-card .avatar-large {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 12px;
+            border: 3px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .user-card .avatar-large img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-card .avatar-large .fallback {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: 700;
+            color: #fff;
+            background: var(--accent);
+        }
+
+        .user-card .name {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .user-card .username {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .user-card .bio {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.5);
+            margin: 6px 0 14px;
+        }
+
+        .user-card .stats {
+            display: flex;
+            justify-content: center;
+            gap: 28px;
+            margin-bottom: 16px;
+        }
+
+        .user-card .stats .stat {
+            text-align: center;
+        }
+
+        .user-card .stats .stat .number {
+            font-weight: 700;
+            font-size: 17px;
+            color: var(--text);
+        }
+
+        .user-card .stats .stat .label {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .user-card .card-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .user-card .card-actions button {
+            padding: 8px 22px;
+            border-radius: 40px;
+            border: none;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: var(--font);
+            transition: all var(--transition);
+        }
+
+        .user-card .card-actions .btn-follow {
+            background: linear-gradient(135deg, #6c63ff, #9b4dff);
+            color: #fff;
+            box-shadow: 0 4px 16px var(--accent-glow);
+        }
+
+        .user-card .card-actions .btn-follow:hover {
+            transform: scale(1.04);
+        }
+
+        .user-card .card-actions .btn-follow.following {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-secondary);
+            box-shadow: none;
+        }
+
+        .user-card .card-actions .btn-follow.following:hover {
+            background: rgba(255, 71, 87, 0.12);
+            color: #ff4757;
+        }
+
+        .user-card .card-actions .btn-profile {
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-secondary);
+        }
+
+        .user-card .card-actions .btn-profile:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 640px) {
+            .container {
+                padding: 0 8px 20px;
+            }
+
+            .post-card {
+                margin: 0 0 14px;
+                border-radius: 12px;
+            }
+
+            .post-card .post-header {
+                padding: 12px 14px 6px;
+            }
+
+            .post-card .post-content-wrapper {
+                padding: 0 14px 10px;
+            }
+
+            .post-card .post-content-wrapper .post-text {
+                padding: 10px 14px;
+                margin: 0 -14px;
+                font-size: 14px;
+            }
+
+            .post-card .post-actions {
+                padding: 6px 12px;
+            }
+
+            .post-card .post-actions button {
+                font-size: 18px;
+            }
+
+            .post-card .post-actions .like-btn {
+                font-size: 20px;
+            }
+
+            .post-card .post-actions .count-badge {
+                font-size: 14px;
+            }
+
+            .post-card .post-media .audio-player-wrap .disc {
+                width: 90px;
+                height: 90px;
+            }
+
+            .post-card .post-media .video-wrapper .play-overlay .play-btn-large {
+                width: 56px;
+                height: 56px;
+                font-size: 26px;
+            }
+
+            .story-item {
+                width: 64px;
+            }
+
+            .story-item .story-circle {
+                width: 64px;
+                height: 64px;
+            }
+
+            .bottom-nav .nav-item {
+                padding: 2px 8px;
+                font-size: 20px;
+            }
+
+            .bottom-nav .nav-item span {
+                font-size: 8px;
+            }
+
+            .bottom-nav .nav-item .nav-icon .plus-circle {
+                width: 42px;
+                height: 42px;
+                font-size: 20px;
+                margin-top: -12px;
+            }
+
+            .user-card {
+                padding: 20px;
+            }
+
+            .user-card .avatar-large {
+                width: 72px;
+                height: 72px;
+            }
+
+            .story-fullscreen .story-body .story-text-container .story-text-content {
+                font-size: 22px;
+            }
+
+            .story-fullscreen .story-nav {
+                width: 30%;
+                font-size: 24px;
+            }
+
+            .explore-page .explore-grid {
+                gap: 4px;
+            }
+
+            .top-bar {
+                padding: 8px 14px;
+            }
+
+            .top-bar .logo {
+                font-size: 17px;
+            }
+
+            .top-bar .logo i {
+                font-size: 19px;
+                padding: 6px 8px;
+            }
+
+            .reels-overlay .reels-wrapper .reels-slide .reels-actions button {
+                font-size: 34px;
+            }
+
+            .reels-overlay .reels-wrapper .reels-slide .reels-bottom .reels-caption {
+                font-size: 14px;
+            }
+
+            .reels-overlay .reels-wrapper .reels-slide .reels-bottom .reels-user .reels-name {
+                font-size: 16px;
+            }
+
+            .story-create-overlay .story-create-box {
+                padding: 24px 16px;
+            }
+
+            .story-create-overlay .story-create-box .create-options button {
+                min-width: 60px;
+                padding: 12px 6px;
+                font-size: 13px;
+            }
+
+            .story-text-editor .editor-body textarea {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== TOP BAR ===== -->
+    <header class="top-bar">
+        <div class="logo" onclick="goToFeed()">
+            <i class="fas fa-users"></i>
+            <span>Zonne</span>
+        </div>
+        <div class="actions">
+            <button class="icon-btn" onclick="openNotifications()" aria-label="Notificações">
+                <i class="fas fa-bell"></i>
+                <span class="badge" id="notifBadge" style="display:none;">0</span>
+            </button>
+            <button class="icon-btn" onclick="openFriends()" aria-label="Amigos">
+                <i class="fas fa-users"></i>
+                <span class="badge" id="friendBadge" style="display:none;">0</span>
+            </button>
+            <div class="avatar-mini" id="userAvatar" onclick="goToMyProfile()">
+                <div class="fallback"><i class="fas fa-user"></i></div>
+                <span class="badge-avatar" id="followBadge" style="display:none;">0</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== FEED ===== -->
+    <div class="feed-page" id="feedPage">
+        <div class="container">
+            <div class="stories-row" id="storiesRow">
+                <div class="story-item add-story" onclick="openStoryCreateOptions()">
+                    <div class="story-circle"><div class="inner"><i class="fas fa-plus"></i></div></div>
+                    <div class="story-name">Seu story</div>
+                </div>
+            </div>
+
+            <div class="create-post" onclick="goToCreatePost()">
+                <div class="avatar-mini" id="createPostAvatar">
+                    <div class="fallback"><i class="fas fa-user"></i></div>
+                </div>
+                <input type="text" placeholder="O que você está pensando?" readonly />
+            </div>
+
+            <div id="feedPosts">
+                <div class="loading-spinner"><i class="fas fa-spinner"></i></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== PÁGINA DE CRIAÇÃO ===== -->
+    <div class="page create-post-page" id="createPostPage">
+        <button class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i> Voltar</button>
+        <h3 style="margin-bottom:18px;font-weight:700;font-size:20px;">
+            <i class="fas fa-pen" style="color:var(--accent);margin-right:10px;"></i>Nova publicação
+        </h3>
+
+        <textarea id="createPostContent" placeholder="O que você está pensando?…"></textarea>
+
+        <div class="media-actions">
+            <button onclick="document.getElementById('createFileInput').click()"><i class="fas fa-image"></i> Foto/Vídeo</button>
+            <button onclick="toggleAudioSelector()"><i class="fas fa-microphone"></i> Áudio</button>
+            <span class="media-status" id="createMediaStatus"></span>
+        </div>
+
+        <!-- Menção -->
+        <div class="mention-custom">
+            <input type="text" id="mentionInput" placeholder="🔗 Mencionar amigo (@nome)" autocomplete="off" oninput="filterMentions(this.value)" />
+            <div class="mention-dropdown" id="mentionDropdown"></div>
+        </div>
+
+        <input type="file" id="createFileInput" accept="image/*,video/*" style="display:none;" onchange="handleFileSelect(event)" />
+        <div class="preview-container" id="createPreview">
+            <img id="createPreviewImg" style="display:none;" />
+            <video id="createPreviewVideo" style="display:none;" controls></video>
+        </div>
+
+        <div class="audio-selector" id="audioSelector">
+            <div class="audio-options">
+                <button onclick="showAudioRecorder()"><i class="fas fa-microphone"></i> Gravar áudio</button>
+                <button onclick="document.getElementById('audioFileInput').click()"><i class="fas fa-folder-open"></i> Escolher arquivo</button>
+            </div>
+            <input type="file" id="audioFileInput" accept="audio/*" style="display:none;" onchange="loadAudioFile(event)" />
+            <div class="audio-recorder" id="audioRecorder">
+                <div class="recorder-controls">
+                    <button class="record-btn" id="recordBtn" onclick="toggleRecording()"><i class="fas fa-microphone"></i></button>
+                    <span class="timer" id="recordTimer">0:00</span>
+                    <div class="wave-visual" id="waveVisual">
+                        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                    </div>
+                    <div class="controls-group">
+                        <button id="pauseBtn" onclick="pauseRecording()" disabled><i class="fas fa-pause"></i></button>
+                        <button id="stopBtn" onclick="stopRecording()" disabled><i class="fas fa-stop"></i></button>
+                    </div>
+                </div>
+                <div style="margin-top:10px; display:flex; gap:6px; flex-wrap:wrap;">
+                    <button class="btn-submit" style="width:auto; padding:8px 16px; font-size:13px;" onclick="confirmAudio()">Usar áudio</button>
+                    <button style="background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:30px; padding:8px 16px; color:var(--text-secondary); cursor:pointer;" onclick="cancelAudio()">Cancelar</button>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn-submit" onclick="submitPost()">Publicar</button>
+    </div>
+
+    <!-- ===== EXPLORE ===== -->
+    <div class="page explore-page" id="explorePage">
+        <button class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i> Voltar</button>
+        <h3 style="margin-bottom:18px;font-weight:700;font-size:20px;">
+            <i class="fas fa-compass" style="color:var(--accent);margin-right:10px;"></i>Explorar
+        </h3>
+        <div id="exploreContent">
+            <div class="loading-spinner"><i class="fas fa-spinner"></i></div>
+        </div>
+    </div>
+
+    <!-- ===== REELS OVERLAY ===== -->
+    <div class="reels-overlay" id="reelsOverlay">
+        <div class="reels-wrapper" id="reelsWrapper">
+            <!-- Slides serão inseridos dinamicamente -->
+        </div>
+    </div>
+
+    <!-- ===== MODAL CRIAR STORY ===== -->
+    <div class="story-create-overlay" id="storyCreateOverlay">
+        <div class="story-create-box">
+            <h3>Novo Story</h3>
+            <div class="create-options">
+                <button onclick="startStoryText()"><i class="fas fa-font"></i> Texto</button>
+                <button onclick="document.getElementById('storyPhotoInput').click()"><i class="fas fa-image"></i> Foto</button>
+                <button onclick="document.getElementById('storyVideoInput').click()"><i class="fas fa-video"></i> Vídeo</button>
+            </div>
+            <button class="create-close" onclick="closeStoryCreateOptions()">Cancelar</button>
+        </div>
+        <input type="file" id="storyPhotoInput" accept="image/*" style="display:none;" onchange="handleStoryMediaFile(event, 'image')" />
+        <input type="file" id="storyVideoInput" accept="video/*" style="display:none;" onchange="handleStoryMediaFile(event, 'video')" />
+    </div>
+
+    <!-- ===== STORY TEXT EDITOR ===== -->
+    <div class="story-text-editor" id="storyTextEditor">
+        <div class="editor-header">
+            <button onclick="closeStoryTextEditor()"><i class="fas fa-arrow-left"></i></button>
+            <span class="editor-title">Story de texto</span>
+            <div style="width:24px;"></div>
+        </div>
+        <div class="editor-body">
+            <div class="color-picker-grid" id="storyTextColors">
+                <div class="color-opt active" style="background:#1a1a2e;" data-color="#1a1a2e">🌙</div>
+                <div class="color-opt" style="background:#2d1b69;" data-color="#2d1b69">💜</div>
+                <div class="color-opt" style="background:#1b3a5c;" data-color="#1b3a5c">💙</div>
+                <div class="color-opt" style="background:#5c1b3a;" data-color="#5c1b3a">❤️</div>
+                <div class="color-opt" style="background:#1b5c2e;" data-color="#1b5c2e">💚</div>
+                <div class="color-opt" style="background:linear-gradient(135deg, #ff6b6b, #feca57);" data-color="gradient1">🌅</div>
+                <div class="color-opt" style="background:linear-gradient(135deg, #48dbfb, #0abde3);" data-color="gradient2">🌊</div>
+                <div class="color-opt" style="background:linear-gradient(135deg, #ff9ff3, #f368e0);" data-color="gradient3">🌸</div>
+                <div class="color-opt" style="background:linear-gradient(135deg, #feca57, #ff9f43);" data-color="gradient4">🌻</div>
+                <div class="color-opt" style="background:linear-gradient(135deg, #55efc4, #00b894);" data-color="gradient5">🌿</div>
+                <div class="color-opt" style="background:linear-gradient(135deg, #fd79a8, #e17055);" data-color="gradient6">🌺</div>
+            </div>
+            <textarea id="storyTextContent" placeholder="Digite seu story…"></textarea>
+            <button class="btn-publish-story" onclick="publishStoryText()">Publicar Story</button>
+        </div>
+    </div>
+
+    <!-- ===== STORY MEDIA PREVIEW ===== -->
+    <div class="story-media-preview" id="storyMediaPreview">
+        <div class="preview-header">
+            <button onclick="closeStoryMediaPreview()"><i class="fas fa-arrow-left"></i></button>
+            <span class="preview-title">Prévia</span>
+            <div style="width:24px;"></div>
+        </div>
+        <div class="preview-media" id="storyMediaPreviewContent"></div>
+        <div class="preview-caption">
+            <textarea id="storyMediaCaption" placeholder="Adicione uma legenda…"></textarea>
+            <button class="btn-publish-media" onclick="publishStoryMedia()">Publicar</button>
+        </div>
+    </div>
+
+    <!-- ===== USER CARD OVERLAY ===== -->
+    <div class="user-card-overlay" id="userCardOverlay" onclick="if(event.target===this) closeUserCard()">
+        <div class="user-card" id="userCardContent"></div>
+    </div>
+
+    <!-- ===== STORY FULLSCREEN ===== -->
+    <div class="story-fullscreen" id="storyFullscreen">
+        <div class="story-container" id="storyFullContainer">
+            <div class="story-progress" id="storyProgress"></div>
+            <div class="story-header">
+                <div class="s-avatar" id="storyAvatar"><div class="fallback">U</div></div>
+                <span class="s-name" id="storyName">Usuário</span>
+                <span class="s-time" id="storyTime">agora</span>
+                <button class="s-delete" id="storyDeleteBtn" onclick="deleteCurrentStory()" style="display:none;"><i class="fas fa-trash"></i></button>
+                <button class="s-close" onclick="closeStoryFullscreen()">&times;</button>
+            </div>
+            <div class="story-body" id="storyBody">
+                <div class="story-nav prev" onclick="prevStory()"><i class="fas fa-chevron-left"></i></div>
+                <div class="story-nav next" onclick="nextStory()"><i class="fas fa-chevron-right"></i></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== BOTTOM NAV ===== -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="goToFeed()">
+            <div class="nav-icon"><i class="fas fa-home"></i></div>
+            <span>Início</span>
+        </button>
+        <button class="nav-item" onclick="goToExplore()">
+            <div class="nav-icon"><i class="fas fa-compass"></i></div>
+            <span>Explorar</span>
+        </button>
+        <button class="nav-item" onclick="goToCreatePost()">
+            <div class="nav-icon"><div class="plus-circle"><i class="fas fa-plus"></i></div></div>
+            <span>Novo</span>
+        </button>
+        <button class="nav-item" id="navMessages" onclick="openMessages()">
+            <div class="nav-icon">
+                <i class="fas fa-envelope"></i>
+                <span class="badge-nav" id="msgBadge" style="display:none;">0</span>
+            </div>
+            <span>Mensagens</span>
+        </button>
+        <button class="nav-item" id="navProfile" onclick="goToMyProfile()">
+            <div class="nav-icon">
+                <i class="fas fa-user"></i>
+                <span class="badge-nav" id="profileBadge" style="display:none;">0</span>
+            </div>
+            <span>Perfil</span>
+        </button>
+    </nav>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+    </script>
+    <script>
+        (function() {
+            'use strict';
+
+            const SUPABASE_URL = 'https://cfanqigkvfpigjvjjbon.supabase.co';
+            const SUPABASE_ANON_KEY =
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmYW5xaWdrdmZwaWdqdmpqYm9uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM4NzI5NzIsImV4cCI6MjA5OTQ0ODk3Mn0.UDyNusIz7PNaz4-n-Bpgn2LJCUi6fIw6tW0QrsJEii0';
+
+            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+            let currentUser = null;
+            let currentProfile = null;
+            let posts = [];
+            let stories = [];
+            let userLikes = new Set();
+            let explorePosts = [];
+            let friendsList = [];
+
+            // Áudio
+            let mediaRecorder = null;
+            let audioChunks = [];
+            let audioBlob = null;
+            let audioUrl = null;
+            let isRecording = false;
+            let isPaused = false;
+            let recordTimer = 0;
+            let timerInterval = null;
+            let audioContext = null;
+            let analyser = null;
+            let dataArray = null;
+            let animationId = null;
+
+            let selectedFile = null;
+            let selectedFileType = null;
+
+            // Stories
+            let storyInterval = null;
+            let currentStoryIndex = 0;
+            let userStories = [];
+            let storyMediaFile = null;
+            let storyMediaType = null;
+
+            // Reels
+            let reelsPosts = [];
+            let currentReelsIndex = 0;
+            let isDragging = false;
+            let startY = 0;
+
+            const feedPosts = document.getElementById('feedPosts');
+            const storiesRow = document.getElementById('storiesRow');
+            const reelsWrapper = document.getElementById('reelsWrapper');
+
+            // ============================================================
+            // HISTÓRICO E NAVEGAÇÃO
+            // ============================================================
+            let pageHistory = ['feed'];
+
+            window.addEventListener('popstate', function(event) {
+                if (pageHistory.length > 1) {
+                    pageHistory.pop();
+                    const prev = pageHistory[pageHistory.length - 1];
+                    if (prev === 'feed') goToFeed();
+                    else if (prev === 'explore') goToExplore();
+                    else if (prev === 'create') goToCreatePost();
+                    else if (prev === 'post') {
+                        const params = new URLSearchParams(window.location.search);
+                        const id = params.get('id');
+                        if (id) goToPost(id);
+                        else goToFeed();
+                    } else {
+                        goToFeed();
+                    }
+                } else {
+                    goToFeed();
+                }
+            });
+
+            function pushPage(page) {
+                if (pageHistory[pageHistory.length - 1] !== page) {
+                    pageHistory.push(page);
+                    window.history.pushState({ page: page }, '', window.location.pathname);
+                }
+            }
+
+            // ============================================================
+            // NAVEGAÇÃO
+            // ============================================================
+            window.goToFeed = function() {
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                document.querySelector('.feed-page').style.display = 'block';
+                document.querySelectorAll('.bottom-nav .nav-item').forEach(n => n.classList.remove('active'));
+                document.querySelector('.bottom-nav .nav-item:first-child').classList.add('active');
+                if (pageHistory[pageHistory.length - 1] !== 'feed') pushPage('feed');
+                loadFeed();
+            };
+
+            window.goToPost = function(postId) {
+                pushPage('post');
+                window.location.href = 'post.html?id=' + postId;
+            };
+
+            window.goToCreatePost = function() {
+                document.querySelector('.feed-page').style.display = 'none';
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                document.getElementById('createPostPage').classList.add('active');
+                document.querySelectorAll('.bottom-nav .nav-item').forEach(n => n.classList.remove('active'));
+                document.querySelectorAll('.bottom-nav .nav-item')[2].classList.add('active');
+                pushPage('create');
+                resetCreatePost();
+            };
+
+            window.goToExplore = function() {
+                document.querySelector('.feed-page').style.display = 'none';
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                document.getElementById('explorePage').classList.add('active');
+                document.querySelectorAll('.bottom-nav .nav-item').forEach(n => n.classList.remove('active'));
+                document.querySelectorAll('.bottom-nav .nav-item')[1].classList.add('active');
+                pushPage('explore');
+                loadExplore();
+            };
+
+            window.goToMyProfile = function() {
+                if (currentUser) window.location.href = 'perfil.html';
+            };
+
+            window.goToUserProfile = function(userId) {
+                window.location.href = 'perfil.html?id=' + userId;
+            };
+
+            window.goBack = function() {
+                if (pageHistory.length > 1) {
+                    pageHistory.pop();
+                    const prev = pageHistory[pageHistory.length - 1];
+                    if (prev === 'feed') goToFeed();
+                    else if (prev === 'explore') goToExplore();
+                    else if (prev === 'create') goToCreatePost();
+                    else goToFeed();
+                } else {
+                    goToFeed();
+                }
+            };
+
+            // ============================================================
+            // RESET CREATE POST
+            // ============================================================
+            function resetCreatePost() {
+                document.getElementById('createPostContent').value = '';
+                document.getElementById('createPreview').style.display = 'none';
+                document.getElementById('createPreviewImg').style.display = 'none';
+                document.getElementById('createPreviewVideo').style.display = 'none';
+                document.getElementById('audioSelector').style.display = 'none';
+                document.getElementById('audioRecorder').style.display = 'none';
+                document.getElementById('createMediaStatus').textContent = '';
+                selectedFile = null;
+                selectedFileType = null;
+                audioBlob = null;
+                audioUrl = null;
+                document.getElementById('createFileInput').value = '';
+                document.getElementById('audioFileInput').value = '';
+                resetAudioRecorder();
+                document.getElementById('mentionInput').value = '';
+                document.getElementById('mentionDropdown').classList.remove('active');
+            }
+
+            // ============================================================
+            // AUTENTICAÇÃO
+            // ============================================================
+            async function checkAuth() {
+                const { data, error } = await supabase.auth.getSession();
+                if (error || !data.session) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+                currentUser = data.session.user;
+                await loadProfile();
+                await loadFeed();
+                await loadStories();
+                await loadNotifications();
+                await loadFriends();
+
+                // Badges
+                await updateAllBadges();
+
+                supabase
+                    .channel('posts-channel')
+                    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'posts' }, payload => {
+                        const newPost = payload.new;
+                        if (newPost.user_id !== currentUser.id) {
+                            supabase
+                                .from('profiles')
+                                .select('*')
+                                .eq('id', newPost.user_id)
+                                .single()
+                                .then(({ data: profile }) => {
+                                    newPost.profiles = profile;
+                                    posts.unshift(newPost);
+                                    renderPosts();
+                                });
+                        }
+                    })
+                    .subscribe();
+
+                // Atualiza badges a cada 30s
+                setInterval(updateAllBadges, 30000);
+            }
+
+            async function loadProfile() {
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', currentUser.id)
+                    .single();
+                if (error) { console.error(error); return; }
+                currentProfile = data;
+                updateUI();
+            }
+
+            function updateUI() {
+                if (!currentProfile) return;
+                const avatarEl = document.getElementById('userAvatar');
+                if (currentProfile.avatar_url) {
+                    avatarEl.innerHTML = '<img src="' + currentProfile.avatar_url + '" alt="Avatar">';
+                } else {
+                    const color = currentProfile.avatar_color || '#6c63ff';
+                    const initial = (currentProfile.full_name || 'U')[0].toUpperCase();
+                    avatarEl.innerHTML = '<div class="fallback" style="background:' + color + ';">' + initial + '</div>';
+                }
+                const cpAvatar = document.getElementById('createPostAvatar');
+                if (currentProfile.avatar_url) {
+                    cpAvatar.innerHTML = '<img src="' + currentProfile.avatar_url + '" alt="Avatar">';
+                } else {
+                    const color = currentProfile.avatar_color || '#6c63ff';
+                    const initial = (currentProfile.full_name || 'U')[0].toUpperCase();
+                    cpAvatar.innerHTML = '<div class="fallback" style="background:' + color + ';">' + initial + '</div>';
+                }
+            }
+
+            async function loadFriends() {
+                const { data, error } = await supabase
+                    .from('friends')
+                    .select('friend_id, profiles:friend_id (id, full_name, username, avatar_url, avatar_color)')
+                    .eq('user_id', currentUser.id);
+                if (error) return;
+                friendsList = data.map(f => f.profiles).filter(Boolean);
+            }
+
+            // ============================================================
+            // BADGES (NOTIFICAÇÕES, MENSAGENS, PERFIL)
+            // ============================================================
+            async function updateAllBadges() {
+                await loadNotifications(); // já atualiza badge de notificações
+                await updateMessageBadge();
+                await updateProfileBadge();
+            }
+
+            async function updateMessageBadge() {
+                const badge = document.getElementById('msgBadge');
+                try {
+                    // Total de mensagens não lidas (onde o usuário é o receptor)
+                    const { data, error } = await supabase
+                        .from('messages')
+                        .select('id', { count: 'exact', head: true })
+                        .neq('sender_id', currentUser.id)
+                        .is('read_at', null)
+                        .eq('system', false);
+
+                    if (error) throw error;
+                    const count = data?.length || 0;
+                    if (count > 0) {
+                        badge.style.display = 'flex';
+                        badge.textContent = count > 9 ? '9+' : count;
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                } catch (e) {
+                    console.error('Erro ao atualizar badge de mensagens:', e);
+                }
+            }
+
+            async function updateProfileBadge() {
+                const badge = document.getElementById('profileBadge');
+                const followBadge = document.getElementById('followBadge');
+                try {
+                    // Total de notificações de follow não lidas
+                    const { data, error } = await supabase
+                        .from('notifications')
+                        .select('id', { count: 'exact', head: true })
+                        .eq('user_id', currentUser.id)
+                        .eq('type', 'follow')
+                        .eq('read', false);
+
+                    if (error) throw error;
+                    const count = data?.length || 0;
+
+                    // Badge do bottom nav
+                    if (count > 0) {
+                        badge.style.display = 'flex';
+                        badge.textContent = count > 9 ? '9+' : count;
+                    } else {
+                        badge.style.display = 'none';
+                    }
+
+                    // Badge no avatar do topo
+                    if (count > 0) {
+                        followBadge.style.display = 'flex';
+                        followBadge.textContent = count > 9 ? '9+' : count;
+                    } else {
+                        followBadge.style.display = 'none';
+                    }
+                } catch (e) {
+                    console.error('Erro ao atualizar badge de perfil:', e);
+                }
+            }
+
+            // ============================================================
+            // FEED
+            // ============================================================
+            async function loadFeed() {
+                feedPosts.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner"></i></div>';
+                const { data, error } = await supabase
+                    .from('posts')
+                    .select(`
+                        *,
+                        profiles:user_id (id, full_name, username, avatar_url, avatar_color)
+                    `)
+                    .neq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false })
+                    .limit(100);
+
+                if (error) {
+                    feedPosts.innerHTML =
+                        '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>Erro ao carregar</h3></div>';
+                    return;
+                }
+                posts = data || [];
+                for (let i = 0; i < posts.length; i++) {
+                    const { count } = await supabase
+                        .from('likes')
+                        .select('id', { count: 'exact', head: true })
+                        .eq('post_id', posts[i].id);
+                    posts[i].likes_count = count || 0;
+                }
+                posts = shuffleArray(posts);
+                await loadUserLikes();
+                renderPosts();
+                setupMediaObserver();
+            }
+
+            function shuffleArray(a) {
+                for (let i = a.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [a[i], a[j]] = [a[j], a[i]];
+                }
+                return a;
+            }
+
+            async function loadUserLikes() {
+                if (!currentUser) return;
+                const { data, error } = await supabase
+                    .from('likes')
+                    .select('post_id')
+                    .eq('user_id', currentUser.id);
+                if (error) return;
+                userLikes = new Set(data.map(l => l.post_id));
+            }
+
+            function renderPosts() {
+                if (posts.length === 0) {
+                    feedPosts.innerHTML =
+                        '<div class="empty-state"><i class="fas fa-newspaper"></i><h3>Nenhuma publicação</h3><p>Explore e siga outros usuários!</p></div>';
+                    return;
+                }
+                feedPosts.innerHTML = posts.map(post => renderPostCard(post)).join('');
+                attachPostEvents();
+            }
+
+            function renderPostCard(post) {
+                const profile = post.profiles || {};
+                const avatarUrl = profile.avatar_url;
+                const avatarColor = profile.avatar_color || '#6c63ff';
+                const initial = (profile.full_name || 'U')[0].toUpperCase();
+                const timeAgo = getTimeAgo(post.created_at);
+                const isLiked = userLikes.has(post.id);
+                const likeCount = post.likes_count || 0;
+                const commentCount = post.comments_count || 0;
+
+                let mediaHtml = '';
+                if (post.media_url) {
+                    if (post.media_type === 'image') {
+                        mediaHtml =
+                            '<div class="post-media"><img src="' + post.media_url + '" alt="Imagem" loading="lazy" onclick="goToPost(\'' + post
+                            .id + '\')"></div>';
+                    } else if (post.media_type === 'video') {
+                        mediaHtml = `
+                            <div class="post-media">
+                                <div class="video-wrapper" data-postid="${post.id}" data-url="${post.media_url}" data-profile='${JSON.stringify(profile)}' data-caption="${escapeHtml(post.content || '')}" data-likes="${likeCount}">
+                                    <video src="${post.media_url}" muted playsinline preload="metadata"></video>
+                                    <div class="play-overlay" onclick="openReels('${post.id}')">
+                                        <div class="play-btn-large"><i class="fas fa-play"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    } else if (post.media_type === 'audio') {
+                        mediaHtml = `
+                            <div class="post-media">
+                                <div class="audio-player-wrap" data-audio="${post.media_url}" data-duration="${post.audio_duration || 0}">
+                                    <div class="disc"><div class="disc-icon"><i class="fas fa-music"></i></div></div>
+                                    <div class="audio-controls">
+                                        <button class="play-btn"><i class="fas fa-play"></i></button>
+                                        <div class="a-progress"><div class="a-fill"></div></div>
+                                        <span class="a-time">0:00 / ${formatDuration(post.audio_duration || 0)}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+
+                return `
+                    <div class="post-card" data-post-id="${post.id}">
+                        <div class="post-header">
+                            <div class="avatar" onclick="openUserCard('${profile.id}')">
+                                ${avatarUrl ? `<img src="${avatarUrl}" alt="Avatar">` :
+                                `<div class="fallback" style="background:${avatarColor};">${initial}</div>`}
+                            </div>
+                            <div class="user-info">
+                                <div class="name" onclick="openUserCard('${profile.id}')">${profile.full_name || 'Usuário'}</div>
+                                <div class="username" onclick="openUserCard('${profile.id}')">@${profile.username || 'usuario'}</div>
+                            </div>
+                            <span class="time">${timeAgo}</span>
+                        </div>
+                        ${post.content ? `
+                            <div class="post-content-wrapper">
+                                <div class="post-text">${escapeHtml(post.content)}</div>
+                            </div>
+                        ` : ''}
+                        ${mediaHtml}
+                        <div class="post-actions">
+                            <div class="action-group left">
+                                <button class="like-btn ${isLiked ? 'liked' : ''}" data-post-id="${post.id}">
+                                    <i class="${isLiked ? 'fas' : 'far'} fa-heart"></i>
+                                </button>
+                                <span class="count-badge ${isLiked ? 'liked-count' : ''}" id="like-count-${post.id}">${likeCount}</span>
+                            </div>
+                            <div class="action-group center">
+                                <button onclick="goToPost('${post.id}')"><i class="far fa-comment"></i></button>
+                                <span class="count-badge" id="comment-count-${post.id}">${commentCount}</span>
+                            </div>
+                            <div class="action-group right">
+                                <button class="share-btn" onclick="sharePost('${post.id}')"><i class="fas fa-share-alt"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function attachPostEvents() {
+                document.querySelectorAll('.like-btn').forEach(btn => {
+                    btn.onclick = () => toggleLike(btn.dataset.postId);
+                });
+
+                document.querySelectorAll('.audio-player-wrap').forEach(wrap => {
+                    const audioUrl = wrap.dataset.audio;
+                    const playBtn = wrap.querySelector('.play-btn');
+                    const progress = wrap.querySelector('.a-progress');
+                    const fill = wrap.querySelector('.a-fill');
+                    const timeDisplay = wrap.querySelector('.a-time');
+                    const disc = wrap.querySelector('.disc');
+
+                    let audio = new Audio(audioUrl);
+                    let isPlaying = false;
+
+                    const pauseOthers = () => {
+                        document.querySelectorAll('.audio-player-wrap').forEach(other => {
+                            if (other !== wrap && other._audio && !other._audio.paused) {
+                                other._audio.pause();
+                                other._playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                                other._disc.classList.remove('spinning');
+                            }
+                        });
+                    };
+
+                    audio.addEventListener('loadedmetadata', () => {
+                        const dur = Math.floor(audio.duration);
+                        timeDisplay.textContent = '0:00 / ' + formatDuration(dur);
+                    });
+
+                    playBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        if (isPlaying) {
+                            audio.pause();
+                            playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                            disc.classList.remove('spinning');
+                            isPlaying = false;
+                        } else {
+                            pauseOthers();
+                            audio.play().catch(() => {});
+                            playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                            disc.classList.add('spinning');
+                            isPlaying = true;
+                        }
+                    });
+
+                    audio.addEventListener('timeupdate', () => {
+                        const pct = (audio.currentTime / audio.duration) * 100;
+                        fill.style.width = pct + '%';
+                        timeDisplay.textContent =
+                            formatDuration(Math.floor(audio.currentTime)) + ' / ' + formatDuration(Math.floor(audio
+                                .duration));
+                    });
+
+                    audio.addEventListener('ended', () => {
+                        playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                        disc.classList.remove('spinning');
+                        isPlaying = false;
+                        fill.style.width = '0%';
+                        timeDisplay.textContent = '0:00 / ' + formatDuration(Math.floor(audio.duration));
+                    });
+
+                    progress.addEventListener('click', (e) => {
+                        const rect = progress.getBoundingClientRect();
+                        const pct = (e.clientX - rect.left) / rect.width;
+                        audio.currentTime = pct * audio.duration;
+                    });
+
+                    wrap._audio = audio;
+                    wrap._playBtn = playBtn;
+                    wrap._disc = disc;
+                });
+            }
+
+            function setupMediaObserver() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        const card = entry.target.closest('.post-card');
+                        if (!card) return;
+                        const isVisible = entry.isIntersecting;
+                        const audioWrap = card.querySelector('.audio-player-wrap');
+                        if (audioWrap && audioWrap._audio && !audioWrap._audio.paused) {
+                            if (!isVisible) {
+                                audioWrap._audio.pause();
+                                audioWrap._playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                                audioWrap._disc.classList.remove('spinning');
+                            }
+                        }
+                        const videoWrap = card.querySelector('.video-wrapper');
+                        if (videoWrap && videoWrap._video && !videoWrap._video.paused) {
+                            if (!isVisible) {
+                                videoWrap._video.pause();
+                            }
+                        }
+                    });
+                }, { threshold: 0.3 });
+
+                document.querySelectorAll('.post-card').forEach(card => {
+                    observer.observe(card);
+                });
+            }
+
+            // ============================================================
+            // REELS
+            // ============================================================
+            window.openReels = function(postId) {
+                let videoPosts = posts.filter(p => p.media_type === 'video');
+                videoPosts = shuffleArray(videoPosts);
+                const index = videoPosts.findIndex(p => p.id === postId);
+                if (index > 0) {
+                    const clicked = videoPosts.splice(index, 1)[0];
+                    videoPosts.unshift(clicked);
+                }
+                reelsPosts = videoPosts;
+                currentReelsIndex = 0;
+                renderReels();
+                document.getElementById('reelsOverlay').classList.add('active');
+                pushPage('reels');
+            };
+
+            function renderReels() {
+                reelsWrapper.innerHTML = '';
+                reelsPosts.forEach((post, idx) => {
+                    const slide = document.createElement('div');
+                    slide.className = 'reels-slide';
+                    slide.dataset.index = idx;
+                    slide.style.transform = 'translateY(' + (idx * 100) + '%)';
+                    slide.innerHTML = createReelsSlide(post, idx);
+                    reelsWrapper.appendChild(slide);
+                });
+                updateReelsPosition();
+                setupReelsSwipe();
+                attachReelsEvents();
+            }
+
+            function createReelsSlide(post, idx) {
+                const profile = post.profiles || {};
+                const avatarUrl = profile.avatar_url;
+                const avatarColor = profile.avatar_color || '#6c63ff';
+                const initial = (profile.full_name || 'U')[0].toUpperCase();
+                const isLiked = userLikes.has(post.id);
+                const likeCount = post.likes_count || 0;
+                const commentCount = post.comments_count || 0;
+                const caption = post.content || '';
+
+                return `
+                    <div class="reels-video-container">
+                        <video src="${post.media_url}" playsinline preload="metadata"></video>
+                    </div>
+                    <button class="reels-close-top" onclick="closeReels()">&times;</button>
+                    <div class="reels-bottom">
+                        <div class="reels-user">
+                            <div class="reels-avatar">
+                                ${avatarUrl ? `<img src="${avatarUrl}" alt="Avatar">` :
+                                `<div class="fallback" style="background:${avatarColor};">${initial}</div>`}
+                            </div>
+                            <span class="reels-name">${profile.full_name || 'Usuário'}</span>
+                        </div>
+                        <div class="reels-caption">${escapeHtml(caption)}</div>
+                    </div>
+                    <div class="reels-actions">
+                        <button class="reels-like-btn ${isLiked ? 'liked' : ''}" data-postid="${post.id}">
+                            <i class="${isLiked ? 'fas' : 'far'} fa-heart"></i>
+                            <span class="reels-count">${likeCount}</span>
+                        </button>
+                        <button class="reels-comment-toggle" data-postid="${post.id}">
+                            <i class="far fa-comment"></i>
+                            <span class="reels-count">${commentCount}</span>
+                        </button>
+                        <button onclick="sharePost('${post.id}')">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
+                    </div>
+                `;
+            }
+
+            function updateReelsPosition() {
+                const slides = reelsWrapper.querySelectorAll('.reels-slide');
+                slides.forEach((slide, idx) => {
+                    const offset = idx - currentReelsIndex;
+                    slide.style.transform = 'translateY(' + (offset * 100) + '%)';
+                });
+                slides.forEach((slide, idx) => {
+                    const video = slide.querySelector('video');
+                    if (video) {
+                        if (idx === currentReelsIndex) {
+                            video.play().catch(() => {});
+                            video.muted = false;
+                        } else {
+                            video.pause();
+                            video.muted = true;
+                        }
+                    }
+                });
+            }
+
+            function setupReelsSwipe() {
+                const wrapper = reelsWrapper;
+                let startY = 0;
+                let isDragging = false;
+
+                const handleStart = (y) => {
+                    startY = y;
+                    isDragging = true;
+                };
+
+                const handleMove = (y) => {
+                    if (!isDragging) return;
+                    const deltaY = y - startY;
+                    const maxDrag = 150;
+                    const clamped = Math.max(-maxDrag, Math.min(maxDrag, deltaY));
+                    const slides = wrapper.querySelectorAll('.reels-slide');
+                    slides.forEach((slide) => {
+                        const idx = parseInt(slide.dataset.index);
+                        const offset = idx - currentReelsIndex;
+                        slide.style.transition = 'none';
+                        slide.style.transform = 'translateY(' + (offset * 100 + (clamped / window.innerHeight) *
+                            100) + '%)';
+                    });
+                };
+
+                const handleEnd = (y) => {
+                    if (!isDragging) return;
+                    isDragging = false;
+                    const deltaY = y - startY;
+                    const threshold = window.innerHeight * 0.2;
+                    if (Math.abs(deltaY) > threshold) {
+                        if (deltaY < 0 && currentReelsIndex < reelsPosts.length - 1) {
+                            currentReelsIndex++;
+                        } else if (deltaY > 0 && currentReelsIndex > 0) {
+                            currentReelsIndex--;
+                        }
+                    }
+                    const slides = wrapper.querySelectorAll('.reels-slide');
+                    slides.forEach((slide) => {
+                        slide.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                    });
+                    updateReelsPosition();
+                };
+
+                wrapper.addEventListener('touchstart', (e) => handleStart(e.touches[0].clientY), { passive: true });
+                wrapper.addEventListener('touchmove', (e) => handleMove(e.touches[0].clientY), { passive: true });
+                wrapper.addEventListener('touchend', (e) => handleEnd(e.changedTouches[0].clientY), { passive: true });
+
+                let mouseDown = false;
+                wrapper.addEventListener('mousedown', (e) => { mouseDown = true;
+                    handleStart(e.clientY); });
+                wrapper.addEventListener('mousemove', (e) => { if (mouseDown) handleMove(e.clientY); });
+                wrapper.addEventListener('mouseup', (e) => { if (mouseDown) { mouseDown = false;
+                        handleEnd(e.clientY); } });
+                wrapper.addEventListener('mouseleave', () => { if (mouseDown) { mouseDown = false;
+                        handleEnd(0); } });
+            }
+
+            function attachReelsEvents() {
+                document.querySelectorAll('.reels-like-btn').forEach(btn => {
+                    btn.onclick = async function(e) {
+                        e.stopPropagation();
+                        const postId = this.dataset.postid;
+                        await toggleLike(postId);
+                        const post = posts.find(p => p.id === postId);
+                        if (post) {
+                            const isLiked = userLikes.has(postId);
+                            this.classList.toggle('liked', isLiked);
+                            this.querySelector('i').className = isLiked ? 'fas fa-heart' : 'far fa-heart';
+                            this.querySelector('.reels-count').textContent = post.likes_count || 0;
+                        }
+                    };
+                });
+
+                document.querySelectorAll('.reels-comment-toggle').forEach(btn => {
+                    btn.onclick = function(e) {
+                        e.stopPropagation();
+                        const postId = this.dataset.postid;
+                        goToPost(postId);
+                    };
+                });
+            }
+
+            window.closeReels = function() {
+                document.getElementById('reelsOverlay').classList.remove('active');
+                document.querySelectorAll('#reelsWrapper video').forEach(v => v.pause());
+                reelsPosts = [];
+                currentReelsIndex = 0;
+                reelsWrapper.innerHTML = '';
+                if (pageHistory[pageHistory.length - 1] === 'reels') pageHistory.pop();
+            };
+
+            // ============================================================
+            // LIKE + NOTIFICAÇÃO
+            // ============================================================
+            window.toggleLike = async function(postId) {
+                if (!currentUser) { alert('Faça login'); return; }
+                const btn = document.querySelector('.like-btn[data-post-id="' + postId + '"]');
+                const countSpan = document.getElementById('like-count-' + postId);
+                let count = parseInt(countSpan ? countSpan.textContent : '0') || 0;
+                try {
+                    if (userLikes.has(postId)) {
+                        const { data } = await supabase
+                            .from('likes')
+                            .select('id')
+                            .eq('post_id', postId)
+                            .eq('user_id', currentUser.id)
+                            .maybeSingle();
+                        if (data) await supabase.from('likes').delete().eq('id', data.id);
+                        userLikes.delete(postId);
+                        if (btn) {
+                            btn.classList.remove('liked');
+                            btn.innerHTML = '<i class="far fa-heart"></i>';
+                        }
+                        count = Math.max(0, count - 1);
+                        if (countSpan) {
+                            countSpan.textContent = count;
+                            countSpan.classList.remove('liked-count');
+                        }
+                        const post = posts.find(p => p.id === postId);
+                        if (post) post.likes_count = count;
+                    } else {
+                        await supabase.from('likes').insert({ post_id: postId, user_id: currentUser.id });
+                        userLikes.add(postId);
+                        if (btn) {
+                            btn.classList.add('liked');
+                            btn.innerHTML = '<i class="fas fa-heart"></i>';
+                        }
+                        count++;
+                        if (countSpan) {
+                            countSpan.textContent = count;
+                            countSpan.classList.add('liked-count');
+                        }
+                        const post = posts.find(p => p.id === postId);
+                        if (post) post.likes_count = count;
+
+                        // NOTIFICAÇÃO DE CURTIDA
+                        if (post && post.user_id !== currentUser.id) {
+                            await supabase.from('notifications').insert({
+                                user_id: post.user_id,
+                                sender_id: currentUser.id,
+                                type: 'like',
+                                reference_id: postId,
+                                content: null,
+                                read: false,
+                                created_at: new Date().toISOString()
+                            });
+                            await updateAllBadges();
+                        }
+                    }
+                } catch (e) { console.error(e); }
+            };
+
+            window.sharePost = function(postId) {
+                const url = window.location.origin + '/post.html?id=' + postId;
+                if (navigator.share) {
+                    navigator.share({ title: 'Zonne', text: 'Veja esta publicação!', url }).catch(() => {});
+                } else {
+                    navigator.clipboard.writeText(url).then(() => alert('Link copiado!')).catch(() => alert(
+                        'Compartilhe: ' + url));
+                }
+            };
+
+            // ============================================================
+            // EXPLORE
+            // ============================================================
+            async function loadExplore() {
+                const content = document.getElementById('exploreContent');
+                content.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner"></i></div>';
+                const { data, error } = await supabase
+                    .from('posts')
+                    .select(`
+                        *,
+                        profiles:user_id (id, full_name, username, avatar_url, avatar_color)
+                    `)
+                    .neq('user_id', currentUser.id)
+                    .not('media_url', 'is', null)
+                    .order('created_at', { ascending: false })
+                    .limit(30);
+                if (error) {
+                    content.innerHTML =
+                        '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>Erro ao carregar</h3></div>';
+                    return;
+                }
+                explorePosts = data || [];
+                if (explorePosts.length === 0) {
+                    content.innerHTML =
+                        '<div class="empty-state"><i class="fas fa-compass"></i><h3>Nada por aqui</h3><p>Nenhuma publicação com mídia encontrada</p></div>';
+                    return;
+                }
+                for (let i = explorePosts.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [explorePosts[i], explorePosts[j]] = [explorePosts[j], explorePosts[i]];
+                }
+                for (let i = 0; i < explorePosts.length; i++) {
+                    const { count } = await supabase
+                        .from('likes')
+                        .select('id', { count: 'exact', head: true })
+                        .eq('post_id', explorePosts[i].id);
+                    explorePosts[i].likes_count = count || 0;
+                }
+                content.innerHTML = `
+                    <div class="explore-grid">
+                        ${explorePosts.map(post => {
+                            const mediaUrl = post.media_url;
+                            const isVideo = post.media_type === 'video';
+                            const likes = post.likes_count || 0;
+                            const comments = post.comments_count || 0;
+                            return `
+                                <div class="explore-item" onclick="goToPost('${post.id}')">
+                                    ${isVideo ? 
+                                        `<video src="${mediaUrl}" muted></video>` :
+                                        `<img src="${mediaUrl}" alt="Post" loading="lazy">`
+                                    }
+                                    <div class="explore-overlay">
+                                        <span><i class="fas fa-heart"></i> ${likes}</span>
+                                        <span><i class="fas fa-comment"></i> ${comments}</span>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+            }
+
+            // ============================================================
+            // USER CARD + SEGUIR + NOTIFICAÇÃO
+            // ============================================================
+            window.openUserCard = async function(userId) {
+                const overlay = document.getElementById('userCardOverlay');
+                const content = document.getElementById('userCardContent');
+                overlay.classList.add('active');
+                content.innerHTML =
+                    '<div style="text-align:center;padding:20px;color:var(--text-secondary);"><i class="fas fa-spinner fa-spin"></i> Carregando…</div>';
+
+                const { data: profile, error } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', userId)
+                    .single();
+
+                if (error || !profile) {
+                    content.innerHTML =
+                        '<div style="text-align:center;padding:20px;color:var(--text-secondary);">Perfil não encontrado</div>';
+                    return;
+                }
+
+                const isOwn = userId === currentUser.id;
+                let isFollowing = false;
+                if (!isOwn) {
+                    const { data: followData } = await supabase
+                        .from('friends')
+                        .select('id')
+                        .eq('user_id', currentUser.id)
+                        .eq('friend_id', userId)
+                        .maybeSingle();
+                    isFollowing = !!followData;
+                }
+
+                const avatarUrl = profile.avatar_url;
+                const color = profile.avatar_color || '#6c63ff';
+                const initial = (profile.full_name || 'U')[0].toUpperCase();
+
+                content.innerHTML = `
+                    <button class="close-card" onclick="closeUserCard()">&times;</button>
+                    <div class="avatar-large">
+                        ${avatarUrl ? `<img src="${avatarUrl}" alt="Avatar">` :
+                        `<div class="fallback" style="background:${color};">${initial}</div>`}
+                    </div>
+                    <div class="name">${profile.full_name || 'Usuário'}</div>
+                    <div class="username">@${profile.username || 'usuario'}</div>
+                    ${profile.bio ? `<div class="bio">${escapeHtml(profile.bio)}</div>` : ''}
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="number" id="followersCount">${profile.followers_count || 0}</div>
+                            <div class="label">Seguidores</div>
+                        </div>
+                        <div class="stat">
+                            <div class="number" id="followingCount">${profile.following_count || 0}</div>
+                            <div class="label">Seguindo</div>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        ${!isOwn ? `
+                            <button class="btn-follow ${isFollowing ? 'following' : ''}" onclick="toggleFollowCard('${userId}')">
+                                ${isFollowing ? '<i class="fas fa-check"></i> Seguindo' : '<i class="fas fa-plus"></i> Seguir'}
+                            </button>
+                            <button class="btn-profile" onclick="closeUserCard(); goToUserProfile('${userId}')">
+                                <i class="fas fa-user"></i> Ver perfil
+                            </button>
+                        ` : `
+                            <button class="btn-profile" onclick="closeUserCard(); goToMyProfile()">
+                                <i class="fas fa-user"></i> Meu perfil
+                            </button>
+                        `}
+                    </div>
+                `;
+            };
+
+            window.closeUserCard = function() {
+                document.getElementById('userCardOverlay').classList.remove('active');
+            };
+
+            window.toggleFollowCard = async function(userId) {
+                const btn = document.querySelector('.btn-follow');
+                if (!btn) return;
+                try {
+                    const isFollowing = btn.classList.contains('following');
+                    if (isFollowing) {
+                        await supabase
+                            .from('friends')
+                            .delete()
+                            .eq('user_id', currentUser.id)
+                            .eq('friend_id', userId);
+                        btn.classList.remove('following');
+                        btn.innerHTML = '<i class="fas fa-plus"></i> Seguir';
+                        await supabase.rpc('decrement_followers', { user_id: userId });
+                    } else {
+                        await supabase.from('friends').insert({
+                            user_id: currentUser.id,
+                            friend_id: userId
+                        });
+                        btn.classList.add('following');
+                        btn.innerHTML = '<i class="fas fa-check"></i> Seguindo';
+                        await supabase.rpc('increment_followers', { user_id: userId });
+
+                        // NOTIFICAÇÃO DE SEGUIR
+                        await supabase.from('notifications').insert({
+                            user_id: userId,
+                            sender_id: currentUser.id,
+                            type: 'follow',
+                            reference_id: null,
+                            content: null,
+                            read: false,
+                            created_at: new Date().toISOString()
+                        });
+                        await updateAllBadges();
+                    }
+                    const followersSpan = document.getElementById('followersCount');
+                    if (followersSpan) {
+                        let current = parseInt(followersSpan.textContent) || 0;
+                        followersSpan.textContent = isFollowing ? Math.max(0, current - 1) : current + 1;
+                    }
+                } catch (e) { console.error(e); }
+            };
+
+            // ============================================================
+            // STORIES
+            // ============================================================
+            async function loadStories() {
+                const { data, error } = await supabase
+                    .from('stories')
+                    .select(`
+                        *,
+                        profiles:user_id (id, full_name, username, avatar_url, avatar_color)
+                    `)
+                    .order('created_at', { ascending: false });
+
+                if (error) { console.error(error); return; }
+                const now = Date.now();
+                const validStories = data.filter(s => (now - new Date(s.created_at).getTime()) < 24 * 60 * 60 * 1000);
+                stories = validStories || [];
+                renderStories();
+            }
+
+            function renderStories() {
+                const addStory = storiesRow.querySelector('.add-story');
+                storiesRow.innerHTML = '';
+                storiesRow.appendChild(addStory);
+
+                const seenUsers = new Set();
+                stories.forEach(story => {
+                    const profile = story.profiles || {};
+                    if (seenUsers.has(profile.id)) return;
+                    seenUsers.add(profile.id);
+
+                    const avatarUrl = profile.avatar_url;
+                    const color = profile.avatar_color || '#6c63ff';
+                    const initial = (profile.full_name || 'U')[0].toUpperCase();
+                    const name = profile.full_name || 'Usuário';
+
+                    const div = document.createElement('div');
+                    div.className = 'story-item';
+                    div.onclick = () => openStoryFullscreen(profile.id);
+
+                    let previewContent = '';
+                    if (story.media_url && story.media_type === 'image') {
+                        previewContent = '<img src="' + story.media_url + '" alt="Story">';
+                    } else if (story.media_url && story.media_type === 'video') {
+                        previewContent =
+                            '<video src="' + story.media_url + '" muted style="width:100%;height:100%;object-fit:cover;"></video>';
+                    } else if (story.content) {
+                        previewContent = '<div class="story-text-preview">' + escapeHtml(story.content) + '</div>';
+                    }
+
+                    div.innerHTML = `
+                        <div class="story-circle">
+                            <div class="inner">
+                                ${avatarUrl ? `<img src="${avatarUrl}" alt="Avatar" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;">` : 
+                                `<div class="fallback" style="background:${color};position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;z-index:0;">${initial}</div>`}
+                                <div style="position:relative;z-index:1;width:100%;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:50%;">
+                                    ${previewContent}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="story-name">${name}</div>
+                    `;
+                    storiesRow.appendChild(div);
+                });
+            }
+
+            window.openStoryFullscreen = function(userId) {
+                userStories = stories.filter(s => s.user_id === userId);
+                if (userStories.length === 0) return;
+                currentStoryIndex = 0;
+                document.getElementById('storyFullscreen').classList.add('active');
+                showStoryFullscreen(currentStoryIndex);
+                pushPage('story');
+            };
+
+            function showStoryFullscreen(index) {
+                const story = userStories[index];
+                if (!story) return;
+
+                const profile = story.profiles || {};
+                const body = document.getElementById('storyBody');
+                const avatar = document.getElementById('storyAvatar');
+                const name = document.getElementById('storyName');
+                const time = document.getElementById('storyTime');
+                const progress = document.getElementById('storyProgress');
+                const deleteBtn = document.getElementById('storyDeleteBtn');
+
+                if (story.user_id === currentUser.id) {
+                    deleteBtn.style.display = 'inline-block';
+                } else {
+                    deleteBtn.style.display = 'none';
+                }
+
+                if (profile.avatar_url) {
+                    avatar.innerHTML = '<img src="' + profile.avatar_url + '" alt="Avatar">';
+                } else {
+                    const color = profile.avatar_color || '#6c63ff';
+                    const initial = (profile.full_name || 'U')[0].toUpperCase();
+                    avatar.innerHTML = '<div class="fallback" style="background:' + color + ';">' + initial + '</div>';
+                }
+                name.textContent = profile.full_name || 'Usuário';
+                time.textContent = getTimeAgo(story.created_at);
+
+                let contentHtml = '';
+                let captionHtml = '';
+                let autoAdvance = true;
+
+                if (story.media_url && story.media_type === 'image') {
+                    contentHtml = '<img src="' + story.media_url + '" alt="Story">';
+                    if (story.content) {
+                        captionHtml = '<div class="story-caption">' + escapeHtml(story.content) + '</div>';
+                    }
+                } else if (story.media_url && story.media_type === 'video') {
+                    contentHtml =
+                        '<video id="storyVideo" src="' + story.media_url + '" autoplay muted playsinline></video>';
+                    autoAdvance = false;
+                    if (story.content) {
+                        captionHtml = '<div class="story-caption">' + escapeHtml(story.content) + '</div>';
+                    }
+                } else if (story.content) {
+                    const bgColor = story.background_color || '#1a1a2e';
+                    const bgStyle = bgColor.startsWith('gradient') ? 'background: ' + bgColor + ';' :
+                        'background: ' + bgColor + ';';
+                    contentHtml = `
+                        <div class="story-text-container" style="${bgStyle}">
+                            <div class="story-text-content">${escapeHtml(story.content)}</div>
+                        </div>
+                    `;
+                } else {
+                    contentHtml =
+                        '<div class="story-text-container" style="background:#1a1a2e;"><div class="story-text-content">📖</div></div>';
+                }
+                body.innerHTML = contentHtml + captionHtml;
+
+                progress.innerHTML = userStories.map((_, i) => `
+                    <div class="p-bar">
+                        <div class="p-fill" style="width: ${i < index ? '100%' : i === index ? '0%' : '0%'};"></div>
+                    </div>
+                `).join('');
+
+                if (storyInterval) clearInterval(storyInterval);
+                const fills = progress.querySelectorAll('.p-fill');
+                if (fills[index]) {
+                    fills[index].style.transition = 'none';
+                    fills[index].style.width = '0%';
+                    requestAnimationFrame(() => {
+                        fills[index].style.transition = 'width 0.1s linear';
+                    });
+                }
+
+                if (autoAdvance) {
+                    storyInterval = setInterval(() => {
+                        if (currentStoryIndex < userStories.length - 1) {
+                            currentStoryIndex++;
+                            showStoryFullscreen(currentStoryIndex);
+                        } else {
+                            closeStoryFullscreen();
+                        }
+                    }, 5000);
+                    let elapsed = 0;
+                    const interval = setInterval(() => {
+                        elapsed += 100;
+                        const pct = Math.min(100, (elapsed / 5000) * 100);
+                        if (fills[index]) fills[index].style.width = pct + '%';
+                        if (elapsed >= 5000) clearInterval(interval);
+                    }, 100);
+                    window._storyProgressInterval = interval;
+                } else {
+                    const video = document.getElementById('storyVideo');
+                    if (video) {
+                        video.addEventListener('loadedmetadata', () => {});
+                        video.addEventListener('ended', () => {
+                            if (currentStoryIndex < userStories.length - 1) {
+                                currentStoryIndex++;
+                                showStoryFullscreen(currentStoryIndex);
+                            } else {
+                                closeStoryFullscreen();
+                            }
+                        });
+                        const updateProgress = () => {
+                            if (video && !video.paused && !video.ended) {
+                                const pct = (video.currentTime / video.duration) * 100;
+                                if (fills[index]) fills[index].style.width = pct + '%';
+                                requestAnimationFrame(updateProgress);
+                            }
+                        };
+                        video.addEventListener('play', updateProgress);
+                    }
+                }
+            }
+
+            window.nextStory = function() {
+                if (currentStoryIndex < userStories.length - 1) {
+                    currentStoryIndex++;
+                    showStoryFullscreen(currentStoryIndex);
+                }
+            };
+            window.prevStory = function() {
+                if (currentStoryIndex > 0) {
+                    currentStoryIndex--;
+                    showStoryFullscreen(currentStoryIndex);
+                }
+            };
+
+            window.closeStoryFullscreen = function() {
+                document.getElementById('storyFullscreen').classList.remove('active');
+                if (storyInterval) clearInterval(storyInterval);
+                if (window._storyProgressInterval) clearInterval(window._storyProgressInterval);
+                const video = document.getElementById('storyVideo');
+                if (video) video.pause();
+                if (pageHistory[pageHistory.length - 1] === 'story') pageHistory.pop();
+            };
+
+            window.deleteCurrentStory = async function() {
+                const story = userStories[currentStoryIndex];
+                if (!story || story.user_id !== currentUser.id) return;
+                if (!confirm('Tem certeza que deseja apagar este story?')) return;
+                try {
+                    const { error } = await supabase
+                        .from('stories')
+                        .delete()
+                        .eq('id', story.id);
+                    if (error) throw error;
+                    userStories.splice(currentStoryIndex, 1);
+                    if (userStories.length === 0) {
+                        closeStoryFullscreen();
+                        await loadStories();
+                    } else {
+                        if (currentStoryIndex >= userStories.length) {
+                            currentStoryIndex = userStories.length - 1;
+                        }
+                        showStoryFullscreen(currentStoryIndex);
+                    }
+                    await loadStories();
+                } catch (e) {
+                    alert('Erro ao apagar story: ' + e.message);
+                }
+            };
+
+            // ============================================================
+            // CRIAR STORY
+            // ============================================================
+            window.openStoryCreateOptions = function() {
+                document.getElementById('storyCreateOverlay').classList.add('active');
+                document.getElementById('storyPhotoInput').value = '';
+                document.getElementById('storyVideoInput').value = '';
+            };
+
+            window.closeStoryCreateOptions = function() {
+                document.getElementById('storyCreateOverlay').classList.remove('active');
+            };
+
+            window.startStoryText = function() {
+                closeStoryCreateOptions();
+                document.getElementById('storyTextEditor').classList.add('active');
+                document.getElementById('storyTextContent').value = '';
+                document.querySelectorAll('#storyTextColors .color-opt').forEach(el => {
+                    el.classList.toggle('active', el.dataset.color === '#1a1a2e');
+                });
+            };
+
+            window.closeStoryTextEditor = function() {
+                document.getElementById('storyTextEditor').classList.remove('active');
+            };
+
+            window.publishStoryText = async function() {
+                const content = document.getElementById('storyTextContent').value.trim();
+                if (!content) {
+                    alert('Digite algo para o story');
+                    return;
+                }
+                const selectedColor = document.querySelector('#storyTextColors .color-opt.active');
+                const bgColor = selectedColor ? selectedColor.dataset.color : '#1a1a2e';
+
+                const btn = document.querySelector('.story-text-editor .btn-publish-story');
+                btn.disabled = true;
+                btn.textContent = 'Publicando…';
+
+                try {
+                    const { error } = await supabase.from('stories').insert({
+                        user_id: currentUser.id,
+                        content: content,
+                        media_url: null,
+                        media_type: null,
+                        background_color: bgColor
+                    });
+                    if (error) throw error;
+                    closeStoryTextEditor();
+                    await loadStories();
+                } catch (error) {
+                    alert('Erro: ' + error.message);
+                }
+                btn.disabled = false;
+                btn.textContent = 'Publicar Story';
+            };
+
+            window.handleStoryMediaFile = function(event, type) {
+                const file = event.target.files[0];
+                if (!file) return;
+                storyMediaFile = file;
+                storyMediaType = type;
+                closeStoryCreateOptions();
+
+                const previewContainer = document.getElementById('storyMediaPreviewContent');
+                const captionInput = document.getElementById('storyMediaCaption');
+                captionInput.value = '';
+
+                if (type === 'image') {
+                    const img = document.createElement('img');
+                    img.src = URL.createObjectURL(file);
+                    img.style.width = '100%';
+                    img.style.height = '100%';
+                    img.style.objectFit = 'contain';
+                    previewContainer.innerHTML = '';
+                    previewContainer.appendChild(img);
+                } else if (type === 'video') {
+                    const video = document.createElement('video');
+                    video.src = URL.createObjectURL(file);
+                    video.controls = true;
+                    video.autoplay = false;
+                    video.style.width = '100%';
+                    video.style.height = '100%';
+                    video.style.objectFit = 'contain';
+                    previewContainer.innerHTML = '';
+                    previewContainer.appendChild(video);
+                }
+
+                document.getElementById('storyMediaPreview').classList.add('active');
+            };
+
+            window.closeStoryMediaPreview = function() {
+                document.getElementById('storyMediaPreview').classList.remove('active');
+                storyMediaFile = null;
+                storyMediaType = null;
+                document.getElementById('storyMediaPreviewContent').innerHTML = '';
+            };
+
+            window.publishStoryMedia = async function() {
+                if (!storyMediaFile) return;
+                const caption = document.getElementById('storyMediaCaption').value.trim();
+
+                const btn = document.querySelector('.story-media-preview .btn-publish-media');
+                btn.disabled = true;
+                btn.textContent = 'Publicando…';
+
+                try {
+                    const fileExt = storyMediaFile.name.split('.').pop();
+                    const fileName = currentUser.id + '-story-' + Date.now() + '.' + fileExt;
+                    const { error: uploadError } = await supabase.storage
+                        .from('stories')
+                        .upload(fileName, storyMediaFile, { cacheControl: '3600' });
+                    if (uploadError) throw uploadError;
+                    const { data: urlData } = supabase.storage
+                        .from('stories')
+                        .getPublicUrl(fileName);
+                    const mediaUrl = urlData.publicUrl;
+                    const mediaType = storyMediaType;
+
+                    const { error } = await supabase.from('stories').insert({
+                        user_id: currentUser.id,
+                        content: caption || null,
+                        media_url: mediaUrl,
+                        media_type: mediaType,
+                        background_color: null
+                    });
+                    if (error) throw error;
+
+                    closeStoryMediaPreview();
+                    await loadStories();
+                } catch (error) {
+                    alert('Erro: ' + error.message);
+                }
+                btn.disabled = false;
+                btn.textContent = 'Publicar';
+            };
+
+            // ============================================================
+            // CREATE POST - MENÇÃO + NOTIFICAÇÃO
+            // ============================================================
+            const mentionInput = document.getElementById('mentionInput');
+            const mentionDropdown = document.getElementById('mentionDropdown');
+
+            window.filterMentions = function(query) {
+                const trimmed = query.trim().toLowerCase();
+                if (trimmed.length < 1) {
+                    mentionDropdown.classList.remove('active');
+                    return;
+                }
+                const matches = friendsList.filter(f =>
+                    (f.full_name && f.full_name.toLowerCase().includes(trimmed)) ||
+                    (f.username && f.username.toLowerCase().includes(trimmed))
+                ).slice(0, 8);
+
+                if (matches.length === 0) {
+                    mentionDropdown.classList.remove('active');
+                    return;
+                }
+
+                mentionDropdown.innerHTML = matches.map(f => `
+                    <div class="mention-item" data-id="${f.id}" data-name="${f.full_name || f.username}">
+                        ${f.avatar_url ? `<img src="${f.avatar_url}" alt="">` : 
+                        `<div class="fallback" style="background:${f.avatar_color || '#6c63ff'};">${(f.full_name || 'U')[0]}</div>`}
+                        <span class="name">${f.full_name || f.username}</span>
+                        <span class="username">@${f.username || ''}</span>
+                    </div>
+                `).join('');
+                mentionDropdown.classList.add('active');
+
+                mentionDropdown.querySelectorAll('.mention-item').forEach(item => {
+                    item.onclick = function() {
+                        const userId = this.dataset.id;
+                        const name = this.dataset.name;
+                        insertMention(userId, name);
+                        mentionDropdown.classList.remove('active');
+                        mentionInput.value = '';
+                    };
+                });
+            };
+
+            window.insertMention = function(userId, name) {
+                const textarea = document.getElementById('createPostContent');
+                textarea.value += '@' + name + ' ';
+                textarea.focus();
+            };
+
+            async function sendMentionNotification(userId, postId) {
+                try {
+                    await supabase.from('notifications').insert({
+                        user_id: userId,
+                        sender_id: currentUser.id,
+                        type: 'mention',
+                        reference_id: postId,
+                        content: currentProfile.full_name + ' mencionou você em uma publicação.',
+                        read: false,
+                        created_at: new Date().toISOString()
+                    });
+                    await updateAllBadges();
+                } catch (e) {
+                    console.error('Erro ao enviar notificação de menção:', e);
+                }
+            }
+
+            // ============================================================
+            // CREATE POST - ÁUDIO
+            // ============================================================
+            window.toggleAudioSelector = function() {
+                const sel = document.getElementById('audioSelector');
+                sel.style.display = sel.style.display === 'none' ? 'block' : 'none';
+                if (sel.style.display === 'none') {
+                    resetAudioRecorder();
+                    document.getElementById('audioRecorder').style.display = 'none';
+                }
+            };
+
+            window.showAudioRecorder = function() {
+                document.getElementById('audioRecorder').style.display = 'block';
+            };
+
+            window.loadAudioFile = function(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+                if (file.size > 10 * 1024 * 1024) {
+                    document.getElementById('createMediaStatus').textContent = '❌ Arquivo muito grande (máx 10MB)';
+                    return;
+                }
+                if (!file.name) {
+                    const ext = file.type.split('/')[1] || 'webm';
+                    file = new File([file], 'audio.' + ext, { type: file.type });
+                }
+                audioBlob = file;
+                audioUrl = URL.createObjectURL(file);
+                selectedFile = file;
+                selectedFileType = 'audio';
+                const tempAudio = new Audio(audioUrl);
+                tempAudio.onloadedmetadata = () => {
+                    recordTimer = Math.floor(tempAudio.duration);
+                    document.getElementById('createMediaStatus').textContent =
+                        '🎵 Áudio carregado (' + formatDuration(recordTimer) + ')';
+                };
+                document.getElementById('audioSelector').style.display = 'none';
+                document.getElementById('createMediaStatus').textContent = '🎵 Áudio selecionado';
+            };
+
+            function resetAudioRecorder() {
+                if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                    try { mediaRecorder.stop(); } catch (e) {}
+                    if (mediaRecorder.stream) mediaRecorder.stream.getTracks().forEach(t => t.stop());
+                }
+                mediaRecorder = null;
+                if (timerInterval) clearInterval(timerInterval);
+                if (animationId) cancelAnimationFrame(animationId);
+                if (audioContext && audioContext.state !== 'closed') try { audioContext.close(); } catch (e) {}
+                audioContext = null;
+                isRecording = false;
+                isPaused = false;
+                recordTimer = 0;
+                audioChunks = [];
+                document.getElementById('recordBtn').className = 'record-btn';
+                document.getElementById('recordBtn').innerHTML = '<i class="fas fa-microphone"></i>';
+                document.getElementById('recordTimer').textContent = '0:00';
+                document.getElementById('pauseBtn').disabled = true;
+                document.getElementById('stopBtn').disabled = true;
+                document.querySelectorAll('#waveVisual .bar').forEach(b => {
+                    b.style.height = '4px';
+                    b.classList.remove('active');
+                });
+            }
+
+            window.toggleRecording = async function() {
+                if (isRecording) { stopRecording(); return; }
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    audioContext = new(window.AudioContext || window.webkitAudioContext)();
+                    analyser = audioContext.createAnalyser();
+                    analyser.fftSize = 128;
+                    const source = audioContext.createMediaStreamSource(stream);
+                    source.connect(analyser);
+                    dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+                    mediaRecorder.ondataavailable = (event) => { if (event.data.size > 0) audioChunks.push(event
+                        .data); };
+                    mediaRecorder.onstop = () => {
+                        const blob = new Blob(audioChunks, { type: 'audio/webm' });
+                        if (blob.size > 0) {
+                            audioBlob = blob;
+                            audioUrl = URL.createObjectURL(blob);
+                            selectedFile = blob;
+                            selectedFileType = 'audio';
+                            document.getElementById('createMediaStatus').textContent =
+                                '🎵 Áudio gravado (' + Math.round(blob.size / 1024) + 'KB)';
+                        } else {
+                            document.getElementById('createMediaStatus').textContent = '⚠️ Gravação vazia';
+                        }
+                        document.getElementById('audioRecorder').style.display = 'none';
+                    };
+                    mediaRecorder.start(100);
+                    isRecording = true;
+                    isPaused = false;
+                    recordTimer = 0;
+                    document.getElementById('recordBtn').className = 'record-btn recording';
+                    document.getElementById('recordBtn').innerHTML = '<i class="fas fa-stop"></i>';
+                    document.getElementById('pauseBtn').disabled = false;
+                    document.getElementById('stopBtn').disabled = false;
+                    document.getElementById('createMediaStatus').textContent = '🔴 Gravando…';
+                    if (timerInterval) clearInterval(timerInterval);
+                    timerInterval = setInterval(() => {
+                        if (!isPaused && isRecording) {
+                            recordTimer++;
+                            document.getElementById('recordTimer').textContent = formatDuration(recordTimer);
+                            if (recordTimer >= 120) { stopRecording();
+                                document.getElementById('createMediaStatus').textContent =
+                                    '⏱️ Limite de 2 minutos'; }
+                        }
+                    }, 1000);
+                    updateWaveVisual();
+                } catch (err) {
+                    document.getElementById('createMediaStatus').textContent = '❌ Erro ao acessar microfone';
+                }
+            };
+
+            function updateWaveVisual() {
+                if (!analyser || !dataArray || !isRecording) return;
+                analyser.getByteFrequencyData(dataArray);
+                const bars = document.querySelectorAll('#waveVisual .bar');
+                bars.forEach((bar, i) => {
+                    const val = dataArray[i] || 0;
+                    const height = Math.max(4, (val / 255) * 30);
+                    bar.style.height = height + 'px';
+                    bar.classList.toggle('active', val > 50);
+                });
+                animationId = requestAnimationFrame(updateWaveVisual);
+            }
+
+            window.pauseRecording = function() {
+                if (!mediaRecorder || mediaRecorder.state === 'inactive') return;
+                if (isPaused) {
+                    mediaRecorder.resume();
+                    isPaused = false;
+                    document.getElementById('pauseBtn').innerHTML = '<i class="fas fa-pause"></i>';
+                    document.getElementById('createMediaStatus').textContent = '🔴 Gravando…';
+                } else {
+                    mediaRecorder.pause();
+                    isPaused = true;
+                    document.getElementById('pauseBtn').innerHTML = '<i class="fas fa-play"></i>';
+                    document.getElementById('createMediaStatus').textContent = '⏸️ Pausado';
+                }
+            };
+
+            window.stopRecording = function() {
+                if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                    try { mediaRecorder.stop(); } catch (e) {}
+                    if (mediaRecorder.stream) mediaRecorder.stream.getTracks().forEach(t => t.stop());
+                }
+                isRecording = false;
+                isPaused = false;
+                document.getElementById('recordBtn').className = 'record-btn';
+                document.getElementById('recordBtn').innerHTML = '<i class="fas fa-microphone"></i>';
+                document.getElementById('pauseBtn').disabled = true;
+                document.getElementById('stopBtn').disabled = true;
+                if (timerInterval) clearInterval(timerInterval);
+                if (animationId) cancelAnimationFrame(animationId);
+                if (audioContext && audioContext.state !== 'closed') try { audioContext.close(); } catch (e) {}
+                audioContext = null;
+                document.getElementById('createMediaStatus').textContent = '⏹️ Gravação finalizada';
+                document.getElementById('audioRecorder').style.display = 'none';
+            };
+
+            window.confirmAudio = function() {
+                if (audioBlob) {
+                    document.getElementById('audioSelector').style.display = 'none';
+                    document.getElementById('createMediaStatus').textContent =
+                        '🎵 Áudio pronto (' + formatDuration(recordTimer) + ')';
+                    selectedFile = audioBlob;
+                    selectedFileType = 'audio';
+                } else {
+                    document.getElementById('createMediaStatus').textContent = '⚠️ Nenhum áudio gravado';
+                }
+            };
+
+            window.cancelAudio = function() {
+                resetAudioRecorder();
+                document.getElementById('audioRecorder').style.display = 'none';
+                document.getElementById('createMediaStatus').textContent = '';
+            };
+
+            // ============================================================
+            // HANDLE FILE SELECT (prévia da mídia)
+            // ============================================================
+            window.handleFileSelect = function(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const preview = document.getElementById('createPreview');
+                const img = document.getElementById('createPreviewImg');
+                const video = document.getElementById('createPreviewVideo');
+
+                if (file.type.startsWith('image/')) {
+                    selectedFile = file;
+                    selectedFileType = 'image';
+                    const reader = new FileReader();
+                    reader.onload = function(ev) {
+                        img.src = ev.target.result;
+                        img.style.display = 'block';
+                        video.style.display = 'none';
+                        preview.style.display = 'block';
+                        document.getElementById('createMediaStatus').textContent = '📷 Imagem selecionada';
+                    };
+                    reader.readAsDataURL(file);
+                } else if (file.type.startsWith('video/')) {
+                    selectedFile = file;
+                    selectedFileType = 'video';
+                    const reader = new FileReader();
+                    reader.onload = function(ev) {
+                        video.src = ev.target.result;
+                        video.style.display = 'block';
+                        img.style.display = 'none';
+                        preview.style.display = 'block';
+                        document.getElementById('createMediaStatus').textContent = '🎬 Vídeo selecionado';
+                    };
+                    reader.readAsDataURL(file);
+                }
+                document.getElementById('audioSelector').style.display = 'none';
+            };
+
+            // ============================================================
+            // SUBMIT POST + NOTIFICAÇÕES DE MENÇÃO
+            // ============================================================
+            window.submitPost = async function() {
+                const content = document.getElementById('createPostContent').value.trim();
+                if (!content && !selectedFile) {
+                    document.getElementById('createMediaStatus').textContent = '⚠️ Digite algo ou adicione uma mídia';
+                    return;
+                }
+                const btn = document.querySelector('.btn-submit');
+                btn.disabled = true;
+                btn.textContent = 'Publicando…';
+
+                try {
+                    let mediaUrl = null,
+                        mediaType = null,
+                        audioDuration = null;
+                    if (selectedFile) {
+                        let fileToUpload = selectedFile;
+                        if (!fileToUpload.name) {
+                            const mimeType = fileToUpload.type || 'application/octet-stream';
+                            const ext = mimeType.split('/')[1] || 'bin';
+                            fileToUpload = new File([fileToUpload], 'media.' + ext, { type: mimeType });
+                        }
+                        const fileExt = fileToUpload.name.split('.').pop();
+                        const fileName = currentUser.id + '-' + Date.now() + '.' + fileExt;
+                        const { error: uploadError } = await supabase.storage
+                            .from('posts')
+                            .upload(fileName, fileToUpload, { cacheControl: '3600' });
+                        if (uploadError) {
+                            console.error('Erro no upload:', uploadError);
+                            throw new Error('Falha ao enviar arquivo: ' + uploadError.message);
+                        }
+                        const { data: urlData } = supabase.storage
+                            .from('posts')
+                            .getPublicUrl(fileName);
+                        mediaUrl = urlData.publicUrl;
+                        mediaType = selectedFileType || 'image';
+                        if (mediaType === 'audio') {
+                            audioDuration = recordTimer || 30;
+                        }
+                    }
+
+                    const { data: post, error } = await supabase.from('posts').insert({
+                        user_id: currentUser.id,
+                        content: content || null,
+                        media_url: mediaUrl,
+                        media_type: mediaType,
+                        audio_duration: audioDuration,
+                        background_color: null,
+                        feeling: null
+                    }).select().single();
+
+                    if (error) throw error;
+
+                    // Detectar menções no texto
+                    if (content) {
+                        const mentions = content.match(/@([a-zA-Z0-9_]+)/g);
+                        if (mentions) {
+                            for (const mention of mentions) {
+                                const username = mention.substring(1);
+                                const profile = friendsList.find(f => f.username === username);
+                                if (profile && profile.id !== currentUser.id) {
+                                    await sendMentionNotification(profile.id, post.id);
+                                }
+                            }
+                        }
+                    }
+
+                    document.getElementById('createMediaStatus').textContent = '✅ Publicado!';
+                    resetAudioRecorder();
+                    document.getElementById('createPostContent').value = '';
+                    document.getElementById('createPreview').style.display = 'none';
+                    document.getElementById('createPreviewImg').style.display = 'none';
+                    document.getElementById('createPreviewVideo').style.display = 'none';
+                    document.getElementById('createFileInput').value = '';
+                    document.getElementById('audioFileInput').value = '';
+                    selectedFile = null;
+                    selectedFileType = null;
+                    audioBlob = null;
+                    audioUrl = null;
+                    setTimeout(() => goToFeed(), 500);
+                } catch (error) {
+                    console.error('Erro ao publicar:', error);
+                    document.getElementById('createMediaStatus').textContent = '❌ Erro: ' + error.message;
+                }
+                btn.disabled = false;
+                btn.textContent = 'Publicar';
+            };
+
+            // ============================================================
+            // NOTIFICAÇÕES
+            // ============================================================
+            async function loadNotifications() {
+                const { data, error } = await supabase
+                    .from('notifications')
+                    .select('id')
+                    .eq('user_id', currentUser.id)
+                    .eq('read', false);
+                if (error) return;
+                const badge = document.getElementById('notifBadge');
+                if (data && data.length > 0) {
+                    badge.style.display = 'flex';
+                    badge.textContent = data.length > 9 ? '9+' : data.length;
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+
+            window.openNotifications = () => window.location.href = 'notificacoes.html';
+            window.openFriends = () => window.location.href = 'amigos.html';
+            window.openMessages = () => window.location.href = 'chat.html';
+
+            // ============================================================
+            // UTILITÁRIOS
+            // ============================================================
+            function getTimeAgo(date) {
+                const diff = Date.now() - new Date(date).getTime();
+                const m = Math.floor(diff / 60000),
+                    h = Math.floor(diff / 3600000),
+                    d = Math.floor(diff / 86400000);
+                if (m < 1) return 'agora';
+                if (m < 60) return m + 'm';
+                if (h < 24) return h + 'h';
+                if (d < 7) return d + 'd';
+                return new Date(date).toLocaleDateString('pt-BR');
+            }
+
+            function formatDuration(seconds) {
+                const m = Math.floor(seconds / 60);
+                const s = seconds % 60;
+                return m + ':' + s.toString().padStart(2, '0');
+            }
+
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            // ============================================================
+            // INIT
+            // ============================================================
+            document.addEventListener('DOMContentLoaded', () => {
+                checkAuth();
+                setInterval(loadNotifications, 30000);
+            });
+
+            // Expor funções globalmente
+            window.goToFeed = goToFeed;
+            window.goToPost = goToPost;
+            window.goToCreatePost = goToCreatePost;
+            window.goToExplore = goToExplore;
+            window.goToMyProfile = goToMyProfile;
+            window.goToUserProfile = goToUserProfile;
+            window.openUserCard = openUserCard;
+            window.closeUserCard = closeUserCard;
+            window.toggleLike = toggleLike;
+            window.sharePost = sharePost;
+            window.openStoryFullscreen = openStoryFullscreen;
+            window.closeStoryFullscreen = closeStoryFullscreen;
+            window.nextStory = nextStory;
+            window.prevStory = prevStory;
+            window.deleteCurrentStory = deleteCurrentStory;
+            window.openStoryCreateOptions = openStoryCreateOptions;
+            window.closeStoryCreateOptions = closeStoryCreateOptions;
+            window.startStoryText = startStoryText;
+            window.closeStoryTextEditor = closeStoryTextEditor;
+            window.publishStoryText = publishStoryText;
+            window.handleStoryMediaFile = handleStoryMediaFile;
+            window.closeStoryMediaPreview = closeStoryMediaPreview;
+            window.publishStoryMedia = publishStoryMedia;
+            window.openReels = openReels;
+            window.closeReels = closeReels;
+            window.toggleAudioSelector = toggleAudioSelector;
+            window.showAudioRecorder = showAudioRecorder;
+            window.loadAudioFile = loadAudioFile;
+            window.toggleRecording = toggleRecording;
+            window.pauseRecording = pauseRecording;
+            window.stopRecording = stopRecording;
+            window.confirmAudio = confirmAudio;
+            window.cancelAudio = cancelAudio;
+            window.submitPost = submitPost;
+            window.openNotifications = openNotifications;
+            window.openFriends = openFriends;
+            window.openMessages = openMessages;
+            window.insertMention = insertMention;
+            window.filterMentions = filterMentions;
+            window.handleFileSelect = handleFileSelect;
+        })();
+    </script>
+</body>
+</html>
