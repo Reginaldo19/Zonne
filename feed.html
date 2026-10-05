@@ -528,14 +528,204 @@
             background: rgba(255, 255, 255, 0.3);
         }
 
+        /* ===== ÁUDIO COM IMAGEM (overlay) ===== */
+        .post-card .post-media .audio-img-overlay {
+            position: relative;
+            width: 100%;
+            background: #000;
+        }
+
+        .post-card .post-media .audio-img-overlay img {
+            width: 100%;
+            display: block;
+            max-height: 500px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .post-card .post-media .audio-img-overlay .audio-overlay-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 60px 16px 16px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.6) 40%, transparent 100%);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .post-card .post-media .audio-img-overlay .audio-bg-avatar {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+            z-index: 2;
+            background: #12121c;
+        }
+
+        .post-card .post-media .audio-img-overlay .audio-bg-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            max-height: none;
+        }
+
+        .post-card .post-media .audio-img-overlay .audio-bg-avatar .fallback {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .post-card .post-media .audio-img-overlay .audio-disc-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #3a3a5a, #1a1a2e);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1), 0 4px 16px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            transition: transform 0.1s linear;
+        }
+
+        .post-card .post-media .audio-img-overlay .audio-disc-badge.spinning {
+            animation: spinDisc 4s linear infinite;
+        }
+
+        .post-card .post-media .audio-img-overlay .audio-disc-badge::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #2a2a3a;
+            border: 1.5px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .post-card .post-media .audio-img-overlay .audio-disc-badge i {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.15);
+            z-index: 2;
+        }
+
+        .post-card .post-media .audio-img-overlay .audio-overlay-controls .audio-controls {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(12px);
+            border-radius: 40px;
+            padding: 8px 14px 8px 8px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .post-card .post-media .audio-img-overlay .audio-overlay-controls .audio-controls .play-btn {
+            background: linear-gradient(135deg, #6c63ff, #9b4dff);
+            border: none;
+            color: #fff;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all var(--transition);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px var(--accent-glow);
+        }
+
+        .post-card .post-media .audio-img-overlay .audio-overlay-controls .audio-controls .play-btn:hover {
+            transform: scale(1.08);
+        }
+
+        .post-card .post-media .audio-img-overlay .audio-overlay-controls .audio-controls .a-progress {
+            flex: 1;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 5px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .post-card .post-media .audio-img-overlay .audio-overlay-controls .audio-controls .a-progress .a-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6c63ff, #9b4dff);
+            border-radius: 5px;
+            width: 0%;
+            position: relative;
+        }
+
+        .post-card .post-media .audio-img-overlay .audio-overlay-controls .audio-controls .a-progress .a-fill::after {
+            content: '';
+            position: absolute;
+            right: -6px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .post-card .post-media .audio-img-overlay .audio-overlay-controls .audio-controls:hover .a-fill::after {
+            opacity: 1;
+        }
+
+        .post-card .post-media .audio-img-overlay .audio-overlay-controls .audio-controls .a-time {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            min-width: 72px;
+            font-variant-numeric: tabular-nums;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        /* ===== ÁUDIO APENAS (disco) ===== */
         .post-card .post-media .audio-player-wrap {
             background: #12121c;
-            padding: 20px 16px 16px;
+            padding: 24px 16px 18px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
             width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .post-card .post-media .audio-player-wrap .audio-bg-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.15;
+            background-size: cover;
+            background-position: center;
+            filter: blur(30px) saturate(1.5);
+            transform: scale(1.2);
+            z-index: 0;
         }
 
         .post-card .post-media .audio-player-wrap .disc {
@@ -550,6 +740,7 @@
             transition: transform 0.1s linear;
             will-change: transform;
             position: relative;
+            z-index: 1;
         }
 
         .post-card .post-media .audio-player-wrap .disc::after {
@@ -583,6 +774,8 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            position: relative;
+            z-index: 1;
         }
 
         .post-card .post-media .audio-player-wrap .audio-controls .play-btn {
@@ -1039,58 +1232,144 @@
             color: #fff;
         }
 
+        .create-post-page {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .create-post-page .create-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding: 16px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+
+        .create-post-page .create-header .create-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+            border: 2px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .create-post-page .create-header .create-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .create-post-page .create-header .create-avatar .fallback {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            background: var(--accent);
+        }
+
+        .create-post-page .create-header .create-user-info .name {
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--text);
+        }
+
+        .create-post-page .create-header .create-user-info .username {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
         .create-post-page textarea {
             width: 100%;
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--border);
             border-radius: var(--radius);
-            padding: 14px;
+            padding: 16px;
             color: var(--text);
-            font-size: 15px;
+            font-size: 16px;
             resize: vertical;
-            min-height: 130px;
+            min-height: 140px;
             font-family: var(--font);
             outline: none;
             transition: border var(--transition);
+            line-height: 1.6;
         }
 
         .create-post-page textarea:focus {
             border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        .create-post-page textarea::placeholder {
+            color: rgba(255, 255, 255, 0.2);
         }
 
         .create-post-page .media-actions {
             display: flex;
             gap: 10px;
-            margin: 14px 0;
+            margin: 16px 0;
             flex-wrap: wrap;
             align-items: center;
+            padding: 12px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
         }
 
-        .create-post-page .media-actions button {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border);
-            border-radius: 30px;
-            padding: 8px 18px;
+        .create-post-page .media-actions .media-btn {
+            flex: 1;
+            min-width: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 12px 8px;
             color: var(--text-secondary);
             cursor: pointer;
-            font-size: 13px;
+            font-size: 12px;
             font-family: var(--font);
             transition: all var(--transition);
         }
 
-        .create-post-page .media-actions button:hover {
-            background: rgba(255, 255, 255, 0.08);
+        .create-post-page .media-actions .media-btn:hover {
+            background: rgba(255, 255, 255, 0.07);
+            color: #fff;
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .create-post-page .media-actions .media-btn i {
+            font-size: 22px;
+            color: var(--accent);
+        }
+
+        .create-post-page .media-actions .media-btn.active {
+            background: rgba(108, 99, 255, 0.15);
+            border-color: var(--accent);
             color: #fff;
         }
 
         .create-post-page .media-status {
             font-size: 13px;
             color: var(--text-secondary);
+            margin-left: 4px;
+            width: 100%;
+            text-align: center;
         }
 
         .create-post-page .mention-custom {
             position: relative;
-            margin: 8px 0;
+            margin: 12px 0;
         }
 
         .create-post-page .mention-custom input {
@@ -1098,7 +1377,7 @@
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--border);
             border-radius: 40px;
-            padding: 10px 16px;
+            padding: 12px 18px;
             color: var(--text);
             font-size: 14px;
             outline: none;
@@ -1174,26 +1453,51 @@
 
         .create-post-page .preview-container {
             display: none;
-            margin-bottom: 14px;
+            margin-bottom: 16px;
             border-radius: var(--radius);
             overflow: hidden;
-            max-height: 300px;
+            max-height: 320px;
             background: #000;
+            border: 1px solid var(--border);
+            position: relative;
+        }
+
+        .create-post-page .preview-container .preview-remove {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.7);
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+            transition: background 0.2s;
+        }
+
+        .create-post-page .preview-container .preview-remove:hover {
+            background: #ff4757;
         }
 
         .create-post-page .preview-container img,
         .create-post-page .preview-container video {
             width: 100%;
-            max-height: 300px;
+            max-height: 320px;
             object-fit: cover;
         }
 
         .create-post-page .audio-selector {
-            background: rgba(255, 255, 255, 0.03);
+            background: var(--card-bg);
             border: 1px solid var(--border);
             border-radius: var(--radius);
-            padding: 16px;
-            margin: 10px 0;
+            padding: 18px;
+            margin: 12px 0;
             display: none;
         }
 
@@ -1205,15 +1509,20 @@
 
         .create-post-page .audio-selector .audio-options button {
             flex: 1;
-            min-width: 120px;
-            padding: 10px;
+            min-width: 140px;
+            padding: 12px;
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--border);
             border-radius: var(--radius);
             color: var(--text);
             cursor: pointer;
             font-family: var(--font);
+            font-size: 14px;
             transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .create-post-page .audio-selector .audio-options button:hover {
@@ -1222,15 +1531,15 @@
         }
 
         .create-post-page .audio-selector .audio-options button i {
-            margin-right: 8px;
+            color: var(--accent);
         }
 
         .create-post-page .audio-recorder {
             display: none;
-            margin-top: 12px;
+            margin-top: 14px;
             background: rgba(255, 255, 255, 0.02);
             border-radius: var(--radius);
-            padding: 12px;
+            padding: 16px;
         }
 
         .create-post-page .audio-recorder .recorder-controls {
@@ -1241,19 +1550,20 @@
         }
 
         .create-post-page .audio-recorder .recorder-controls .record-btn {
-            width: 46px;
-            height: 46px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             border: none;
             background: #ff4757;
             color: #fff;
-            font-size: 18px;
+            font-size: 20px;
             cursor: pointer;
             transition: all var(--transition);
             flex-shrink: 0;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 4px 16px rgba(255, 71, 87, 0.3);
         }
 
         .create-post-page .audio-recorder .recorder-controls .record-btn.recording {
@@ -1266,20 +1576,21 @@
                 box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.4);
             }
             50% {
-                box-shadow: 0 0 0 8px rgba(255, 71, 87, 0);
+                box-shadow: 0 0 0 10px rgba(255, 71, 87, 0);
             }
         }
 
         .create-post-page .audio-recorder .recorder-controls .timer {
-            font-size: 15px;
+            font-size: 16px;
             color: var(--text-secondary);
-            min-width: 50px;
+            min-width: 55px;
             font-variant-numeric: tabular-nums;
+            font-weight: 600;
         }
 
         .create-post-page .audio-recorder .recorder-controls .wave-visual {
             flex: 1;
-            height: 32px;
+            height: 36px;
             display: flex;
             align-items: center;
             gap: 3px;
@@ -1304,8 +1615,8 @@
         }
 
         .create-post-page .audio-recorder .recorder-controls .controls-group button {
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
             border: none;
             background: rgba(255, 255, 255, 0.04);
@@ -1330,7 +1641,7 @@
 
         .create-post-page .btn-submit {
             width: 100%;
-            padding: 14px;
+            padding: 16px;
             background: linear-gradient(135deg, #6c63ff, #9b4dff);
             border: none;
             border-radius: var(--radius);
@@ -1341,7 +1652,11 @@
             transition: all var(--transition);
             font-family: var(--font);
             box-shadow: 0 4px 20px var(--accent-glow);
-            margin-top: 12px;
+            margin-top: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .create-post-page .btn-submit:hover {
@@ -2326,36 +2641,47 @@
     <!-- ===== PÁGINA DE CRIAÇÃO ===== -->
     <div class="page create-post-page" id="createPostPage">
         <button class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i> Voltar</button>
-        <h3 style="margin-bottom:18px;font-weight:700;font-size:20px;">
-            <i class="fas fa-pen" style="color:var(--accent);margin-right:10px;"></i>Nova publicação
-        </h3>
+        
+        <div class="create-header">
+            <div class="create-avatar" id="createPageAvatar">
+                <div class="fallback"><i class="fas fa-user"></i></div>
+            </div>
+            <div class="create-user-info">
+                <div class="name" id="createPageName">Usuário</div>
+                <div class="username" id="createPageUsername">@usuario</div>
+            </div>
+        </div>
 
         <textarea id="createPostContent" placeholder="O que você está pensando?…"></textarea>
 
         <div class="media-actions">
-            <button onclick="document.getElementById('createFileInput').click()"><i class="fas fa-image"></i> Foto/Vídeo</button>
-            <button onclick="toggleAudioSelector()"><i class="fas fa-microphone"></i> Áudio</button>
+            <button class="media-btn" onclick="document.getElementById('createImageInput').click()">
+                <i class="fas fa-image"></i> Foto
+            </button>
+            <button class="media-btn" onclick="document.getElementById('createVideoInput').click()">
+                <i class="fas fa-video"></i> Vídeo
+            </button>
+            <button class="media-btn" onclick="toggleAudioSelector()">
+                <i class="fas fa-microphone"></i> Áudio
+            </button>
             <span class="media-status" id="createMediaStatus"></span>
         </div>
 
-        <!-- Menção -->
-        <div class="mention-custom">
-            <input type="text" id="mentionInput" placeholder="🔗 Mencionar amigo (@nome)" autocomplete="off" oninput="filterMentions(this.value)" />
-            <div class="mention-dropdown" id="mentionDropdown"></div>
-        </div>
+        <input type="file" id="createImageInput" accept="image/*" style="display:none;" onchange="handleFileSelect(event, 'image')" />
+        <input type="file" id="createVideoInput" accept="video/*" style="display:none;" onchange="handleFileSelect(event, 'video')" />
+        <input type="file" id="createAudioInput" accept="audio/*" style="display:none;" onchange="handleAudioFileSelect(event)" />
 
-        <input type="file" id="createFileInput" accept="image/*,video/*" style="display:none;" onchange="handleFileSelect(event)" />
         <div class="preview-container" id="createPreview">
+            <button class="preview-remove" onclick="removePreview()"><i class="fas fa-times"></i></button>
             <img id="createPreviewImg" style="display:none;" />
             <video id="createPreviewVideo" style="display:none;" controls></video>
         </div>
 
         <div class="audio-selector" id="audioSelector">
             <div class="audio-options">
-                <button onclick="showAudioRecorder()"><i class="fas fa-microphone"></i> Gravar áudio</button>
-                <button onclick="document.getElementById('audioFileInput').click()"><i class="fas fa-folder-open"></i> Escolher arquivo</button>
+                <button onclick="showAudioRecorder()"><i class="fas fa-microphone"></i> Gravar áudio (máx 1:30)</button>
+                <button onclick="document.getElementById('createAudioInput').click()"><i class="fas fa-folder-open"></i> Escolher arquivo</button>
             </div>
-            <input type="file" id="audioFileInput" accept="audio/*" style="display:none;" onchange="loadAudioFile(event)" />
             <div class="audio-recorder" id="audioRecorder">
                 <div class="recorder-controls">
                     <button class="record-btn" id="recordBtn" onclick="toggleRecording()"><i class="fas fa-microphone"></i></button>
@@ -2375,14 +2701,21 @@
                         <button id="stopBtn" onclick="stopRecording()" disabled><i class="fas fa-stop"></i></button>
                     </div>
                 </div>
-                <div style="margin-top:10px; display:flex; gap:6px; flex-wrap:wrap;">
-                    <button class="btn-submit" style="width:auto; padding:8px 16px; font-size:13px;" onclick="confirmAudio()">Usar áudio</button>
-                    <button style="background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:30px; padding:8px 16px; color:var(--text-secondary); cursor:pointer;" onclick="cancelAudio()">Cancelar</button>
+                <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
+                    <button class="btn-submit" style="width:auto; padding:10px 20px; font-size:14px; margin-top:0;" onclick="confirmAudio()">Usar áudio</button>
+                    <button style="background:rgba(255,255,255,0.04); border:1px solid var(--border); border-radius:30px; padding:10px 20px; color:var(--text-secondary); cursor:pointer; font-family:var(--font);" onclick="cancelAudio()">Cancelar</button>
                 </div>
             </div>
         </div>
 
-        <button class="btn-submit" onclick="submitPost()">Publicar</button>
+        <div class="mention-custom">
+            <input type="text" id="mentionInput" placeholder="🔗 Mencionar amigo (@nome)" autocomplete="off" oninput="filterMentions(this.value)" />
+            <div class="mention-dropdown" id="mentionDropdown"></div>
+        </div>
+
+        <button class="btn-submit" onclick="submitPost()">
+            <i class="fas fa-paper-plane"></i> Publicar
+        </button>
     </div>
 
     <!-- ===== EXPLORE ===== -->
@@ -2398,9 +2731,7 @@
 
     <!-- ===== REELS OVERLAY ===== -->
     <div class="reels-overlay" id="reelsOverlay">
-        <div class="reels-wrapper" id="reelsWrapper">
-            <!-- Slides serão inseridos dinamicamente -->
-        </div>
+        <div class="reels-wrapper" id="reelsWrapper"></div>
     </div>
 
     <!-- ===== MODAL CRIAR STORY ===== -->
@@ -2511,8 +2842,7 @@
         </button>
     </nav>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         (function() {
             'use strict';
@@ -2545,8 +2875,10 @@
             let dataArray = null;
             let animationId = null;
 
-            let selectedFile = null;
-            let selectedFileType = null;
+            // Arquivos selecionados para o post
+            let selectedImageFile = null;
+            let selectedAudioFile = null;
+            let selectedVideoFile = null;
 
             // Stories
             let storyInterval = null;
@@ -2558,8 +2890,17 @@
             // Reels
             let reelsPosts = [];
             let currentReelsIndex = 0;
-            let isDragging = false;
-            let startY = 0;
+
+            // Config de mensagens (auto-detectada)
+            let messagesConfig = {
+                table: 'messages',
+                chatIdColumn: 'chat_id',
+                readColumn: 'read_at',
+                detected: false
+            };
+
+            // Mapa global de players de áudio (para pausar quando outro começa)
+            const activeAudioPlayers = new Set();
 
             const feedPosts = document.getElementById('feedPosts');
             const storiesRow = document.getElementById('storiesRow');
@@ -2622,6 +2963,7 @@
                 document.querySelectorAll('.bottom-nav .nav-item')[2].classList.add('active');
                 pushPage('create');
                 resetCreatePost();
+                updateCreatePageProfile();
             };
 
             window.goToExplore = function() {
@@ -2666,16 +3008,48 @@
                 document.getElementById('audioSelector').style.display = 'none';
                 document.getElementById('audioRecorder').style.display = 'none';
                 document.getElementById('createMediaStatus').textContent = '';
-                selectedFile = null;
-                selectedFileType = null;
+                selectedImageFile = null;
+                selectedAudioFile = null;
+                selectedVideoFile = null;
                 audioBlob = null;
                 audioUrl = null;
-                document.getElementById('createFileInput').value = '';
-                document.getElementById('audioFileInput').value = '';
+                document.getElementById('createImageInput').value = '';
+                document.getElementById('createVideoInput').value = '';
+                document.getElementById('createAudioInput').value = '';
                 resetAudioRecorder();
                 document.getElementById('mentionInput').value = '';
                 document.getElementById('mentionDropdown').classList.remove('active');
+                document.querySelectorAll('.media-btn').forEach(b => b.classList.remove('active'));
             }
+
+            function updateCreatePageProfile() {
+                if (!currentProfile) return;
+                const avatarEl = document.getElementById('createPageAvatar');
+                const nameEl = document.getElementById('createPageName');
+                const usernameEl = document.getElementById('createPageUsername');
+                
+                if (currentProfile.avatar_url) {
+                    avatarEl.innerHTML = '<img src="' + currentProfile.avatar_url + '" alt="Avatar">';
+                } else {
+                    const color = currentProfile.avatar_color || '#6c63ff';
+                    const initial = (currentProfile.full_name || 'U')[0].toUpperCase();
+                    avatarEl.innerHTML = '<div class="fallback" style="background:' + color + ';">' + initial + '</div>';
+                }
+                nameEl.textContent = currentProfile.full_name || 'Usuário';
+                usernameEl.textContent = '@' + (currentProfile.username || 'usuario');
+            }
+
+            window.removePreview = function() {
+                document.getElementById('createPreview').style.display = 'none';
+                document.getElementById('createPreviewImg').style.display = 'none';
+                document.getElementById('createPreviewVideo').style.display = 'none';
+                selectedImageFile = null;
+                selectedVideoFile = null;
+                document.getElementById('createImageInput').value = '';
+                document.getElementById('createVideoInput').value = '';
+                document.getElementById('createMediaStatus').textContent = '';
+                document.querySelectorAll('.media-btn').forEach(b => b.classList.remove('active'));
+            };
 
             // ============================================================
             // AUTENTICAÇÃO
@@ -2688,12 +3062,12 @@
                 }
                 currentUser = data.session.user;
                 await loadProfile();
+                await detectMessagesConfig();
                 await loadFeed();
                 await loadStories();
                 await loadNotifications();
                 await loadFriends();
 
-                // Badges
                 await updateAllBadges();
 
                 supabase
@@ -2715,8 +3089,8 @@
                     })
                     .subscribe();
 
-                // Atualiza badges a cada 30s
                 setInterval(updateAllBadges, 30000);
+                setInterval(updateMessageBadge, 15000);
             }
 
             async function loadProfile() {
@@ -2760,27 +3134,84 @@
             }
 
             // ============================================================
-            // BADGES (NOTIFICAÇÕES, MENSAGENS, PERFIL)
+            // AUTO-DETECÇÃO DA TABELA DE MENSAGENS
+            // ============================================================
+            async function detectMessagesConfig() {
+                console.log('[MsgBadge] Detectando configuração...');
+                try {
+                    const { data, error } = await supabase
+                        .from('messages')
+                        .select('*')
+                        .limit(1);
+
+                    if (error) {
+                        console.warn('[MsgBadge] Erro:', error.message);
+                        messagesConfig.detected = false;
+                        return;
+                    }
+
+                    if (data && data.length > 0) {
+                        const columns = Object.keys(data[0]);
+                        console.log('[MsgBadge] Colunas:', columns);
+                        messagesConfig.table = 'messages';
+                        messagesConfig.chatIdColumn = columns.includes('chat_id') ? 'chat_id' : null;
+                        messagesConfig.readColumn = columns.includes('read_at') ? 'read_at' :
+                                                    columns.includes('read') ? 'read' : null;
+                        messagesConfig.detected = !!(messagesConfig.chatIdColumn && messagesConfig.readColumn);
+                    } else {
+                        messagesConfig.detected = true;
+                    }
+                    console.log('[MsgBadge] Config:', messagesConfig);
+                } catch (e) {
+                    console.warn('[MsgBadge] Erro:', e);
+                    messagesConfig.detected = false;
+                }
+            }
+
+            // ============================================================
+            // BADGES
             // ============================================================
             async function updateAllBadges() {
-                await loadNotifications(); // já atualiza badge de notificações
+                await loadNotifications();
                 await updateMessageBadge();
                 await updateProfileBadge();
             }
 
             async function updateMessageBadge() {
                 const badge = document.getElementById('msgBadge');
-                try {
-                    // Total de mensagens não lidas (onde o usuário é o receptor)
-                    const { data, error } = await supabase
-                        .from('messages')
-                        .select('id', { count: 'exact', head: true })
-                        .neq('sender_id', currentUser.id)
-                        .is('read_at', null)
-                        .eq('system', false);
+                if (!badge) return;
+                if (!currentUser) return;
+                if (!messagesConfig.detected) return;
 
-                    if (error) throw error;
-                    const count = data?.length || 0;
+                let count = 0;
+
+                try {
+                    const { data: memberships, error: memError } = await supabase
+                        .from('chat_members')
+                        .select('chat_id')
+                        .eq('user_id', currentUser.id);
+
+                    if (memError || !memberships || memberships.length === 0) {
+                        badge.style.display = 'none';
+                        return;
+                    }
+
+                    const chatIds = memberships.map(m => m.chat_id);
+
+                    const { data: unreadMsgs, error: msgError } = await supabase
+                        .from('messages')
+                        .select('id')
+                        .in('chat_id', chatIds)
+                        .neq('sender_id', currentUser.id)
+                        .is('read_at', null);
+
+                    if (msgError) {
+                        badge.style.display = 'none';
+                        return;
+                    }
+
+                    count = unreadMsgs ? unreadMsgs.length : 0;
+
                     if (count > 0) {
                         badge.style.display = 'flex';
                         badge.textContent = count > 9 ? '9+' : count;
@@ -2788,7 +3219,8 @@
                         badge.style.display = 'none';
                     }
                 } catch (e) {
-                    console.error('Erro ao atualizar badge de mensagens:', e);
+                    console.error('[MsgBadge] Erro:', e);
+                    badge.style.display = 'none';
                 }
             }
 
@@ -2796,8 +3228,7 @@
                 const badge = document.getElementById('profileBadge');
                 const followBadge = document.getElementById('followBadge');
                 try {
-                    // Total de notificações de follow não lidas
-                    const { data, error } = await supabase
+                    const { count, error } = await supabase
                         .from('notifications')
                         .select('id', { count: 'exact', head: true })
                         .eq('user_id', currentUser.id)
@@ -2805,26 +3236,73 @@
                         .eq('read', false);
 
                     if (error) throw error;
-                    const count = data?.length || 0;
+                    const c = count || 0;
 
-                    // Badge do bottom nav
-                    if (count > 0) {
+                    if (badge) {
+                        badge.style.display = c > 0 ? 'flex' : 'none';
+                        if (c > 0) badge.textContent = c > 9 ? '9+' : c;
+                    }
+                    if (followBadge) {
+                        followBadge.style.display = c > 0 ? 'flex' : 'none';
+                        if (c > 0) followBadge.textContent = c > 9 ? '9+' : c;
+                    }
+                } catch (e) {
+                    console.warn('Erro badge perfil:', e.message);
+                }
+            }
+
+            async function loadNotifications() {
+                try {
+                    const { count, error } = await supabase
+                        .from('notifications')
+                        .select('id', { count: 'exact', head: true })
+                        .eq('user_id', currentUser.id)
+                        .eq('read', false);
+
+                    if (error) return;
+
+                    const badge = document.getElementById('notifBadge');
+                    if (!badge) return;
+                    const c = count || 0;
+                    if (c > 0) {
                         badge.style.display = 'flex';
-                        badge.textContent = count > 9 ? '9+' : count;
+                        badge.textContent = c > 9 ? '9+' : c;
                     } else {
                         badge.style.display = 'none';
                     }
+                } catch (e) {}
+            }
 
-                    // Badge no avatar do topo
-                    if (count > 0) {
-                        followBadge.style.display = 'flex';
-                        followBadge.textContent = count > 9 ? '9+' : count;
-                    } else {
-                        followBadge.style.display = 'none';
-                    }
-                } catch (e) {
-                    console.error('Erro ao atualizar badge de perfil:', e);
-                }
+            // ============================================================
+            // FORMATAÇÃO DE TEMPO (CORRIGIDA)
+            // ============================================================
+            function formatDuration(seconds) {
+                // ✅ PROTEÇÃO: se for NaN, undefined, null ou negativo → 0:00
+                if (seconds === null || seconds === undefined) return '0:00';
+                let s = Number(seconds);
+                if (!isFinite(s) || isNaN(s) || s < 0) return '0:00';
+                s = Math.floor(s);
+                const m = Math.floor(s / 60);
+                const sec = s % 60;
+                return m + ':' + sec.toString().padStart(2, '0');
+            }
+
+            function getTimeAgo(date) {
+                const diff = Date.now() - new Date(date).getTime();
+                const m = Math.floor(diff / 60000),
+                    h = Math.floor(diff / 3600000),
+                    d = Math.floor(diff / 86400000);
+                if (m < 1) return 'agora';
+                if (m < 60) return m + 'm';
+                if (h < 24) return h + 'h';
+                if (d < 7) return d + 'd';
+                return new Date(date).toLocaleDateString('pt-BR');
+            }
+
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
             }
 
             // ============================================================
@@ -2899,8 +3377,34 @@
                 const likeCount = post.likes_count || 0;
                 const commentCount = post.comments_count || 0;
 
+                // ✅ PROTEÇÃO: usar valores seguros para duração
+                const audioDur = formatDuration(post.audio_duration);
+
                 let mediaHtml = '';
-                if (post.media_url) {
+
+                if (post.audio_url && post.media_url) {
+                    mediaHtml = `
+                        <div class="post-media">
+                            <div class="audio-img-overlay">
+                                <img src="${post.media_url}" alt="Imagem" loading="lazy" onclick="goToPost('${post.id}')" />
+                                <div class="audio-bg-avatar">
+                                    ${avatarUrl ? `<img src="${avatarUrl}" alt="Avatar">` : 
+                                    `<div class="fallback" style="background:${avatarColor};">${initial}</div>`}
+                                </div>
+                                <div class="audio-disc-badge">
+                                    <i class="fas fa-music"></i>
+                                </div>
+                                <div class="audio-overlay-controls">
+                                    <div class="audio-controls" data-audio="${post.audio_url}" data-duration="${post.audio_duration || 0}">
+                                        <button class="play-btn"><i class="fas fa-play"></i></button>
+                                        <div class="a-progress"><div class="a-fill"></div></div>
+                                        <span class="a-time">0:00 / ${audioDur}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else if (post.media_url) {
                     if (post.media_type === 'image') {
                         mediaHtml =
                             '<div class="post-media"><img src="' + post.media_url + '" alt="Imagem" loading="lazy" onclick="goToPost(\'' + post
@@ -2920,11 +3424,12 @@
                         mediaHtml = `
                             <div class="post-media">
                                 <div class="audio-player-wrap" data-audio="${post.media_url}" data-duration="${post.audio_duration || 0}">
+                                    ${avatarUrl ? `<div class="audio-bg-image" style="background-image:url('${avatarUrl}');"></div>` : ''}
                                     <div class="disc"><div class="disc-icon"><i class="fas fa-music"></i></div></div>
                                     <div class="audio-controls">
                                         <button class="play-btn"><i class="fas fa-play"></i></button>
                                         <div class="a-progress"><div class="a-fill"></div></div>
-                                        <span class="a-time">0:00 / ${formatDuration(post.audio_duration || 0)}</span>
+                                        <span class="a-time">0:00 / ${audioDur}</span>
                                     </div>
                                 </div>
                             </div>
@@ -2970,78 +3475,186 @@
                 `;
             }
 
+            // ============================================================
+            // PLAYER DE ÁUDIO (CORRIGIDO - sem NaN)
+            // ============================================================
+            function pauseAllAudioPlayers(except) {
+                activeAudioPlayers.forEach(player => {
+                    if (player !== except && player.audio && !player.audio.paused) {
+                        try {
+                            player.audio.pause();
+                            player.audio.currentTime = 0;
+                        } catch(e) {}
+                        if (player.playBtn) player.playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                        if (player.disc) player.disc.classList.remove('spinning');
+                        if (player.discBadge) player.discBadge.classList.remove('spinning');
+                        if (player.fill) player.fill.style.width = '0%';
+                        if (player.timeDisplay && player.safeDuration > 0) {
+                            player.timeDisplay.textContent = '0:00 / ' + formatDuration(player.safeDuration);
+                        }
+                    }
+                });
+            }
+
+            function setupAudioPlayer(config) {
+                const { audioUrl, playBtn, progress, fill, timeDisplay, disc, discBadge, declaredDuration } = config;
+                if (!audioUrl) return;
+
+                const audio = new Audio();
+                audio.preload = 'metadata';
+                audio.src = audioUrl;
+
+                const player = {
+                    audio,
+                    playBtn,
+                    fill,
+                    timeDisplay,
+                    disc,
+                    discBadge,
+                    progress,
+                    safeDuration: declaredDuration || 0
+                };
+                activeAudioPlayers.add(player);
+
+                // Quando os metadados carregarem, atualiza a duração real
+                audio.addEventListener('loadedmetadata', () => {
+                    if (isFinite(audio.duration) && audio.duration > 0) {
+                        player.safeDuration = audio.duration;
+                        if (timeDisplay) {
+                            timeDisplay.textContent = '0:00 / ' + formatDuration(audio.duration);
+                        }
+                    } else {
+                        // fallback para a duração declarada no banco
+                        if (timeDisplay && player.safeDuration > 0) {
+                            timeDisplay.textContent = '0:00 / ' + formatDuration(player.safeDuration);
+                        }
+                    }
+                });
+
+                audio.addEventListener('canplay', () => {
+                    if (isFinite(audio.duration) && audio.duration > 0) {
+                        player.safeDuration = audio.duration;
+                    }
+                });
+
+                audio.addEventListener('timeupdate', () => {
+                    // ✅ PROTEÇÃO TOTAL contra NaN
+                    const dur = (isFinite(audio.duration) && audio.duration > 0) ? audio.duration : player.safeDuration;
+                    if (!dur || !isFinite(dur) || dur <= 0) {
+                        if (timeDisplay) timeDisplay.textContent = '0:00 / ' + formatDuration(player.safeDuration);
+                        return;
+                    }
+                    const pct = (audio.currentTime / dur) * 100;
+                    if (isFinite(pct)) {
+                        fill.style.width = Math.max(0, Math.min(100, pct)) + '%';
+                    }
+                    if (timeDisplay) {
+                        timeDisplay.textContent = formatDuration(audio.currentTime) + ' / ' + formatDuration(dur);
+                    }
+                });
+
+                audio.addEventListener('ended', () => {
+                    playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                    if (disc) disc.classList.remove('spinning');
+                    if (discBadge) discBadge.classList.remove('spinning');
+                    fill.style.width = '0%';
+                    if (timeDisplay) {
+                        timeDisplay.textContent = '0:00 / ' + formatDuration(player.safeDuration);
+                    }
+                });
+
+                audio.addEventListener('error', (e) => {
+                    console.error('Erro ao carregar áudio:', audioUrl, e);
+                    playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                    if (timeDisplay) timeDisplay.textContent = '0:00 / ' + formatDuration(player.safeDuration);
+                });
+
+                playBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (!audio.paused) {
+                        // Pausar
+                        audio.pause();
+                        playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                        if (disc) disc.classList.remove('spinning');
+                        if (discBadge) discBadge.classList.remove('spinning');
+                    } else {
+                        // Pausar todos os outros
+                        pauseAllAudioPlayers(player);
+                        // Tocar
+                        const playPromise = audio.play();
+                        if (playPromise && playPromise.catch) {
+                            playPromise.catch(err => {
+                                console.error('Erro ao tocar áudio:', err);
+                                playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                            });
+                        }
+                        playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                        if (disc) disc.classList.add('spinning');
+                        if (discBadge) discBadge.classList.add('spinning');
+                    }
+                });
+
+                progress.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const dur = (isFinite(audio.duration) && audio.duration > 0) ? audio.duration : player.safeDuration;
+                    if (!dur || !isFinite(dur) || dur <= 0) return;
+                    const rect = progress.getBoundingClientRect();
+                    const pct = (e.clientX - rect.left) / rect.width;
+                    if (isFinite(pct)) {
+                        audio.currentTime = Math.max(0, Math.min(1, pct)) * dur;
+                    }
+                });
+
+                return player;
+            }
+
             function attachPostEvents() {
                 document.querySelectorAll('.like-btn').forEach(btn => {
                     btn.onclick = () => toggleLike(btn.dataset.postId);
                 });
 
+                // Player de áudio com disco (audio-only posts)
                 document.querySelectorAll('.audio-player-wrap').forEach(wrap => {
                     const audioUrl = wrap.dataset.audio;
+                    const declaredDuration = parseFloat(wrap.dataset.duration) || 0;
                     const playBtn = wrap.querySelector('.play-btn');
                     const progress = wrap.querySelector('.a-progress');
                     const fill = wrap.querySelector('.a-fill');
                     const timeDisplay = wrap.querySelector('.a-time');
                     const disc = wrap.querySelector('.disc');
 
-                    let audio = new Audio(audioUrl);
-                    let isPlaying = false;
-
-                    const pauseOthers = () => {
-                        document.querySelectorAll('.audio-player-wrap').forEach(other => {
-                            if (other !== wrap && other._audio && !other._audio.paused) {
-                                other._audio.pause();
-                                other._playBtn.innerHTML = '<i class="fas fa-play"></i>';
-                                other._disc.classList.remove('spinning');
-                            }
-                        });
-                    };
-
-                    audio.addEventListener('loadedmetadata', () => {
-                        const dur = Math.floor(audio.duration);
-                        timeDisplay.textContent = '0:00 / ' + formatDuration(dur);
+                    setupAudioPlayer({
+                        audioUrl,
+                        playBtn,
+                        progress,
+                        fill,
+                        timeDisplay,
+                        disc,
+                        discBadge: null,
+                        declaredDuration
                     });
+                });
 
-                    playBtn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        if (isPlaying) {
-                            audio.pause();
-                            playBtn.innerHTML = '<i class="fas fa-play"></i>';
-                            disc.classList.remove('spinning');
-                            isPlaying = false;
-                        } else {
-                            pauseOthers();
-                            audio.play().catch(() => {});
-                            playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                            disc.classList.add('spinning');
-                            isPlaying = true;
-                        }
+                // Player de áudio overlay (foto + áudio)
+                document.querySelectorAll('.audio-img-overlay .audio-controls').forEach(ctrl => {
+                    const audioUrl = ctrl.dataset.audio;
+                    const declaredDuration = parseFloat(ctrl.dataset.duration) || 0;
+                    const playBtn = ctrl.querySelector('.play-btn');
+                    const progress = ctrl.querySelector('.a-progress');
+                    const fill = ctrl.querySelector('.a-fill');
+                    const timeDisplay = ctrl.querySelector('.a-time');
+                    const discBadge = ctrl.closest('.audio-img-overlay')?.querySelector('.audio-disc-badge');
+
+                    setupAudioPlayer({
+                        audioUrl,
+                        playBtn,
+                        progress,
+                        fill,
+                        timeDisplay,
+                        disc: null,
+                        discBadge,
+                        declaredDuration
                     });
-
-                    audio.addEventListener('timeupdate', () => {
-                        const pct = (audio.currentTime / audio.duration) * 100;
-                        fill.style.width = pct + '%';
-                        timeDisplay.textContent =
-                            formatDuration(Math.floor(audio.currentTime)) + ' / ' + formatDuration(Math.floor(audio
-                                .duration));
-                    });
-
-                    audio.addEventListener('ended', () => {
-                        playBtn.innerHTML = '<i class="fas fa-play"></i>';
-                        disc.classList.remove('spinning');
-                        isPlaying = false;
-                        fill.style.width = '0%';
-                        timeDisplay.textContent = '0:00 / ' + formatDuration(Math.floor(audio.duration));
-                    });
-
-                    progress.addEventListener('click', (e) => {
-                        const rect = progress.getBoundingClientRect();
-                        const pct = (e.clientX - rect.left) / rect.width;
-                        audio.currentTime = pct * audio.duration;
-                    });
-
-                    wrap._audio = audio;
-                    wrap._playBtn = playBtn;
-                    wrap._disc = disc;
                 });
             }
 
@@ -3051,19 +3664,25 @@
                         const card = entry.target.closest('.post-card');
                         if (!card) return;
                         const isVisible = entry.isIntersecting;
-                        const audioWrap = card.querySelector('.audio-player-wrap');
-                        if (audioWrap && audioWrap._audio && !audioWrap._audio.paused) {
-                            if (!isVisible) {
-                                audioWrap._audio.pause();
-                                audioWrap._playBtn.innerHTML = '<i class="fas fa-play"></i>';
-                                audioWrap._disc.classList.remove('spinning');
-                            }
-                        }
-                        const videoWrap = card.querySelector('.video-wrapper');
-                        if (videoWrap && videoWrap._video && !videoWrap._video.paused) {
-                            if (!isVisible) {
-                                videoWrap._video.pause();
-                            }
+                        if (!isVisible) {
+                            // Pausa todos os áudios do card que saiu da tela
+                            card.querySelectorAll('.audio-player-wrap, .audio-img-overlay .audio-controls').forEach(el => {
+                                const playBtn = el.querySelector('.play-btn');
+                                // Busca o player correspondente no set global
+                                activeAudioPlayers.forEach(p => {
+                                    if (p.playBtn === playBtn && p.audio && !p.audio.paused) {
+                                        p.audio.pause();
+                                        p.audio.currentTime = 0;
+                                        playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                                        if (p.disc) p.disc.classList.remove('spinning');
+                                        if (p.discBadge) p.discBadge.classList.remove('spinning');
+                                        if (p.fill) p.fill.style.width = '0%';
+                                        if (p.timeDisplay && p.safeDuration > 0) {
+                                            p.timeDisplay.textContent = '0:00 / ' + formatDuration(p.safeDuration);
+                                        }
+                                    }
+                                });
+                            });
                         }
                     });
                 }, { threshold: 0.3 });
@@ -3260,7 +3879,7 @@
             };
 
             // ============================================================
-            // LIKE + NOTIFICAÇÃO
+            // LIKE
             // ============================================================
             window.toggleLike = async function(postId) {
                 if (!currentUser) { alert('Faça login'); return; }
@@ -3303,7 +3922,6 @@
                         const post = posts.find(p => p.id === postId);
                         if (post) post.likes_count = count;
 
-                        // NOTIFICAÇÃO DE CURTIDA
                         if (post && post.user_id !== currentUser.id) {
                             await supabase.from('notifications').insert({
                                 user_id: post.user_id,
@@ -3393,7 +4011,7 @@
             }
 
             // ============================================================
-            // USER CARD + SEGUIR + NOTIFICAÇÃO
+            // USER CARD
             // ============================================================
             window.openUserCard = async function(userId) {
                 const overlay = document.getElementById('userCardOverlay');
@@ -3483,7 +4101,6 @@
                             .eq('friend_id', userId);
                         btn.classList.remove('following');
                         btn.innerHTML = '<i class="fas fa-plus"></i> Seguir';
-                        await supabase.rpc('decrement_followers', { user_id: userId });
                     } else {
                         await supabase.from('friends').insert({
                             user_id: currentUser.id,
@@ -3491,9 +4108,7 @@
                         });
                         btn.classList.add('following');
                         btn.innerHTML = '<i class="fas fa-check"></i> Seguindo';
-                        await supabase.rpc('increment_followers', { user_id: userId });
 
-                        // NOTIFICAÇÃO DE SEGUIR
                         await supabase.from('notifications').insert({
                             user_id: userId,
                             sender_id: currentUser.id,
@@ -3889,7 +4504,7 @@
             };
 
             // ============================================================
-            // CREATE POST - MENÇÃO + NOTIFICAÇÃO
+            // MENÇÕES
             // ============================================================
             const mentionInput = document.getElementById('mentionInput');
             const mentionDropdown = document.getElementById('mentionDropdown');
@@ -3949,14 +4564,14 @@
                         created_at: new Date().toISOString()
                     });
                     await updateAllBadges();
-                } catch (e) {
-                    console.error('Erro ao enviar notificação de menção:', e);
-                }
+                } catch (e) {}
             }
 
             // ============================================================
-            // CREATE POST - ÁUDIO
+            // ÁUDIO - GRAVAÇÃO
             // ============================================================
+            const MAX_AUDIO_DURATION = 90;
+
             window.toggleAudioSelector = function() {
                 const sel = document.getElementById('audioSelector');
                 sel.style.display = sel.style.display === 'none' ? 'block' : 'none';
@@ -3964,35 +4579,38 @@
                     resetAudioRecorder();
                     document.getElementById('audioRecorder').style.display = 'none';
                 }
+                document.querySelectorAll('.media-btn').forEach(b => b.classList.remove('active'));
+                if (sel.style.display === 'block') {
+                    document.querySelectorAll('.media-btn')[2].classList.add('active');
+                }
             };
 
             window.showAudioRecorder = function() {
                 document.getElementById('audioRecorder').style.display = 'block';
             };
 
-            window.loadAudioFile = function(event) {
+            window.handleAudioFileSelect = function(event) {
                 const file = event.target.files[0];
                 if (!file) return;
                 if (file.size > 10 * 1024 * 1024) {
                     document.getElementById('createMediaStatus').textContent = '❌ Arquivo muito grande (máx 10MB)';
                     return;
                 }
-                if (!file.name) {
-                    const ext = file.type.split('/')[1] || 'webm';
-                    file = new File([file], 'audio.' + ext, { type: file.type });
-                }
-                audioBlob = file;
-                audioUrl = URL.createObjectURL(file);
-                selectedFile = file;
-                selectedFileType = 'audio';
-                const tempAudio = new Audio(audioUrl);
+                const tempAudio = new Audio(URL.createObjectURL(file));
                 tempAudio.onloadedmetadata = () => {
-                    recordTimer = Math.floor(tempAudio.duration);
+                    const dur = Math.floor(tempAudio.duration);
+                    if (dur > MAX_AUDIO_DURATION) {
+                        document.getElementById('createMediaStatus').textContent =
+                            '❌ Áudio excede 1min30s (atual: ' + formatDuration(dur) + ')';
+                        return;
+                    }
+                    selectedAudioFile = file;
+                    audioUrl = URL.createObjectURL(file);
+                    recordTimer = dur;
                     document.getElementById('createMediaStatus').textContent =
-                        '🎵 Áudio carregado (' + formatDuration(recordTimer) + ')';
+                        '🎵 Áudio carregado (' + formatDuration(dur) + ')';
+                    document.getElementById('audioSelector').style.display = 'none';
                 };
-                document.getElementById('audioSelector').style.display = 'none';
-                document.getElementById('createMediaStatus').textContent = '🎵 Áudio selecionado';
             };
 
             function resetAudioRecorder() {
@@ -4009,8 +4627,11 @@
                 isPaused = false;
                 recordTimer = 0;
                 audioChunks = [];
-                document.getElementById('recordBtn').className = 'record-btn';
-                document.getElementById('recordBtn').innerHTML = '<i class="fas fa-microphone"></i>';
+                const recordBtn = document.getElementById('recordBtn');
+                if (recordBtn) {
+                    recordBtn.className = 'record-btn';
+                    recordBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+                }
                 document.getElementById('recordTimer').textContent = '0:00';
                 document.getElementById('pauseBtn').disabled = true;
                 document.getElementById('stopBtn').disabled = true;
@@ -4038,10 +4659,8 @@
                     mediaRecorder.onstop = () => {
                         const blob = new Blob(audioChunks, { type: 'audio/webm' });
                         if (blob.size > 0) {
-                            audioBlob = blob;
+                            selectedAudioFile = blob;
                             audioUrl = URL.createObjectURL(blob);
-                            selectedFile = blob;
-                            selectedFileType = 'audio';
                             document.getElementById('createMediaStatus').textContent =
                                 '🎵 Áudio gravado (' + Math.round(blob.size / 1024) + 'KB)';
                         } else {
@@ -4063,9 +4682,11 @@
                         if (!isPaused && isRecording) {
                             recordTimer++;
                             document.getElementById('recordTimer').textContent = formatDuration(recordTimer);
-                            if (recordTimer >= 120) { stopRecording();
+                            if (recordTimer >= MAX_AUDIO_DURATION) {
+                                stopRecording();
                                 document.getElementById('createMediaStatus').textContent =
-                                    '⏱️ Limite de 2 minutos'; }
+                                    '⏱️ Limite de 1min30s atingido';
+                            }
                         }
                     }, 1000);
                     updateWaveVisual();
@@ -4122,12 +4743,10 @@
             };
 
             window.confirmAudio = function() {
-                if (audioBlob) {
+                if (selectedAudioFile) {
                     document.getElementById('audioSelector').style.display = 'none';
                     document.getElementById('createMediaStatus').textContent =
                         '🎵 Áudio pronto (' + formatDuration(recordTimer) + ')';
-                    selectedFile = audioBlob;
-                    selectedFileType = 'audio';
                 } else {
                     document.getElementById('createMediaStatus').textContent = '⚠️ Nenhum áudio gravado';
                 }
@@ -4140,9 +4759,9 @@
             };
 
             // ============================================================
-            // HANDLE FILE SELECT (prévia da mídia)
+            // IMAGEM / VÍDEO
             // ============================================================
-            window.handleFileSelect = function(event) {
+            window.handleFileSelect = function(event, type) {
                 const file = event.target.files[0];
                 if (!file) return;
 
@@ -4150,9 +4769,11 @@
                 const img = document.getElementById('createPreviewImg');
                 const video = document.getElementById('createPreviewVideo');
 
-                if (file.type.startsWith('image/')) {
-                    selectedFile = file;
-                    selectedFileType = 'image';
+                document.querySelectorAll('.media-btn').forEach(b => b.classList.remove('active'));
+
+                if (type === 'image') {
+                    selectedImageFile = file;
+                    document.querySelectorAll('.media-btn')[0].classList.add('active');
                     const reader = new FileReader();
                     reader.onload = function(ev) {
                         img.src = ev.target.result;
@@ -4162,9 +4783,9 @@
                         document.getElementById('createMediaStatus').textContent = '📷 Imagem selecionada';
                     };
                     reader.readAsDataURL(file);
-                } else if (file.type.startsWith('video/')) {
-                    selectedFile = file;
-                    selectedFileType = 'video';
+                } else if (type === 'video') {
+                    selectedVideoFile = file;
+                    document.querySelectorAll('.media-btn')[1].classList.add('active');
                     const reader = new FileReader();
                     reader.onload = function(ev) {
                         video.src = ev.target.result;
@@ -4179,61 +4800,87 @@
             };
 
             // ============================================================
-            // SUBMIT POST + NOTIFICAÇÕES DE MENÇÃO
+            // SUBMIT POST
             // ============================================================
             window.submitPost = async function() {
                 const content = document.getElementById('createPostContent').value.trim();
-                if (!content && !selectedFile) {
+                if (!content && !selectedImageFile && !selectedAudioFile && !selectedVideoFile) {
                     document.getElementById('createMediaStatus').textContent = '⚠️ Digite algo ou adicione uma mídia';
                     return;
                 }
-                const btn = document.querySelector('.btn-submit');
+                const btn = document.querySelector('.create-post-page .btn-submit');
                 btn.disabled = true;
-                btn.textContent = 'Publicando…';
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publicando…';
 
                 try {
                     let mediaUrl = null,
                         mediaType = null,
+                        audioUrl = null,
                         audioDuration = null;
-                    if (selectedFile) {
-                        let fileToUpload = selectedFile;
-                        if (!fileToUpload.name) {
-                            const mimeType = fileToUpload.type || 'application/octet-stream';
-                            const ext = mimeType.split('/')[1] || 'bin';
-                            fileToUpload = new File([fileToUpload], 'media.' + ext, { type: mimeType });
-                        }
-                        const fileExt = fileToUpload.name.split('.').pop();
-                        const fileName = currentUser.id + '-' + Date.now() + '.' + fileExt;
+
+                    if (selectedImageFile) {
+                        const fileExt = selectedImageFile.name.split('.').pop();
+                        const fileName = currentUser.id + '-' + Date.now() + '-img.' + fileExt;
                         const { error: uploadError } = await supabase.storage
                             .from('posts')
-                            .upload(fileName, fileToUpload, { cacheControl: '3600' });
-                        if (uploadError) {
-                            console.error('Erro no upload:', uploadError);
-                            throw new Error('Falha ao enviar arquivo: ' + uploadError.message);
-                        }
+                            .upload(fileName, selectedImageFile, { cacheControl: '3600' });
+                        if (uploadError) throw new Error('Falha ao enviar imagem: ' + uploadError.message);
                         const { data: urlData } = supabase.storage
                             .from('posts')
                             .getPublicUrl(fileName);
                         mediaUrl = urlData.publicUrl;
-                        mediaType = selectedFileType || 'image';
-                        if (mediaType === 'audio') {
-                            audioDuration = recordTimer || 30;
-                        }
+                        mediaType = 'image';
                     }
 
-                    const { data: post, error } = await supabase.from('posts').insert({
+                    if (selectedVideoFile) {
+                        const fileExt = selectedVideoFile.name.split('.').pop();
+                        const fileName = currentUser.id + '-' + Date.now() + '-vid.' + fileExt;
+                        const { error: uploadError } = await supabase.storage
+                            .from('posts')
+                            .upload(fileName, selectedVideoFile, { cacheControl: '3600' });
+                        if (uploadError) throw new Error('Falha ao enviar vídeo: ' + uploadError.message);
+                        const { data: urlData } = supabase.storage
+                            .from('posts')
+                            .getPublicUrl(fileName);
+                        mediaUrl = urlData.publicUrl;
+                        mediaType = 'video';
+                    }
+
+                    if (selectedAudioFile) {
+                        const fileExt = selectedAudioFile.name ? selectedAudioFile.name.split('.').pop() : 'webm';
+                        const fileName = currentUser.id + '-' + Date.now() + '-audio.' + fileExt;
+                        const { error: uploadError } = await supabase.storage
+                            .from('posts')
+                            .upload(fileName, selectedAudioFile, { cacheControl: '3600' });
+                        if (uploadError) throw new Error('Falha ao enviar áudio: ' + uploadError.message);
+                        const { data: urlData } = supabase.storage
+                            .from('posts')
+                            .getPublicUrl(fileName);
+                        audioUrl = urlData.publicUrl;
+                        audioDuration = recordTimer || 0;
+                    }
+
+                    const postData = {
                         user_id: currentUser.id,
                         content: content || null,
                         media_url: mediaUrl,
                         media_type: mediaType,
+                        audio_url: audioUrl,
                         audio_duration: audioDuration,
                         background_color: null,
                         feeling: null
-                    }).select().single();
+                    };
+
+                    if (audioUrl && !mediaUrl) {
+                        postData.media_url = audioUrl;
+                        postData.media_type = 'audio';
+                        postData.audio_url = null;
+                    }
+
+                    const { data: post, error } = await supabase.from('posts').insert(postData).select().single();
 
                     if (error) throw error;
 
-                    // Detectar menções no texto
                     if (content) {
                         const mentions = content.match(/@([a-zA-Z0-9_]+)/g);
                         if (mentions) {
@@ -4253,70 +4900,30 @@
                     document.getElementById('createPreview').style.display = 'none';
                     document.getElementById('createPreviewImg').style.display = 'none';
                     document.getElementById('createPreviewVideo').style.display = 'none';
-                    document.getElementById('createFileInput').value = '';
-                    document.getElementById('audioFileInput').value = '';
-                    selectedFile = null;
-                    selectedFileType = null;
+                    document.getElementById('createImageInput').value = '';
+                    document.getElementById('createVideoInput').value = '';
+                    document.getElementById('createAudioInput').value = '';
+                    selectedImageFile = null;
+                    selectedAudioFile = null;
+                    selectedVideoFile = null;
                     audioBlob = null;
                     audioUrl = null;
+                    document.querySelectorAll('.media-btn').forEach(b => b.classList.remove('active'));
                     setTimeout(() => goToFeed(), 500);
                 } catch (error) {
                     console.error('Erro ao publicar:', error);
                     document.getElementById('createMediaStatus').textContent = '❌ Erro: ' + error.message;
                 }
                 btn.disabled = false;
-                btn.textContent = 'Publicar';
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i> Publicar';
             };
 
             // ============================================================
-            // NOTIFICAÇÕES
+            // NAVEGAÇÃO EXTERNA
             // ============================================================
-            async function loadNotifications() {
-                const { data, error } = await supabase
-                    .from('notifications')
-                    .select('id')
-                    .eq('user_id', currentUser.id)
-                    .eq('read', false);
-                if (error) return;
-                const badge = document.getElementById('notifBadge');
-                if (data && data.length > 0) {
-                    badge.style.display = 'flex';
-                    badge.textContent = data.length > 9 ? '9+' : data.length;
-                } else {
-                    badge.style.display = 'none';
-                }
-            }
-
             window.openNotifications = () => window.location.href = 'notificacoes.html';
             window.openFriends = () => window.location.href = 'amigos.html';
             window.openMessages = () => window.location.href = 'chat.html';
-
-            // ============================================================
-            // UTILITÁRIOS
-            // ============================================================
-            function getTimeAgo(date) {
-                const diff = Date.now() - new Date(date).getTime();
-                const m = Math.floor(diff / 60000),
-                    h = Math.floor(diff / 3600000),
-                    d = Math.floor(diff / 86400000);
-                if (m < 1) return 'agora';
-                if (m < 60) return m + 'm';
-                if (h < 24) return h + 'h';
-                if (d < 7) return d + 'd';
-                return new Date(date).toLocaleDateString('pt-BR');
-            }
-
-            function formatDuration(seconds) {
-                const m = Math.floor(seconds / 60);
-                const s = seconds % 60;
-                return m + ':' + s.toString().padStart(2, '0');
-            }
-
-            function escapeHtml(text) {
-                const div = document.createElement('div');
-                div.textContent = text;
-                return div.innerHTML;
-            }
 
             // ============================================================
             // INIT
@@ -4324,49 +4931,8 @@
             document.addEventListener('DOMContentLoaded', () => {
                 checkAuth();
                 setInterval(loadNotifications, 30000);
+                setInterval(updateMessageBadge, 15000);
             });
-
-            // Expor funções globalmente
-            window.goToFeed = goToFeed;
-            window.goToPost = goToPost;
-            window.goToCreatePost = goToCreatePost;
-            window.goToExplore = goToExplore;
-            window.goToMyProfile = goToMyProfile;
-            window.goToUserProfile = goToUserProfile;
-            window.openUserCard = openUserCard;
-            window.closeUserCard = closeUserCard;
-            window.toggleLike = toggleLike;
-            window.sharePost = sharePost;
-            window.openStoryFullscreen = openStoryFullscreen;
-            window.closeStoryFullscreen = closeStoryFullscreen;
-            window.nextStory = nextStory;
-            window.prevStory = prevStory;
-            window.deleteCurrentStory = deleteCurrentStory;
-            window.openStoryCreateOptions = openStoryCreateOptions;
-            window.closeStoryCreateOptions = closeStoryCreateOptions;
-            window.startStoryText = startStoryText;
-            window.closeStoryTextEditor = closeStoryTextEditor;
-            window.publishStoryText = publishStoryText;
-            window.handleStoryMediaFile = handleStoryMediaFile;
-            window.closeStoryMediaPreview = closeStoryMediaPreview;
-            window.publishStoryMedia = publishStoryMedia;
-            window.openReels = openReels;
-            window.closeReels = closeReels;
-            window.toggleAudioSelector = toggleAudioSelector;
-            window.showAudioRecorder = showAudioRecorder;
-            window.loadAudioFile = loadAudioFile;
-            window.toggleRecording = toggleRecording;
-            window.pauseRecording = pauseRecording;
-            window.stopRecording = stopRecording;
-            window.confirmAudio = confirmAudio;
-            window.cancelAudio = cancelAudio;
-            window.submitPost = submitPost;
-            window.openNotifications = openNotifications;
-            window.openFriends = openFriends;
-            window.openMessages = openMessages;
-            window.insertMention = insertMention;
-            window.filterMentions = filterMentions;
-            window.handleFileSelect = handleFileSelect;
         })();
     </script>
 </body>
