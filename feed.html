@@ -8,11 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet" />
     <style>
         /* ===== RESET & VARIÁVEIS ===== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
             --bg: #0b0b12;
@@ -37,16 +33,9 @@
             overflow-x: hidden;
         }
 
-        ::-webkit-scrollbar {
-            width: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--accent);
-            border-radius: 10px;
-        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
 
         /* ===== TOP BAR ===== */
         .top-bar {
@@ -134,16 +123,8 @@
             position: relative;
         }
 
-        .top-bar .avatar-mini:hover {
-            border-color: var(--accent);
-            transform: scale(1.05);
-        }
-
-        .top-bar .avatar-mini img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .top-bar .avatar-mini:hover { border-color: var(--accent); transform: scale(1.05); }
+        .top-bar .avatar-mini img { width: 100%; height: 100%; object-fit: cover; }
 
         .top-bar .avatar-mini .fallback {
             width: 100%;
@@ -176,10 +157,7 @@
         }
 
         /* ===== FEED ===== */
-        .container {
-            max-width: 100%;
-            padding: 0 12px 20px;
-        }
+        .container { max-width: 100%; padding: 0 12px 20px; }
 
         /* ===== STORIES ===== */
         .stories-row {
@@ -191,9 +169,7 @@
             -webkit-overflow-scrolling: touch;
         }
 
-        .stories-row::-webkit-scrollbar {
-            display: none;
-        }
+        .stories-row::-webkit-scrollbar { display: none; }
 
         .story-item {
             flex-shrink: 0;
@@ -203,9 +179,7 @@
             transition: transform var(--transition);
         }
 
-        .story-item:hover {
-            transform: translateY(-2px);
-        }
+        .story-item:hover { transform: translateY(-2px); }
 
         .story-item .story-circle {
             width: 72px;
@@ -218,9 +192,7 @@
             transition: box-shadow var(--transition);
         }
 
-        .story-item .story-circle:hover {
-            box-shadow: 0 0 0 4px var(--accent-glow);
-        }
+        .story-item .story-circle:hover { box-shadow: 0 0 0 4px var(--accent-glow); }
 
         .story-item .story-circle .inner {
             width: 100%;
@@ -235,11 +207,7 @@
             position: relative;
         }
 
-        .story-item .story-circle .inner img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .story-item .story-circle .inner img { width: 100%; height: 100%; object-fit: cover; }
 
         .story-item .story-circle .inner .fallback {
             font-size: 28px;
@@ -271,9 +239,7 @@
             max-width: 72px;
         }
 
-        .story-item.add-story .story-circle {
-            background: rgba(255, 255, 255, 0.04);
-        }
+        .story-item.add-story .story-circle { background: rgba(255, 255, 255, 0.04); }
 
         .story-item.add-story .story-circle .inner {
             border: 2px dashed rgba(255, 255, 255, 0.12);
@@ -281,9 +247,7 @@
             color: rgba(255, 255, 255, 0.15);
         }
 
-        .story-item.add-story .story-name {
-            color: var(--accent);
-        }
+        .story-item.add-story .story-name { color: var(--accent); }
 
         /* ===== CREATE POST MINI ===== */
         .create-post {
@@ -299,10 +263,7 @@
             transition: border var(--transition), background var(--transition);
         }
 
-        .create-post:hover {
-            border-color: rgba(255, 255, 255, 0.12);
-            background: #18182a;
-        }
+        .create-post:hover { border-color: rgba(255, 255, 255, 0.12); background: #18182a; }
 
         .create-post .avatar-mini {
             width: 40px;
@@ -312,11 +273,7 @@
             flex-shrink: 0;
         }
 
-        .create-post .avatar-mini img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .create-post .avatar-mini img { width: 100%; height: 100%; object-fit: cover; }
 
         .create-post .avatar-mini .fallback {
             width: 100%;
@@ -344,9 +301,7 @@
             cursor: pointer;
         }
 
-        .create-post input::placeholder {
-            color: rgba(255, 255, 255, 0.2);
-        }
+        .create-post input::placeholder { color: rgba(255, 255, 255, 0.2); }
 
         /* ===== POST CARD ===== */
         .post-card {
@@ -361,19 +316,11 @@
             opacity: 0;
         }
 
-        .post-card:hover {
-            border-color: rgba(255, 255, 255, 0.12);
-        }
+        .post-card:hover { border-color: rgba(255, 255, 255, 0.12); }
 
         @keyframes fadeUp {
-            0% {
-                opacity: 0;
-                transform: translateY(12px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            0% { opacity: 0; transform: translateY(12px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
 
         .post-card .post-header {
@@ -394,15 +341,8 @@
             transition: border var(--transition);
         }
 
-        .post-card .post-header .avatar:hover {
-            border-color: var(--accent);
-        }
-
-        .post-card .post-header .avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .post-card .post-header .avatar:hover { border-color: var(--accent); }
+        .post-card .post-header .avatar img { width: 100%; height: 100%; object-fit: cover; }
 
         .post-card .post-header .avatar .fallback {
             width: 100%;
@@ -415,10 +355,7 @@
             color: #fff;
         }
 
-        .post-card .post-header .user-info {
-            flex: 1;
-            min-width: 0;
-        }
+        .post-card .post-header .user-info { flex: 1; min-width: 0; }
 
         .post-card .post-header .user-info .name {
             font-weight: 700;
@@ -428,9 +365,7 @@
             transition: color var(--transition);
         }
 
-        .post-card .post-header .user-info .name:hover {
-            color: var(--accent);
-        }
+        .post-card .post-header .user-info .name:hover { color: var(--accent); }
 
         .post-card .post-header .user-info .username {
             font-size: 12px;
@@ -445,9 +380,7 @@
         }
 
         /* ===== CONTEÚDO ===== */
-        .post-card .post-content-wrapper {
-            padding: 0 16px 12px;
-        }
+        .post-card .post-content-wrapper { padding: 0 16px 12px; }
 
         .post-card .post-content-wrapper .post-text {
             font-size: 15px;
@@ -480,6 +413,7 @@
             position: relative;
             width: 100%;
             background: #000;
+            cursor: pointer;
         }
 
         .post-card .post-media .video-wrapper video {
@@ -488,6 +422,7 @@
             max-height: 500px;
             object-fit: cover;
             background: #000;
+            pointer-events: none;
         }
 
         .post-card .post-media .video-wrapper .play-overlay {
@@ -499,13 +434,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(0, 0, 0, 0.2);
-            transition: background 0.3s;
+            background: rgba(0, 0, 0, 0.15);
+            transition: background 0.3s, opacity 0.3s;
             cursor: pointer;
+            opacity: 1;
+            pointer-events: none;
         }
 
-        .post-card .post-media .video-wrapper .play-overlay:hover {
-            background: rgba(0, 0, 0, 0.4);
+        .post-card .post-media .video-wrapper.playing .play-overlay {
+            opacity: 0;
         }
 
         .post-card .post-media .video-wrapper .play-overlay .play-btn-large {
@@ -523,10 +460,25 @@
             transition: all 0.3s;
         }
 
-        .post-card .post-media .video-wrapper .play-overlay .play-btn-large:hover {
-            transform: scale(1.1);
-            background: rgba(255, 255, 255, 0.3);
+        .post-card .post-media .video-wrapper .video-mute-badge {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            z-index: 3;
+            backdrop-filter: blur(4px);
+            transition: background 0.2s;
         }
+
+        .post-card .post-media .video-wrapper .video-mute-badge:hover { background: rgba(0, 0, 0, 0.85); }
 
         /* ===== ÁUDIO COM IMAGEM (overlay) ===== */
         .post-card .post-media .audio-img-overlay {
@@ -603,9 +555,7 @@
             transition: transform 0.1s linear;
         }
 
-        .post-card .post-media .audio-img-overlay .audio-disc-badge.spinning {
-            animation: spinDisc 4s linear infinite;
-        }
+        .post-card .post-media .audio-img-overlay .audio-disc-badge.spinning { animation: spinDisc 4s linear infinite; }
 
         .post-card .post-media .audio-img-overlay .audio-disc-badge::after {
             content: '';
@@ -652,9 +602,7 @@
             box-shadow: 0 4px 16px var(--accent-glow);
         }
 
-        .post-card .post-media .audio-img-overlay .audio-overlay-controls .audio-controls .play-btn:hover {
-            transform: scale(1.08);
-        }
+        .post-card .post-media .audio-img-overlay .audio-overlay-controls .audio-controls .play-btn:hover { transform: scale(1.08); }
 
         .post-card .post-media .audio-img-overlay .audio-overlay-controls .audio-controls .a-progress {
             flex: 1;
@@ -688,9 +636,7 @@
             transition: opacity 0.2s;
         }
 
-        .post-card .post-media .audio-img-overlay .audio-overlay-controls .audio-controls:hover .a-fill::after {
-            opacity: 1;
-        }
+        .post-card .post-media .audio-img-overlay .audio-overlay-controls .audio-controls:hover .a-fill::after { opacity: 1; }
 
         .post-card .post-media .audio-img-overlay .audio-overlay-controls .audio-controls .a-time {
             font-size: 12px;
@@ -759,15 +705,9 @@
             z-index: 2;
         }
 
-        .post-card .post-media .audio-player-wrap .disc.spinning {
-            animation: spinDisc 4s linear infinite;
-        }
+        .post-card .post-media .audio-player-wrap .disc.spinning { animation: spinDisc 4s linear infinite; }
 
-        @keyframes spinDisc {
-            to {
-                transform: rotate(360deg);
-            }
-        }
+        @keyframes spinDisc { to { transform: rotate(360deg); } }
 
         .post-card .post-media .audio-player-wrap .audio-controls {
             width: 100%;
@@ -795,9 +735,7 @@
             box-shadow: 0 4px 16px var(--accent-glow);
         }
 
-        .post-card .post-media .audio-player-wrap .audio-controls .play-btn:hover {
-            transform: scale(1.06);
-        }
+        .post-card .post-media .audio-player-wrap .audio-controls .play-btn:hover { transform: scale(1.06); }
 
         .post-card .post-media .audio-player-wrap .audio-controls .a-progress {
             flex: 1;
@@ -865,24 +803,14 @@
             padding: 0 4px;
         }
 
-        .post-card .post-actions .like-btn.liked {
-            color: #ff4757;
-        }
+        .post-card .post-actions .like-btn.liked { color: #ff4757; }
 
-        .post-card .post-actions .like-btn.liked i {
-            animation: heartPop 0.4s ease;
-        }
+        .post-card .post-actions .like-btn.liked i { animation: heartPop 0.4s ease; }
 
         @keyframes heartPop {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.3);
-            }
-            100% {
-                transform: scale(1);
-            }
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
         }
 
         .post-card .post-actions .count-badge {
@@ -893,13 +821,9 @@
             font-weight: 500;
         }
 
-        .post-card .post-actions .count-badge.liked-count {
-            color: #ff4757;
-        }
+        .post-card .post-actions .count-badge.liked-count { color: #ff4757; }
 
-        .post-card .post-actions .share-btn {
-            font-size: 20px;
-        }
+        .post-card .post-actions .share-btn { font-size: 20px; }
 
         /* ===== REELS OVERLAY ===== */
         .reels-overlay {
@@ -915,9 +839,7 @@
             overflow: hidden;
         }
 
-        .reels-overlay.active {
-            display: flex;
-        }
+        .reels-overlay.active { display: flex; }
 
         .reels-overlay .reels-wrapper {
             flex: 1;
@@ -969,9 +891,7 @@
             transition: color 0.3s;
         }
 
-        .reels-overlay .reels-wrapper .reels-slide .reels-close-top:hover {
-            color: #fff;
-        }
+        .reels-overlay .reels-wrapper .reels-slide .reels-close-top:hover { color: #fff; }
 
         .reels-overlay .reels-wrapper .reels-slide .reels-bottom {
             position: absolute;
@@ -1064,9 +984,7 @@
             text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
         }
 
-        .reels-overlay .reels-wrapper .reels-slide .reels-actions button:hover {
-            transform: scale(1.1);
-        }
+        .reels-overlay .reels-wrapper .reels-slide .reels-actions button:hover { transform: scale(1.1); }
 
         .reels-overlay .reels-wrapper .reels-slide .reels-actions button .reels-count {
             font-size: 14px;
@@ -1074,9 +992,7 @@
             color: rgba(255, 255, 255, 0.85);
         }
 
-        .reels-overlay .reels-wrapper .reels-slide .reels-actions .reels-like-btn.liked {
-            color: #ff4757;
-        }
+        .reels-overlay .reels-wrapper .reels-slide .reels-actions .reels-like-btn.liked { color: #ff4757; }
 
         /* ===== LOADING / EMPTY ===== */
         .loading-spinner {
@@ -1085,16 +1001,9 @@
             color: var(--text-secondary);
         }
 
-        .loading-spinner i {
-            font-size: 30px;
-            animation: spin 1s linear infinite;
-        }
+        .loading-spinner i { font-size: 30px; animation: spin 1s linear infinite; }
 
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         .empty-state {
             text-align: center;
@@ -1102,22 +1011,11 @@
             color: var(--text-secondary);
         }
 
-        .empty-state i {
-            font-size: 44px;
-            margin-bottom: 12px;
-            color: var(--text-secondary);
-        }
+        .empty-state i { font-size: 44px; margin-bottom: 12px; color: var(--text-secondary); }
 
-        .empty-state h3 {
-            color: var(--text-secondary);
-            font-weight: 500;
-            font-size: 17px;
-        }
+        .empty-state h3 { color: var(--text-secondary); font-weight: 500; font-size: 17px; }
 
-        .empty-state p {
-            font-size: 14px;
-            margin-top: 4px;
-        }
+        .empty-state p { font-size: 14px; margin-top: 4px; }
 
         /* ===== BOTTOM NAV ===== */
         .bottom-nav {
@@ -1150,20 +1048,11 @@
             font-family: var(--font);
         }
 
-        .bottom-nav .nav-item span {
-            font-size: 9px;
-            font-weight: 500;
-            letter-spacing: 0.3px;
-        }
+        .bottom-nav .nav-item span { font-size: 9px; font-weight: 500; letter-spacing: 0.3px; }
 
-        .bottom-nav .nav-item.active {
-            color: var(--accent);
-        }
+        .bottom-nav .nav-item.active { color: var(--accent); }
 
-        .bottom-nav .nav-item:hover {
-            color: #fff;
-            transform: translateY(-2px);
-        }
+        .bottom-nav .nav-item:hover { color: #fff; transform: translateY(-2px); }
 
         .bottom-nav .nav-item .badge-nav {
             position: absolute;
@@ -1198,11 +1087,9 @@
             transition: transform var(--transition);
         }
 
-        .bottom-nav .nav-item .nav-icon .plus-circle:hover {
-            transform: scale(1.06);
-        }
+        .bottom-nav .nav-item .nav-icon .plus-circle:hover { transform: scale(1.06); }
 
-        /* ===== CREATE POST PAGE ===== */
+        /* ===== PÁGINAS INTERNAS ===== */
         .page {
             display: none;
             max-width: 100%;
@@ -1210,9 +1097,7 @@
             min-height: 80vh;
         }
 
-        .page.active {
-            display: block;
-        }
+        .page.active { display: block; }
 
         .page .back-btn {
             background: none;
@@ -1228,20 +1113,284 @@
             transition: color var(--transition);
         }
 
-        .page .back-btn:hover {
+        .page .back-btn:hover { color: #fff; }
+
+        /* ===== PÁGINA DE PESQUISA ===== */
+        .search-page { max-width: 700px; margin: 0 auto; }
+
+        .search-page .search-header {
+            position: relative;
+            margin-bottom: 18px;
+        }
+
+        .search-page .search-header input {
+            width: 100%;
+            background: var(--card-bg);
+            border: 1.5px solid var(--border);
+            border-radius: 40px;
+            padding: 14px 46px 14px 46px;
+            color: var(--text);
+            font-size: 16px;
+            font-family: var(--font);
+            outline: none;
+            transition: border var(--transition), box-shadow var(--transition);
+        }
+
+        .search-page .search-header input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        .search-page .search-header input::placeholder { color: rgba(255, 255, 255, 0.3); }
+
+        .search-page .search-header .search-icon-left {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 16px;
+            pointer-events: none;
+        }
+
+        .search-page .search-header .search-clear {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 50%;
+            transition: background var(--transition), color var(--transition);
+        }
+
+        .search-page .search-header .search-clear:hover {
+            background: rgba(255, 255, 255, 0.06);
             color: #fff;
         }
 
-        .create-post-page {
-            max-width: 600px;
-            margin: 0 auto;
+        .search-page .search-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 18px;
+            border-bottom: 1px solid var(--border);
         }
+
+        .search-page .search-tabs .search-tab {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-family: var(--font);
+            font-weight: 600;
+            font-size: 14px;
+            padding: 10px 16px;
+            cursor: pointer;
+            position: relative;
+            transition: color var(--transition);
+        }
+
+        .search-page .search-tabs .search-tab:hover { color: #fff; }
+
+        .search-page .search-tabs .search-tab.active { color: var(--accent); }
+
+        .search-page .search-tabs .search-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 12px;
+            right: 12px;
+            height: 2px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        .search-page .search-results { min-height: 200px; }
+
+        .search-page .search-results .search-user-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background var(--transition), border var(--transition);
+        }
+
+        .search-page .search-results .search-user-item:hover {
+            background: #18182a;
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .search-page .search-results .search-user-item .su-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-page .search-results .search-user-item .su-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .search-page .search-results .search-user-item .su-avatar .fallback {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .search-page .search-results .search-user-item .su-info { flex: 1; min-width: 0; }
+
+        .search-page .search-results .search-user-item .su-info .su-name {
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .search-page .search-results .search-user-item .su-info .su-username {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .search-page .search-results .search-user-item .su-action {
+            background: linear-gradient(135deg, #6c63ff, #9b4dff);
+            border: none;
+            border-radius: 30px;
+            padding: 7px 16px;
+            color: #fff;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            font-family: var(--font);
+            flex-shrink: 0;
+            transition: transform var(--transition);
+        }
+
+        .search-page .search-results .search-user-item .su-action:hover { transform: scale(1.05); }
+
+        .search-page .search-results .search-post-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background var(--transition), border var(--transition);
+            align-items: center;
+        }
+
+        .search-page .search-results .search-post-item:hover {
+            background: #18182a;
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .search-page .search-results .search-post-item .sp-thumb {
+            width: 68px;
+            height: 68px;
+            border-radius: 10px;
+            overflow: hidden;
+            flex-shrink: 0;
+            background: #000;
+            position: relative;
+        }
+
+        .search-page .search-results .search-post-item .sp-thumb img,
+        .search-page .search-results .search-post-item .sp-thumb video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .search-page .search-results .search-post-item .sp-thumb .sp-video-badge {
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .search-page .search-results .search-post-item .sp-info { flex: 1; min-width: 0; }
+
+        .search-page .search-results .search-post-item .sp-info .sp-text {
+            font-size: 14px;
+            color: var(--text);
+            line-height: 1.4;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .search-page .search-results .search-post-item .sp-info .sp-meta {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-page .search-results .search-empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+
+        .search-page .search-results .search-empty i {
+            font-size: 48px;
+            color: var(--border);
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .search-page .search-results .search-empty h3 {
+            font-weight: 500;
+            font-size: 17px;
+            color: var(--text-secondary);
+        }
+
+        .search-page .search-results .search-empty p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* ===== CREATE POST PAGE ===== */
+        .create-post-page { max-width: 600px; margin: 0 auto; }
 
         .create-post-page .create-header {
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             padding: 16px;
             background: var(--card-bg);
             border-radius: var(--radius);
@@ -1257,11 +1406,7 @@
             border: 2px solid rgba(255, 255, 255, 0.06);
         }
 
-        .create-post-page .create-header .create-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .create-post-page .create-header .create-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
         .create-post-page .create-header .create-avatar .fallback {
             width: 100%;
@@ -1286,98 +1431,111 @@
             color: var(--text-secondary);
         }
 
-        .create-post-page textarea {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.04);
+        .create-post-page .textarea-wrapper {
+            position: relative;
+            background: var(--card-bg);
             border: 1px solid var(--border);
             border-radius: var(--radius);
-            padding: 16px;
-            color: var(--text);
-            font-size: 16px;
-            resize: vertical;
-            min-height: 140px;
-            font-family: var(--font);
-            outline: none;
+            padding: 4px;
             transition: border var(--transition);
-            line-height: 1.6;
         }
 
-        .create-post-page textarea:focus {
+        .create-post-page .textarea-wrapper:focus-within {
             border-color: var(--accent);
             box-shadow: 0 0 0 3px var(--accent-glow);
         }
 
-        .create-post-page textarea::placeholder {
-            color: rgba(255, 255, 255, 0.2);
+        .create-post-page textarea {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            color: var(--text);
+            font-size: 17px;
+            resize: vertical;
+            min-height: 160px;
+            font-family: var(--font);
+            outline: none;
+            line-height: 1.6;
+        }
+
+        .create-post-page textarea::placeholder { color: rgba(255, 255, 255, 0.25); }
+
+        .create-post-page .char-counter {
+            text-align: right;
+            font-size: 12px;
+            color: var(--text-secondary);
+            padding: 0 12px 8px;
         }
 
         .create-post-page .media-actions {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
             gap: 10px;
-            margin: 16px 0;
-            flex-wrap: wrap;
-            align-items: center;
-            padding: 12px;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
+            margin: 14px 0;
         }
 
         .create-post-page .media-actions .media-btn {
-            flex: 1;
-            min-width: 80px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
             gap: 6px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 12px;
-            padding: 12px 8px;
+            background: var(--card-bg);
+            border: 1.5px solid var(--border);
+            border-radius: 14px;
+            padding: 16px 8px;
             color: var(--text-secondary);
             cursor: pointer;
-            font-size: 12px;
+            font-size: 13px;
             font-family: var(--font);
             transition: all var(--transition);
+            font-weight: 500;
         }
 
         .create-post-page .media-actions .media-btn:hover {
-            background: rgba(255, 255, 255, 0.07);
+            background: rgba(255, 255, 255, 0.05);
             color: #fff;
             border-color: var(--accent);
             transform: translateY(-2px);
         }
 
         .create-post-page .media-actions .media-btn i {
-            font-size: 22px;
+            font-size: 24px;
             color: var(--accent);
         }
 
         .create-post-page .media-actions .media-btn.active {
-            background: rgba(108, 99, 255, 0.15);
+            background: rgba(108, 99, 255, 0.12);
             border-color: var(--accent);
             color: #fff;
+            box-shadow: 0 0 0 3px var(--accent-glow);
         }
 
         .create-post-page .media-status {
             font-size: 13px;
             color: var(--text-secondary);
-            margin-left: 4px;
-            width: 100%;
+            margin: 4px 0 10px;
+            padding: 10px 14px;
+            background: rgba(108, 99, 255, 0.08);
+            border: 1px solid rgba(108, 99, 255, 0.2);
+            border-radius: 10px;
             text-align: center;
+            min-height: 20px;
+            display: none;
         }
 
-        .create-post-page .mention-custom {
-            position: relative;
-            margin: 12px 0;
-        }
+        .create-post-page .media-status:not(:empty) { display: block; }
+
+        .create-post-page .mention-custom { position: relative; margin: 12px 0; }
 
         .create-post-page .mention-custom input {
             width: 100%;
-            background: rgba(255, 255, 255, 0.04);
+            background: var(--card-bg);
             border: 1px solid var(--border);
             border-radius: 40px;
-            padding: 12px 18px;
+            padding: 14px 20px;
             color: var(--text);
             font-size: 14px;
             outline: none;
@@ -1385,9 +1543,7 @@
             transition: border var(--transition);
         }
 
-        .create-post-page .mention-custom input:focus {
-            border-color: var(--accent);
-        }
+        .create-post-page .mention-custom input:focus { border-color: var(--accent); }
 
         .create-post-page .mention-custom .mention-dropdown {
             display: none;
@@ -1402,11 +1558,10 @@
             overflow-y: auto;
             z-index: 50;
             padding: 4px 0;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
         }
 
-        .create-post-page .mention-custom .mention-dropdown.active {
-            display: block;
-        }
+        .create-post-page .mention-custom .mention-dropdown.active { display: block; }
 
         .create-post-page .mention-custom .mention-dropdown .mention-item {
             display: flex;
@@ -1456,7 +1611,7 @@
             margin-bottom: 16px;
             border-radius: var(--radius);
             overflow: hidden;
-            max-height: 320px;
+            max-height: 380px;
             background: #000;
             border: 1px solid var(--border);
             position: relative;
@@ -1464,15 +1619,15 @@
 
         .create-post-page .preview-container .preview-remove {
             position: absolute;
-            top: 8px;
-            right: 8px;
-            width: 32px;
-            height: 32px;
+            top: 10px;
+            right: 10px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             background: rgba(0, 0, 0, 0.7);
             border: none;
             color: #fff;
-            font-size: 16px;
+            font-size: 18px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -1481,15 +1636,14 @@
             transition: background 0.2s;
         }
 
-        .create-post-page .preview-container .preview-remove:hover {
-            background: #ff4757;
-        }
+        .create-post-page .preview-container .preview-remove:hover { background: #ff4757; }
 
         .create-post-page .preview-container img,
         .create-post-page .preview-container video {
             width: 100%;
-            max-height: 320px;
-            object-fit: cover;
+            max-height: 380px;
+            object-fit: contain;
+            background: #000;
         }
 
         .create-post-page .audio-selector {
@@ -1510,7 +1664,7 @@
         .create-post-page .audio-selector .audio-options button {
             flex: 1;
             min-width: 140px;
-            padding: 12px;
+            padding: 14px;
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--border);
             border-radius: var(--radius);
@@ -1530,9 +1684,7 @@
             border-color: var(--accent);
         }
 
-        .create-post-page .audio-selector .audio-options button i {
-            color: var(--accent);
-        }
+        .create-post-page .audio-selector .audio-options button i { color: var(--accent); }
 
         .create-post-page .audio-recorder {
             display: none;
@@ -1571,13 +1723,8 @@
         }
 
         @keyframes pulseRed {
-            0%,
-            100% {
-                box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.4);
-            }
-            50% {
-                box-shadow: 0 0 0 10px rgba(255, 71, 87, 0);
-            }
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(255, 71, 87, 0); }
         }
 
         .create-post-page .audio-recorder .recorder-controls .timer {
@@ -1605,14 +1752,9 @@
             transition: height 0.1s;
         }
 
-        .create-post-page .audio-recorder .recorder-controls .wave-visual .bar.active {
-            background: var(--accent);
-        }
+        .create-post-page .audio-recorder .recorder-controls .wave-visual .bar.active { background: var(--accent); }
 
-        .create-post-page .audio-recorder .recorder-controls .controls-group {
-            display: flex;
-            gap: 6px;
-        }
+        .create-post-page .audio-recorder .recorder-controls .controls-group { display: flex; gap: 6px; }
 
         .create-post-page .audio-recorder .recorder-controls .controls-group button {
             width: 38px;
@@ -1687,10 +1829,7 @@
             transition: transform var(--transition);
         }
 
-        .explore-page .explore-grid .explore-item:hover {
-            transform: scale(1.02);
-            z-index: 2;
-        }
+        .explore-page .explore-grid .explore-item:hover { transform: scale(1.02); z-index: 2; }
 
         .explore-page .explore-grid .explore-item img,
         .explore-page .explore-grid .explore-item video {
@@ -1713,9 +1852,7 @@
             transition: opacity var(--transition);
         }
 
-        .explore-page .explore-grid .explore-item:hover .explore-overlay {
-            opacity: 1;
-        }
+        .explore-page .explore-grid .explore-item:hover .explore-overlay { opacity: 1; }
 
         .explore-page .explore-grid .explore-item .explore-overlay span {
             color: #fff;
@@ -1726,8 +1863,22 @@
             text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
         }
 
-        .explore-page .explore-grid .explore-item .explore-overlay span i {
-            font-size: 14px;
+        .explore-page .explore-grid .explore-item .explore-overlay span i { font-size: 14px; }
+
+        .explore-page .explore-grid .explore-item .explore-video-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.65);
+            color: #fff;
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 2;
+            backdrop-filter: blur(4px);
         }
 
         /* ===== STORY FULLSCREEN ===== */
@@ -1745,9 +1896,7 @@
             justify-content: center;
         }
 
-        .story-fullscreen.active {
-            display: flex;
-        }
+        .story-fullscreen.active { display: flex; }
 
         .story-fullscreen .story-container {
             width: 100%;
@@ -1801,11 +1950,7 @@
             border: 2px solid rgba(255, 255, 255, 0.15);
         }
 
-        .story-fullscreen .story-header .s-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .story-fullscreen .story-header .s-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
         .story-fullscreen .story-header .s-avatar .fallback {
             width: 100%;
@@ -1841,9 +1986,7 @@
             transition: color var(--transition);
         }
 
-        .story-fullscreen .story-header .s-close:hover {
-            color: #fff;
-        }
+        .story-fullscreen .story-header .s-close:hover { color: #fff; }
 
         .story-fullscreen .story-header .s-delete {
             background: none;
@@ -1856,9 +1999,7 @@
             margin-left: 4px;
         }
 
-        .story-fullscreen .story-header .s-delete:hover {
-            color: #ff6b81;
-        }
+        .story-fullscreen .story-header .s-delete:hover { color: #ff6b81; }
 
         .story-fullscreen .story-body {
             flex: 1;
@@ -1869,11 +2010,7 @@
             overflow: hidden;
         }
 
-        .story-fullscreen .story-body img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
+        .story-fullscreen .story-body img { width: 100%; height: 100%; object-fit: contain; }
 
         .story-fullscreen .story-body video {
             width: 100%;
@@ -1934,17 +2071,10 @@
             transition: color 0.3s;
         }
 
-        .story-fullscreen .story-nav:hover {
-            color: rgba(255, 255, 255, 0.6);
-        }
+        .story-fullscreen .story-nav:hover { color: rgba(255, 255, 255, 0.6); }
 
-        .story-fullscreen .story-nav.prev {
-            left: 0;
-        }
-
-        .story-fullscreen .story-nav.next {
-            right: 0;
-        }
+        .story-fullscreen .story-nav.prev { left: 0; }
+        .story-fullscreen .story-nav.next { right: 0; }
 
         /* ===== MODAL CRIAR STORY ===== */
         .story-create-overlay {
@@ -1963,9 +2093,7 @@
             flex-direction: column;
         }
 
-        .story-create-overlay.active {
-            display: flex;
-        }
+        .story-create-overlay.active { display: flex; }
 
         .story-create-overlay .story-create-box {
             background: #14141e;
@@ -2031,9 +2159,7 @@
             transition: color 0.3s;
         }
 
-        .story-create-overlay .story-create-box .create-close:hover {
-            color: #fff;
-        }
+        .story-create-overlay .story-create-box .create-close:hover { color: #fff; }
 
         /* ===== STORY TEXT EDITOR ===== */
         .story-text-editor {
@@ -2049,9 +2175,7 @@
             padding: 20px;
         }
 
-        .story-text-editor.active {
-            display: flex;
-        }
+        .story-text-editor.active { display: flex; }
 
         .story-text-editor .editor-header {
             display: flex;
@@ -2071,9 +2195,7 @@
             transition: color 0.3s;
         }
 
-        .story-text-editor .editor-header button:hover {
-            color: #fff;
-        }
+        .story-text-editor .editor-header button:hover { color: #fff; }
 
         .story-text-editor .editor-header .editor-title {
             font-weight: 600;
@@ -2109,9 +2231,7 @@
             font-size: 20px;
         }
 
-        .story-text-editor .editor-body .color-picker-grid .color-opt:hover {
-            transform: scale(1.1);
-        }
+        .story-text-editor .editor-body .color-picker-grid .color-opt:hover { transform: scale(1.1); }
 
         .story-text-editor .editor-body .color-picker-grid .color-opt.active {
             border-color: #fff;
@@ -2134,9 +2254,7 @@
             white-space: pre-wrap;
         }
 
-        .story-text-editor .editor-body textarea::placeholder {
-            color: rgba(255, 255, 255, 0.2);
-        }
+        .story-text-editor .editor-body textarea::placeholder { color: rgba(255, 255, 255, 0.2); }
 
         .story-text-editor .editor-body .btn-publish-story {
             padding: 14px;
@@ -2176,9 +2294,7 @@
             flex-direction: column;
         }
 
-        .story-media-preview.active {
-            display: flex;
-        }
+        .story-media-preview.active { display: flex; }
 
         .story-media-preview .preview-header {
             display: flex;
@@ -2199,9 +2315,7 @@
             transition: color 0.3s;
         }
 
-        .story-media-preview .preview-header button:hover {
-            color: #fff;
-        }
+        .story-media-preview .preview-header button:hover { color: #fff; }
 
         .story-media-preview .preview-header .preview-title {
             font-weight: 600;
@@ -2248,9 +2362,7 @@
             white-space: pre-wrap;
         }
 
-        .story-media-preview .preview-caption textarea::placeholder {
-            color: rgba(255, 255, 255, 0.3);
-        }
+        .story-media-preview .preview-caption textarea::placeholder { color: rgba(255, 255, 255, 0.3); }
 
         .story-media-preview .preview-caption .btn-publish-media {
             padding: 12px;
@@ -2293,9 +2405,7 @@
             padding: 20px;
         }
 
-        .user-card-overlay.active {
-            display: flex;
-        }
+        .user-card-overlay.active { display: flex; }
 
         .user-card {
             background: #14141e;
@@ -2311,14 +2421,8 @@
         }
 
         @keyframes cardPop {
-            from {
-                transform: scale(0.9);
-                opacity: 0;
-            }
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
 
         .user-card .close-card {
@@ -2333,9 +2437,7 @@
             transition: color var(--transition);
         }
 
-        .user-card .close-card:hover {
-            color: #fff;
-        }
+        .user-card .close-card:hover { color: #fff; }
 
         .user-card .avatar-large {
             width: 90px;
@@ -2346,11 +2448,7 @@
             border: 3px solid rgba(255, 255, 255, 0.06);
         }
 
-        .user-card .avatar-large img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .user-card .avatar-large img { width: 100%; height: 100%; object-fit: cover; }
 
         .user-card .avatar-large .fallback {
             width: 100%;
@@ -2364,50 +2462,21 @@
             background: var(--accent);
         }
 
-        .user-card .name {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--text);
-        }
+        .user-card .name { font-size: 20px; font-weight: 700; color: var(--text); }
 
-        .user-card .username {
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
+        .user-card .username { font-size: 14px; color: var(--text-secondary); }
 
-        .user-card .bio {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.5);
-            margin: 6px 0 14px;
-        }
+        .user-card .bio { font-size: 14px; color: rgba(255, 255, 255, 0.5); margin: 6px 0 14px; }
 
-        .user-card .stats {
-            display: flex;
-            justify-content: center;
-            gap: 28px;
-            margin-bottom: 16px;
-        }
+        .user-card .stats { display: flex; justify-content: center; gap: 28px; margin-bottom: 16px; }
 
-        .user-card .stats .stat {
-            text-align: center;
-        }
+        .user-card .stats .stat { text-align: center; }
 
-        .user-card .stats .stat .number {
-            font-weight: 700;
-            font-size: 17px;
-            color: var(--text);
-        }
+        .user-card .stats .stat .number { font-weight: 700; font-size: 17px; color: var(--text); }
 
-        .user-card .stats .stat .label {
-            font-size: 11px;
-            color: var(--text-secondary);
-        }
+        .user-card .stats .stat .label { font-size: 11px; color: var(--text-secondary); }
 
-        .user-card .card-actions {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
+        .user-card .card-actions { display: flex; gap: 10px; justify-content: center; }
 
         .user-card .card-actions button {
             padding: 8px 22px;
@@ -2426,9 +2495,7 @@
             box-shadow: 0 4px 16px var(--accent-glow);
         }
 
-        .user-card .card-actions .btn-follow:hover {
-            transform: scale(1.04);
-        }
+        .user-card .card-actions .btn-follow:hover { transform: scale(1.04); }
 
         .user-card .card-actions .btn-follow.following {
             background: rgba(255, 255, 255, 0.06);
@@ -2453,141 +2520,55 @@
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 640px) {
-            .container {
-                padding: 0 8px 20px;
-            }
-
-            .post-card {
-                margin: 0 0 14px;
-                border-radius: 12px;
-            }
-
-            .post-card .post-header {
-                padding: 12px 14px 6px;
-            }
-
-            .post-card .post-content-wrapper {
-                padding: 0 14px 10px;
-            }
-
+            .container { padding: 0 8px 20px; }
+            .post-card { margin: 0 0 14px; border-radius: 12px; }
+            .post-card .post-header { padding: 12px 14px 6px; }
+            .post-card .post-content-wrapper { padding: 0 14px 10px; }
             .post-card .post-content-wrapper .post-text {
                 padding: 10px 14px;
                 margin: 0 -14px;
                 font-size: 14px;
             }
-
-            .post-card .post-actions {
-                padding: 6px 12px;
-            }
-
-            .post-card .post-actions button {
-                font-size: 18px;
-            }
-
-            .post-card .post-actions .like-btn {
-                font-size: 20px;
-            }
-
-            .post-card .post-actions .count-badge {
-                font-size: 14px;
-            }
-
-            .post-card .post-media .audio-player-wrap .disc {
-                width: 90px;
-                height: 90px;
-            }
-
+            .post-card .post-actions { padding: 6px 12px; }
+            .post-card .post-actions button { font-size: 18px; }
+            .post-card .post-actions .like-btn { font-size: 20px; }
+            .post-card .post-actions .count-badge { font-size: 14px; }
+            .post-card .post-media .audio-player-wrap .disc { width: 90px; height: 90px; }
             .post-card .post-media .video-wrapper .play-overlay .play-btn-large {
                 width: 56px;
                 height: 56px;
                 font-size: 26px;
             }
-
-            .story-item {
-                width: 64px;
-            }
-
-            .story-item .story-circle {
-                width: 64px;
-                height: 64px;
-            }
-
-            .bottom-nav .nav-item {
-                padding: 2px 8px;
-                font-size: 20px;
-            }
-
-            .bottom-nav .nav-item span {
-                font-size: 8px;
-            }
-
+            .story-item { width: 64px; }
+            .story-item .story-circle { width: 64px; height: 64px; }
+            .bottom-nav .nav-item { padding: 2px 8px; font-size: 20px; }
+            .bottom-nav .nav-item span { font-size: 8px; }
             .bottom-nav .nav-item .nav-icon .plus-circle {
                 width: 42px;
                 height: 42px;
                 font-size: 20px;
                 margin-top: -12px;
             }
-
-            .user-card {
-                padding: 20px;
-            }
-
-            .user-card .avatar-large {
-                width: 72px;
-                height: 72px;
-            }
-
-            .story-fullscreen .story-body .story-text-container .story-text-content {
-                font-size: 22px;
-            }
-
-            .story-fullscreen .story-nav {
-                width: 30%;
-                font-size: 24px;
-            }
-
-            .explore-page .explore-grid {
-                gap: 4px;
-            }
-
-            .top-bar {
-                padding: 8px 14px;
-            }
-
-            .top-bar .logo {
-                font-size: 17px;
-            }
-
-            .top-bar .logo i {
-                font-size: 19px;
-                padding: 6px 8px;
-            }
-
-            .reels-overlay .reels-wrapper .reels-slide .reels-actions button {
-                font-size: 34px;
-            }
-
-            .reels-overlay .reels-wrapper .reels-slide .reels-bottom .reels-caption {
-                font-size: 14px;
-            }
-
-            .reels-overlay .reels-wrapper .reels-slide .reels-bottom .reels-user .reels-name {
-                font-size: 16px;
-            }
-
-            .story-create-overlay .story-create-box {
-                padding: 24px 16px;
-            }
-
+            .user-card { padding: 20px; }
+            .user-card .avatar-large { width: 72px; height: 72px; }
+            .story-fullscreen .story-body .story-text-container .story-text-content { font-size: 22px; }
+            .story-fullscreen .story-nav { width: 30%; font-size: 24px; }
+            .explore-page .explore-grid { gap: 4px; }
+            .top-bar { padding: 8px 14px; }
+            .top-bar .logo { font-size: 17px; }
+            .top-bar .logo i { font-size: 19px; padding: 6px 8px; }
+            .reels-overlay .reels-wrapper .reels-slide .reels-actions button { font-size: 34px; }
+            .reels-overlay .reels-wrapper .reels-slide .reels-bottom .reels-caption { font-size: 14px; }
+            .reels-overlay .reels-wrapper .reels-slide .reels-bottom .reels-user .reels-name { font-size: 16px; }
+            .story-create-overlay .story-create-box { padding: 24px 16px; }
             .story-create-overlay .story-create-box .create-options button {
                 min-width: 60px;
                 padding: 12px 6px;
                 font-size: 13px;
             }
-
-            .story-text-editor .editor-body textarea {
-                font-size: 16px;
-            }
+            .story-text-editor .editor-body textarea { font-size: 16px; }
+            .create-post-page .media-actions .media-btn { padding: 12px 6px; font-size: 12px; }
+            .create-post-page .media-actions .media-btn i { font-size: 20px; }
         }
     </style>
 </head>
@@ -2600,6 +2581,9 @@
             <span>Zonne</span>
         </div>
         <div class="actions">
+            <button class="icon-btn" onclick="goToSearch()" aria-label="Pesquisar">
+                <i class="fas fa-search"></i>
+            </button>
             <button class="icon-btn" onclick="openNotifications()" aria-label="Notificações">
                 <i class="fas fa-bell"></i>
                 <span class="badge" id="notifBadge" style="display:none;">0</span>
@@ -2638,6 +2622,36 @@
         </div>
     </div>
 
+    <!-- ===== PÁGINA DE PESQUISA (INLINE) ===== -->
+    <div class="page search-page" id="searchPage">
+        <button class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i> Voltar</button>
+
+        <div class="search-header">
+            <i class="fas fa-search search-icon-left"></i>
+            <input type="text" id="searchInput" placeholder="Pesquisar usuários ou publicações..." autocomplete="off" />
+            <button class="search-clear" id="searchClear" style="display:none;" onclick="clearSearch()">
+                <i class="fas fa-times-circle"></i>
+            </button>
+        </div>
+
+        <div class="search-tabs">
+            <button class="search-tab active" data-tab="users" onclick="switchSearchTab('users')">
+                <i class="fas fa-user"></i> Usuários
+            </button>
+            <button class="search-tab" data-tab="posts" onclick="switchSearchTab('posts')">
+                <i class="fas fa-image"></i> Publicações
+            </button>
+        </div>
+
+        <div class="search-results" id="searchResults">
+            <div class="search-empty">
+                <i class="fas fa-search"></i>
+                <h3>Comece a digitar</h3>
+                <p>Pesquise por nome, @username ou conteúdo</p>
+            </div>
+        </div>
+    </div>
+
     <!-- ===== PÁGINA DE CRIAÇÃO ===== -->
     <div class="page create-post-page" id="createPostPage">
         <button class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i> Voltar</button>
@@ -2652,7 +2666,10 @@
             </div>
         </div>
 
-        <textarea id="createPostContent" placeholder="O que você está pensando?…"></textarea>
+        <div class="textarea-wrapper">
+            <textarea id="createPostContent" maxlength="1000" placeholder="O que você está pensando?…"></textarea>
+            <div class="char-counter" id="charCounter">0 / 1000</div>
+        </div>
 
         <div class="media-actions">
             <button class="media-btn" onclick="document.getElementById('createImageInput').click()">
@@ -2664,8 +2681,9 @@
             <button class="media-btn" onclick="toggleAudioSelector()">
                 <i class="fas fa-microphone"></i> Áudio
             </button>
-            <span class="media-status" id="createMediaStatus"></span>
         </div>
+
+        <div class="media-status" id="createMediaStatus"></div>
 
         <input type="file" id="createImageInput" accept="image/*" style="display:none;" onchange="handleFileSelect(event, 'image')" />
         <input type="file" id="createVideoInput" accept="video/*" style="display:none;" onchange="handleFileSelect(event, 'video')" />
@@ -2679,7 +2697,7 @@
 
         <div class="audio-selector" id="audioSelector">
             <div class="audio-options">
-                <button onclick="showAudioRecorder()"><i class="fas fa-microphone"></i> Gravar áudio (máx 1:30)</button>
+                <button onclick="showAudioRecorder()"><i class="fas fa-microphone"></i> Gravar (máx 1:30)</button>
                 <button onclick="document.getElementById('createAudioInput').click()"><i class="fas fa-folder-open"></i> Escolher arquivo</button>
             </div>
             <div class="audio-recorder" id="audioRecorder">
@@ -2875,7 +2893,7 @@
             let dataArray = null;
             let animationId = null;
 
-            // Arquivos selecionados para o post
+            // Arquivos selecionados
             let selectedImageFile = null;
             let selectedAudioFile = null;
             let selectedVideoFile = null;
@@ -2891,7 +2909,11 @@
             let reelsPosts = [];
             let currentReelsIndex = 0;
 
-            // Config de mensagens (auto-detectada)
+            // Pesquisa
+            let currentSearchTab = 'users';
+            let searchDebounceTimer = null;
+
+            // Config de mensagens
             let messagesConfig = {
                 table: 'messages',
                 chatIdColumn: 'chat_id',
@@ -2899,8 +2921,12 @@
                 detected: false
             };
 
-            // Mapa global de players de áudio (para pausar quando outro começa)
+            // Players de áudio ativos
             const activeAudioPlayers = new Set();
+
+            // Observers de vídeo do feed (autoplay ao rolar)
+            const videoObservers = new WeakMap();
+            const videoMuteState = new WeakMap();
 
             const feedPosts = document.getElementById('feedPosts');
             const storiesRow = document.getElementById('storiesRow');
@@ -2918,6 +2944,7 @@
                     if (prev === 'feed') goToFeed();
                     else if (prev === 'explore') goToExplore();
                     else if (prev === 'create') goToCreatePost();
+                    else if (prev === 'search') goToSearch();
                     else if (prev === 'post') {
                         const params = new URLSearchParams(window.location.search);
                         const id = params.get('id');
@@ -2938,13 +2965,18 @@
                 }
             }
 
+            function hideAllPages() {
+                document.querySelector('.feed-page').style.display = 'none';
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                document.querySelectorAll('.bottom-nav .nav-item').forEach(n => n.classList.remove('active'));
+            }
+
             // ============================================================
             // NAVEGAÇÃO
             // ============================================================
             window.goToFeed = function() {
-                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                hideAllPages();
                 document.querySelector('.feed-page').style.display = 'block';
-                document.querySelectorAll('.bottom-nav .nav-item').forEach(n => n.classList.remove('active'));
                 document.querySelector('.bottom-nav .nav-item:first-child').classList.add('active');
                 if (pageHistory[pageHistory.length - 1] !== 'feed') pushPage('feed');
                 loadFeed();
@@ -2956,10 +2988,8 @@
             };
 
             window.goToCreatePost = function() {
-                document.querySelector('.feed-page').style.display = 'none';
-                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                hideAllPages();
                 document.getElementById('createPostPage').classList.add('active');
-                document.querySelectorAll('.bottom-nav .nav-item').forEach(n => n.classList.remove('active'));
                 document.querySelectorAll('.bottom-nav .nav-item')[2].classList.add('active');
                 pushPage('create');
                 resetCreatePost();
@@ -2967,13 +2997,23 @@
             };
 
             window.goToExplore = function() {
-                document.querySelector('.feed-page').style.display = 'none';
-                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                hideAllPages();
                 document.getElementById('explorePage').classList.add('active');
-                document.querySelectorAll('.bottom-nav .nav-item').forEach(n => n.classList.remove('active'));
                 document.querySelectorAll('.bottom-nav .nav-item')[1].classList.add('active');
                 pushPage('explore');
                 loadExplore();
+            };
+
+            // ✅ Pesquisa agora é uma página interna (aba), não uma nova janela
+            window.goToSearch = function() {
+                hideAllPages();
+                document.getElementById('searchPage').classList.add('active');
+                pushPage('search');
+                // Foca o input
+                setTimeout(() => {
+                    const input = document.getElementById('searchInput');
+                    if (input) input.focus();
+                }, 100);
             };
 
             window.goToMyProfile = function() {
@@ -2991,11 +3031,139 @@
                     if (prev === 'feed') goToFeed();
                     else if (prev === 'explore') goToExplore();
                     else if (prev === 'create') goToCreatePost();
+                    else if (prev === 'search') goToSearch();
                     else goToFeed();
                 } else {
                     goToFeed();
                 }
             };
+
+            // ============================================================
+            // PESQUISA INLINE
+            // ============================================================
+            window.switchSearchTab = function(tab) {
+                currentSearchTab = tab;
+                document.querySelectorAll('.search-tab').forEach(t => {
+                    t.classList.toggle('active', t.dataset.tab === tab);
+                });
+                performSearch();
+            };
+
+            window.clearSearch = function() {
+                document.getElementById('searchInput').value = '';
+                document.getElementById('searchClear').style.display = 'none';
+                document.getElementById('searchResults').innerHTML = `
+                    <div class="search-empty">
+                        <i class="fas fa-search"></i>
+                        <h3>Comece a digitar</h3>
+                        <p>Pesquise por nome, @username ou conteúdo</p>
+                    </div>
+                `;
+            };
+
+            function performSearch() {
+                const query = document.getElementById('searchInput').value.trim().toLowerCase();
+                const results = document.getElementById('searchResults');
+
+                if (query.length < 1) {
+                    results.innerHTML = `
+                        <div class="search-empty">
+                            <i class="fas fa-search"></i>
+                            <h3>Comece a digitar</h3>
+                            <p>Pesquise por nome, @username ou conteúdo</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                if (currentSearchTab === 'users') {
+                    const matches = friendsList.filter(f =>
+                        (f.full_name && f.full_name.toLowerCase().includes(query)) ||
+                        (f.username && f.username.toLowerCase().includes(query))
+                    );
+                    if (matches.length === 0) {
+                        results.innerHTML = `
+                            <div class="search-empty">
+                                <i class="fas fa-user-slash"></i>
+                                <h3>Nenhum usuário encontrado</h3>
+                                <p>Tente outro termo</p>
+                            </div>
+                        `;
+                        return;
+                    }
+                    results.innerHTML = matches.map(f => {
+                        const avatarUrl = f.avatar_url;
+                        const color = f.avatar_color || '#6c63ff';
+                        const initial = (f.full_name || 'U')[0].toUpperCase();
+                        return `
+                            <div class="search-user-item" onclick="goToUserProfile('${f.id}')">
+                                <div class="su-avatar">
+                                    ${avatarUrl ? `<img src="${avatarUrl}" alt="">` :
+                                    `<div class="fallback" style="background:${color};">${initial}</div>`}
+                                </div>
+                                <div class="su-info">
+                                    <div class="su-name">${escapeHtml(f.full_name || 'Usuário')}</div>
+                                    <div class="su-username">@${escapeHtml(f.username || 'usuario')}</div>
+                                </div>
+                                <button class="su-action" onclick="event.stopPropagation(); goToUserProfile('${f.id}')">
+                                    Ver
+                                </button>
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    // Publicações
+                    const matches = posts.filter(p =>
+                        (p.content && p.content.toLowerCase().includes(query))
+                    );
+                    if (matches.length === 0) {
+                        results.innerHTML = `
+                            <div class="search-empty">
+                                <i class="fas fa-image"></i>
+                                <h3>Nenhuma publicação encontrada</h3>
+                                <p>Tente outro termo</p>
+                            </div>
+                        `;
+                        return;
+                    }
+                    results.innerHTML = matches.map(p => {
+                        const isVideo = p.media_type === 'video';
+                        const thumb = p.media_url
+                            ? (isVideo
+                                ? `<video src="${p.media_url}#t=0.1" muted preload="metadata" playsinline></video>
+                                   <div class="sp-video-badge"><i class="fas fa-play"></i></div>`
+                                : `<img src="${p.media_url}" alt="">`)
+                            : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);"><i class="fas fa-align-left"></i></div>`;
+                        const author = p.profiles?.full_name || 'Usuário';
+                        const timeAgo = getTimeAgo(p.created_at);
+                        return `
+                            <div class="search-post-item" onclick="goToPost('${p.id}')">
+                                <div class="sp-thumb">${thumb}</div>
+                                <div class="sp-info">
+                                    <div class="sp-text">${escapeHtml(p.content || 'Publicação sem texto')}</div>
+                                    <div class="sp-meta">
+                                        <span><i class="fas fa-user"></i> ${escapeHtml(author)}</span>
+                                        <span><i class="fas fa-clock"></i> ${timeAgo}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+            }
+
+            function setupSearchInput() {
+                const input = document.getElementById('searchInput');
+                const clear = document.getElementById('searchClear');
+                if (!input) return;
+
+                input.addEventListener('input', function() {
+                    const q = this.value.trim();
+                    if (clear) clear.style.display = q.length > 0 ? 'block' : 'none';
+                    if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+                    searchDebounceTimer = setTimeout(performSearch, 250);
+                });
+            }
 
             // ============================================================
             // RESET CREATE POST
@@ -3008,6 +3176,7 @@
                 document.getElementById('audioSelector').style.display = 'none';
                 document.getElementById('audioRecorder').style.display = 'none';
                 document.getElementById('createMediaStatus').textContent = '';
+                document.getElementById('charCounter').textContent = '0 / 1000';
                 selectedImageFile = null;
                 selectedAudioFile = null;
                 selectedVideoFile = null;
@@ -3137,7 +3306,6 @@
             // AUTO-DETECÇÃO DA TABELA DE MENSAGENS
             // ============================================================
             async function detectMessagesConfig() {
-                console.log('[MsgBadge] Detectando configuração...');
                 try {
                     const { data, error } = await supabase
                         .from('messages')
@@ -3145,14 +3313,12 @@
                         .limit(1);
 
                     if (error) {
-                        console.warn('[MsgBadge] Erro:', error.message);
                         messagesConfig.detected = false;
                         return;
                     }
 
                     if (data && data.length > 0) {
                         const columns = Object.keys(data[0]);
-                        console.log('[MsgBadge] Colunas:', columns);
                         messagesConfig.table = 'messages';
                         messagesConfig.chatIdColumn = columns.includes('chat_id') ? 'chat_id' : null;
                         messagesConfig.readColumn = columns.includes('read_at') ? 'read_at' :
@@ -3161,9 +3327,7 @@
                     } else {
                         messagesConfig.detected = true;
                     }
-                    console.log('[MsgBadge] Config:', messagesConfig);
                 } catch (e) {
-                    console.warn('[MsgBadge] Erro:', e);
                     messagesConfig.detected = false;
                 }
             }
@@ -3219,7 +3383,6 @@
                         badge.style.display = 'none';
                     }
                 } catch (e) {
-                    console.error('[MsgBadge] Erro:', e);
                     badge.style.display = 'none';
                 }
             }
@@ -3246,9 +3409,7 @@
                         followBadge.style.display = c > 0 ? 'flex' : 'none';
                         if (c > 0) followBadge.textContent = c > 9 ? '9+' : c;
                     }
-                } catch (e) {
-                    console.warn('Erro badge perfil:', e.message);
-                }
+                } catch (e) {}
             }
 
             async function loadNotifications() {
@@ -3274,10 +3435,9 @@
             }
 
             // ============================================================
-            // FORMATAÇÃO DE TEMPO (CORRIGIDA)
+            // FORMATTAÇÃO
             // ============================================================
             function formatDuration(seconds) {
-                // ✅ PROTEÇÃO: se for NaN, undefined, null ou negativo → 0:00
                 if (seconds === null || seconds === undefined) return '0:00';
                 let s = Number(seconds);
                 if (!isFinite(s) || isNaN(s) || s < 0) return '0:00';
@@ -3377,7 +3537,6 @@
                 const likeCount = post.likes_count || 0;
                 const commentCount = post.comments_count || 0;
 
-                // ✅ PROTEÇÃO: usar valores seguros para duração
                 const audioDur = formatDuration(post.audio_duration);
 
                 let mediaHtml = '';
@@ -3410,12 +3569,16 @@
                             '<div class="post-media"><img src="' + post.media_url + '" alt="Imagem" loading="lazy" onclick="goToPost(\'' + post
                             .id + '\')"></div>';
                     } else if (post.media_type === 'video') {
+                        // ✅ Capa + autoplay ao rolar + clique abre Reels
                         mediaHtml = `
                             <div class="post-media">
-                                <div class="video-wrapper" data-postid="${post.id}" data-url="${post.media_url}" data-profile='${JSON.stringify(profile)}' data-caption="${escapeHtml(post.content || '')}" data-likes="${likeCount}">
-                                    <video src="${post.media_url}" muted playsinline preload="metadata"></video>
-                                    <div class="play-overlay" onclick="openReels('${post.id}')">
+                                <div class="video-wrapper" data-postid="${post.id}" onclick="openReels('${post.id}')">
+                                    <video src="${post.media_url}#t=0.1" preload="metadata" muted playsinline loop></video>
+                                    <div class="play-overlay">
                                         <div class="play-btn-large"><i class="fas fa-play"></i></div>
+                                    </div>
+                                    <div class="video-mute-badge" onclick="toggleFeedVideoMute(this, event)">
+                                        <i class="fas fa-volume-mute"></i>
                                     </div>
                                 </div>
                             </div>
@@ -3476,7 +3639,7 @@
             }
 
             // ============================================================
-            // PLAYER DE ÁUDIO (CORRIGIDO - sem NaN)
+            // PLAYER DE ÁUDIO
             // ============================================================
             function pauseAllAudioPlayers(except) {
                 activeAudioPlayers.forEach(player => {
@@ -3516,7 +3679,6 @@
                 };
                 activeAudioPlayers.add(player);
 
-                // Quando os metadados carregarem, atualiza a duração real
                 audio.addEventListener('loadedmetadata', () => {
                     if (isFinite(audio.duration) && audio.duration > 0) {
                         player.safeDuration = audio.duration;
@@ -3524,7 +3686,6 @@
                             timeDisplay.textContent = '0:00 / ' + formatDuration(audio.duration);
                         }
                     } else {
-                        // fallback para a duração declarada no banco
                         if (timeDisplay && player.safeDuration > 0) {
                             timeDisplay.textContent = '0:00 / ' + formatDuration(player.safeDuration);
                         }
@@ -3538,7 +3699,6 @@
                 });
 
                 audio.addEventListener('timeupdate', () => {
-                    // ✅ PROTEÇÃO TOTAL contra NaN
                     const dur = (isFinite(audio.duration) && audio.duration > 0) ? audio.duration : player.safeDuration;
                     if (!dur || !isFinite(dur) || dur <= 0) {
                         if (timeDisplay) timeDisplay.textContent = '0:00 / ' + formatDuration(player.safeDuration);
@@ -3563,8 +3723,7 @@
                     }
                 });
 
-                audio.addEventListener('error', (e) => {
-                    console.error('Erro ao carregar áudio:', audioUrl, e);
+                audio.addEventListener('error', () => {
                     playBtn.innerHTML = '<i class="fas fa-play"></i>';
                     if (timeDisplay) timeDisplay.textContent = '0:00 / ' + formatDuration(player.safeDuration);
                 });
@@ -3572,19 +3731,15 @@
                 playBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     if (!audio.paused) {
-                        // Pausar
                         audio.pause();
                         playBtn.innerHTML = '<i class="fas fa-play"></i>';
                         if (disc) disc.classList.remove('spinning');
                         if (discBadge) discBadge.classList.remove('spinning');
                     } else {
-                        // Pausar todos os outros
                         pauseAllAudioPlayers(player);
-                        // Tocar
                         const playPromise = audio.play();
                         if (playPromise && playPromise.catch) {
                             playPromise.catch(err => {
-                                console.error('Erro ao tocar áudio:', err);
                                 playBtn.innerHTML = '<i class="fas fa-play"></i>';
                             });
                         }
@@ -3610,10 +3765,13 @@
 
             function attachPostEvents() {
                 document.querySelectorAll('.like-btn').forEach(btn => {
-                    btn.onclick = () => toggleLike(btn.dataset.postId);
+                    btn.onclick = (e) => {
+                        e.stopPropagation();
+                        toggleLike(btn.dataset.postId);
+                    };
                 });
 
-                // Player de áudio com disco (audio-only posts)
+                // Player de áudio com disco
                 document.querySelectorAll('.audio-player-wrap').forEach(wrap => {
                     const audioUrl = wrap.dataset.audio;
                     const declaredDuration = parseFloat(wrap.dataset.duration) || 0;
@@ -3656,7 +3814,65 @@
                         declaredDuration
                     });
                 });
+
+                // ✅ Autoplay de vídeos ao rolar
+                setupVideoAutoplayObservers();
             }
+
+            // ============================================================
+            // ✅ AUTOPLAY AO ROLAR + CAPA + CLIQUE ABRE REELS
+            // ============================================================
+            function setupVideoAutoplayObservers() {
+                document.querySelectorAll('.post-card .video-wrapper').forEach(wrapper => {
+                    const video = wrapper.querySelector('video');
+                    if (!video) return;
+                    if (videoObservers.has(video)) return;
+
+                    video.muted = true;
+                    videoMuteState.set(video, true);
+                    wrapper.classList.remove('playing');
+
+                    const observer = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
+                                try {
+                                    const p = video.play();
+                                    if (p && p.catch) p.catch(() => {});
+                                } catch (e) {}
+                                wrapper.classList.add('playing');
+                            } else {
+                                try {
+                                    video.pause();
+                                    video.currentTime = 0;
+                                } catch (e) {}
+                                wrapper.classList.remove('playing');
+                            }
+                        });
+                    }, {
+                        threshold: [0, 0.6, 0.9]
+                    });
+
+                    observer.observe(wrapper);
+                    videoObservers.set(video, observer);
+                });
+            }
+
+            window.toggleFeedVideoMute = function(badge, event) {
+                event.stopPropagation();
+                const wrapper = badge.closest('.video-wrapper');
+                if (!wrapper) return;
+                const video = wrapper.querySelector('video');
+                if (!video) return;
+
+                const isMuted = videoMuteState.get(video) !== false;
+                video.muted = !isMuted;
+                videoMuteState.set(video, video.muted);
+
+                const icon = badge.querySelector('i');
+                if (icon) {
+                    icon.className = video.muted ? 'fas fa-volume-mute' : 'fas fa-volume-up';
+                }
+            };
 
             function setupMediaObserver() {
                 const observer = new IntersectionObserver((entries) => {
@@ -3665,10 +3881,8 @@
                         if (!card) return;
                         const isVisible = entry.isIntersecting;
                         if (!isVisible) {
-                            // Pausa todos os áudios do card que saiu da tela
                             card.querySelectorAll('.audio-player-wrap, .audio-img-overlay .audio-controls').forEach(el => {
                                 const playBtn = el.querySelector('.play-btn');
-                                // Busca o player correspondente no set global
                                 activeAudioPlayers.forEach(p => {
                                     if (p.playBtn === playBtn && p.audio && !p.audio.paused) {
                                         p.audio.pause();
@@ -3693,7 +3907,7 @@
             }
 
             // ============================================================
-            // REELS
+            // REELS (vídeos em tela inteira com scroll)
             // ============================================================
             window.openReels = function(postId) {
                 let videoPosts = posts.filter(p => p.media_type === 'video');
@@ -3835,13 +4049,10 @@
                 wrapper.addEventListener('touchend', (e) => handleEnd(e.changedTouches[0].clientY), { passive: true });
 
                 let mouseDown = false;
-                wrapper.addEventListener('mousedown', (e) => { mouseDown = true;
-                    handleStart(e.clientY); });
+                wrapper.addEventListener('mousedown', (e) => { mouseDown = true; handleStart(e.clientY); });
                 wrapper.addEventListener('mousemove', (e) => { if (mouseDown) handleMove(e.clientY); });
-                wrapper.addEventListener('mouseup', (e) => { if (mouseDown) { mouseDown = false;
-                        handleEnd(e.clientY); } });
-                wrapper.addEventListener('mouseleave', () => { if (mouseDown) { mouseDown = false;
-                        handleEnd(0); } });
+                wrapper.addEventListener('mouseup', (e) => { if (mouseDown) { mouseDown = false; handleEnd(e.clientY); } });
+                wrapper.addEventListener('mouseleave', () => { if (mouseDown) { mouseDown = false; handleEnd(0); } });
             }
 
             function attachReelsEvents() {
@@ -3996,7 +4207,8 @@
                             return `
                                 <div class="explore-item" onclick="goToPost('${post.id}')">
                                     ${isVideo ? 
-                                        `<video src="${mediaUrl}" muted></video>` :
+                                        `<video src="${mediaUrl}#t=0.1" muted preload="metadata" playsinline></video>
+                                         <div class="explore-video-badge"><i class="fas fa-play"></i> Vídeo</div>` :
                                         `<img src="${mediaUrl}" alt="Post" loading="lazy">`
                                     }
                                     <div class="explore-overlay">
@@ -4172,7 +4384,7 @@
                         previewContent = '<img src="' + story.media_url + '" alt="Story">';
                     } else if (story.media_url && story.media_type === 'video') {
                         previewContent =
-                            '<video src="' + story.media_url + '" muted style="width:100%;height:100%;object-fit:cover;"></video>';
+                            '<video src="' + story.media_url + '#t=0.1" muted preload="metadata" style="width:100%;height:100%;object-fit:cover;"></video>';
                     } else if (story.content) {
                         previewContent = '<div class="story-text-preview">' + escapeHtml(story.content) + '</div>';
                     }
@@ -4297,7 +4509,6 @@
                 } else {
                     const video = document.getElementById('storyVideo');
                     if (video) {
-                        video.addEventListener('loadedmetadata', () => {});
                         video.addEventListener('ended', () => {
                             if (currentStoryIndex < userStories.length - 1) {
                                 currentStoryIndex++;
@@ -4394,10 +4605,7 @@
 
             window.publishStoryText = async function() {
                 const content = document.getElementById('storyTextContent').value.trim();
-                if (!content) {
-                    alert('Digite algo para o story');
-                    return;
-                }
+                if (!content) { alert('Digite algo para o story'); return; }
                 const selectedColor = document.querySelector('#storyTextColors .color-opt.active');
                 const bgColor = selectedColor ? selectedColor.dataset.color : '#1a1a2e';
 
@@ -4550,6 +4758,7 @@
                 const textarea = document.getElementById('createPostContent');
                 textarea.value += '@' + name + ' ';
                 textarea.focus();
+                updateCharCounter();
             };
 
             async function sendMentionNotification(userId, postId) {
@@ -4566,6 +4775,23 @@
                     await updateAllBadges();
                 } catch (e) {}
             }
+
+            // ============================================================
+            // CONTADOR DE CARACTERES
+            // ============================================================
+            function updateCharCounter() {
+                const textarea = document.getElementById('createPostContent');
+                const counter = document.getElementById('charCounter');
+                const len = textarea.value.length;
+                counter.textContent = len + ' / 1000';
+                counter.style.color = len > 900 ? '#ff4757' : 'var(--text-secondary)';
+            }
+
+            document.addEventListener('input', function(e) {
+                if (e.target && e.target.id === 'createPostContent') {
+                    updateCharCounter();
+                }
+            });
 
             // ============================================================
             // ÁUDIO - GRAVAÇÃO
@@ -4654,8 +4880,7 @@
 
                     mediaRecorder = new MediaRecorder(stream);
                     audioChunks = [];
-                    mediaRecorder.ondataavailable = (event) => { if (event.data.size > 0) audioChunks.push(event
-                        .data); };
+                    mediaRecorder.ondataavailable = (event) => { if (event.data.size > 0) audioChunks.push(event.data); };
                     mediaRecorder.onstop = () => {
                         const blob = new Blob(audioChunks, { type: 'audio/webm' });
                         if (blob.size > 0) {
@@ -4878,7 +5103,6 @@
                     }
 
                     const { data: post, error } = await supabase.from('posts').insert(postData).select().single();
-
                     if (error) throw error;
 
                     if (content) {
@@ -4929,6 +5153,7 @@
             // INIT
             // ============================================================
             document.addEventListener('DOMContentLoaded', () => {
+                setupSearchInput();
                 checkAuth();
                 setInterval(loadNotifications, 30000);
                 setInterval(updateMessageBadge, 15000);
