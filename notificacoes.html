@@ -262,6 +262,7 @@
       font-size: 14px;
       line-height: 1.4;
       color: rgba(255, 255, 255, 0.85);
+      word-wrap: break-word;
     }
     .notification-item .content .text strong {
       color: #fff;
@@ -275,8 +276,11 @@
     .notification-item .action-icon {
       flex-shrink: 0;
       font-size: 18px;
-      color: rgba(255, 255, 255, 0.15);
       margin-left: 4px;
+      transition: transform 0.2s;
+    }
+    .notification-item:hover .action-icon {
+      transform: scale(1.15);
     }
 
     /* Estado vazio */
@@ -311,7 +315,7 @@
       margin-right: 8px;
     }
 
-    /* Bottom nav (igual ao chat) */
+    /* Bottom nav */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -480,382 +484,343 @@
     </button>
   </nav>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-  </script>
-  <script>
-    (function() {
-      'use strict';
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  (function() {
+    'use strict';
 
-      const SUPABASE_URL = 'https://cfanqigkvfpigjvjjbon.supabase.co';
-      const SUPABASE_ANON_KEY =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmYW5xaWdrdmZwaWdqdmpqYm9uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM4NzI5NzIsImV4cCI6MjA5OTQ0ODk3Mn0.UDyNusIz7PNaz4-n-Bpgn2LJCUi6fIw6tW0QrsJEii0';
+    const SUPABASE_URL = 'https://cfanqigkvfpigjvjjbon.supabase.co';
+    const SUPABASE_ANON_KEY =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmYW5xaWdrdmZwaWdqdmpqYm9uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM4NzI5NzIsImV4cCI6MjA5OTQ0ODk3Mn0.UDyNusIz7PNaz4-n-Bpgn2LJCUi6fIw6tW0QrsJEii0';
 
-      const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-      let currentUser = null;
-      let notifications = [];
-      let currentFilter = 'all';
-      let profileCache = new Map();
+    let currentUser = null;
+    let notifications = [];
+    let currentFilter = 'all';
 
-      // DOM refs
-      const listEl = document.getElementById('notificationsList');
-      const filterTabs = document.getElementById('filterTabs');
-      const markAllBtn = document.getElementById('markAllBtn');
-      const notifBadge = document.getElementById('notifBadge');
+    const listEl = document.getElementById('notificationsList');
+    const filterTabs = document.getElementById('filterTabs');
+    const markAllBtn = document.getElementById('markAllBtn');
+    const notifBadge = document.getElementById('notifBadge');
 
-      // ===== AUTENTICAÇÃO =====
-      async function checkAuth() {
-        const { data, error } = await supabase.auth.getSession();
-        if (error || !data.session) {
-          window.location.href = 'index.html';
-          return;
-        }
-        currentUser = data.session.user;
-        await loadProfile();
-        await loadNotifications();
-        setupRealtime();
-        setupFilterTabs();
-        updateBadge();
-        // Atualizar a cada 30s
-        setInterval(() => {
-          loadNotifications(false);
-        }, 30000);
+    // ============================================================
+    // ÍCONE E COR POR TIPO
+    // ============================================================
+    const TYPE_CONFIG = {
+      like:    { icon: 'fa-heart',     color: '#e74c3c' },
+      comment: { icon: 'fa-comment',   color: '#3498db' },
+      follow:  { icon: 'fa-user-plus', color: '#5850ec' },
+      message: { icon: 'fa-envelope',  color: '#2ecc71' },
+      mention: { icon: 'fa-at',        color: '#f1c40f' },
+      reply:   { icon: 'fa-reply',     color: '#3498db' },
+      default: { icon: 'fa-bell',      color: '#5850ec' }
+    };
+
+    function getTypeConfig(type) {
+      const t = String(type || '').toLowerCase().trim();
+      return TYPE_CONFIG[t] || TYPE_CONFIG.default;
+    }
+
+    // ============================================================
+    // AUTH
+    // ============================================================
+    async function checkAuth() {
+      const { data, error } = await supabase.auth.getSession();
+      if (error || !data.session) {
+        window.location.href = 'index.html';
+        return;
+      }
+      currentUser = data.session.user;
+      await loadProfile();
+      await loadNotifications();
+      setupRealtime();
+      setupFilterTabs();
+    }
+
+    async function loadProfile() {
+      const { data } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', currentUser.id)
+        .single();
+      if (!data) return;
+      const avatarEl = document.getElementById('userAvatar');
+      if (data.avatar_url) {
+        avatarEl.innerHTML = `<img src="${data.avatar_url}" alt="Avatar">`;
+      } else {
+        const color = data.avatar_color || '#5850ec';
+        const initial = (data.full_name || 'U')[0].toUpperCase();
+        avatarEl.innerHTML = `<div class="fallback" style="background:${color};">${initial}</div>`;
+      }
+    }
+
+    // ============================================================
+    // CARREGAR
+    // ============================================================
+    async function loadNotifications(showLoading = true) {
+      if (showLoading) {
+        listEl.innerHTML = `<div class="loading-placeholder"><i class="fas fa-spinner fa-spin"></i> Carregando...</div>`;
       }
 
-      async function loadProfile() {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', currentUser.id)
-          .single();
-        if (error) return;
-        const avatarEl = document.getElementById('userAvatar');
-        if (data.avatar_url) {
-          avatarEl.innerHTML = `<img src="${data.avatar_url}" alt="Avatar">`;
-        } else {
-          const color = data.avatar_color || '#5850ec';
-          const initial = (data.full_name || 'U')[0].toUpperCase();
-          avatarEl.innerHTML = `<div class="fallback" style="background:${color};">${initial}</div>`;
-        }
+      const { data, error } = await supabase
+        .from('notifications')
+        .select('*')
+        .eq('user_id', currentUser.id)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('❌ Erro:', error);
+        listEl.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>Erro ao carregar</h3><p>${error.message}</p></div>`;
+        return;
       }
 
-      // ===== CARREGAR NOTIFICAÇÕES =====
-      async function loadNotifications(showLoading = true) {
-        if (showLoading) {
-          listEl.innerHTML = `<div class="loading-placeholder"><i class="fas fa-spinner fa-spin"></i> Carregando...</div>`;
-        }
-        const { data, error } = await supabase
+      notifications = data || [];
+      renderNotifications();
+      updateBadge();
+    }
+
+    // ============================================================
+    // RENDERIZAR
+    // ============================================================
+    function renderNotifications() {
+      const filtered = getFilteredNotifications();
+      if (filtered.length === 0) {
+        listEl.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-bell-slash"></i>
+            <h3>Nenhuma notificação</h3>
+            <p>Você está em dia!</p>
+          </div>`;
+        return;
+      }
+
+      const groups = groupByDate(filtered);
+      let html = '';
+      for (const [label, items] of Object.entries(groups)) {
+        html += `<div style="margin-top:12px;font-size:12px;color:rgba(255,255,255,0.2);font-weight:500;padding-left:4px;">${label}</div>`;
+        items.forEach(n => { html += renderNotificationItem(n); });
+      }
+      listEl.innerHTML = html;
+    }
+
+    function renderNotificationItem(notif) {
+      // 🔥 O texto JÁ VEM pronto do banco no campo `message`
+      const message = notif.message || notif.content || notif.title || 'Nova notificação';
+      const type = String(notif.type || '').toLowerCase().trim();
+      const cfg = getTypeConfig(type);
+
+      const timeAgo = getTimeAgo(notif.created_at);
+      const unread = !notif.read ? 'unread' : '';
+
+      // Avatar genérico com ícone (não temos sender_id na tabela)
+      const avatarHtml = `
+        <div class="fallback" style="background:rgba(88,80,236,0.15);color:${cfg.color};">
+          <i class="fas ${cfg.icon}"></i>
+        </div>`;
+
+      // Link de destino (se tiver reference_id ou post_id)
+      const refId = notif.reference_id || notif.post_id || null;
+      let actionLink = '#';
+      if (type === 'follow') actionLink = 'perfil.html';
+      else if (type === 'message') actionLink = 'chat.html';
+      else if (refId) actionLink = `post.html?id=${refId}`;
+
+      return `
+        <div class="notification-item ${unread}" data-id="${notif.id}" onclick="handleNotificationClick('${notif.id}', '${actionLink}')">
+          <div class="avatar">${avatarHtml}</div>
+          <div class="content">
+            <div class="text">${escapeHtml(message)}</div>
+            <div class="time">${timeAgo}</div>
+          </div>
+          <div class="action-icon" style="color:${cfg.color};">
+            <i class="fas ${cfg.icon}"></i>
+          </div>
+        </div>`;
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // ============================================================
+    // FILTROS
+    // ============================================================
+    function getFilteredNotifications() {
+      if (currentFilter === 'all') return notifications;
+      return notifications.filter(n => String(n.type || '').toLowerCase() === currentFilter);
+    }
+
+    function setupFilterTabs() {
+      const buttons = filterTabs.querySelectorAll('button');
+      buttons.forEach(btn => {
+        btn.addEventListener('click', function() {
+          buttons.forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          currentFilter = this.dataset.filter;
+          renderNotifications();
+        });
+      });
+    }
+
+    // ============================================================
+    // AGRUPAR POR DATA
+    // ============================================================
+    function groupByDate(items) {
+      const groups = {};
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const yesterday = new Date(today); yesterday.setDate(yesterday.getDate() - 1);
+      const weekAgo = new Date(today);   weekAgo.setDate(weekAgo.getDate() - 7);
+
+      items.forEach(item => {
+        const d = new Date(item.created_at);
+        let label = 'Anterior';
+        if (d >= today) label = 'Hoje';
+        else if (d >= yesterday) label = 'Ontem';
+        else if (d >= weekAgo) label = 'Esta semana';
+
+        if (!groups[label]) groups[label] = [];
+        groups[label].push(item);
+      });
+
+      const order = ['Hoje', 'Ontem', 'Esta semana', 'Anterior'];
+      const sorted = {};
+      order.forEach(k => { if (groups[k]) sorted[k] = groups[k]; });
+      return sorted;
+    }
+
+    // ============================================================
+    // MARCAR TODAS COMO LIDAS
+    // ============================================================
+    async function markAllAsRead() {
+      const unread = notifications.filter(n => !n.read);
+      if (unread.length === 0) {
+        Swal.fire({
+          icon: 'info', title: 'Tudo lido!',
+          text: 'Você não tem notificações não lidas.',
+          confirmButtonColor: '#5850ec', background: '#14141e', color: '#fff'
+        });
+        return;
+      }
+
+      markAllBtn.disabled = true;
+      markAllBtn.textContent = 'Atualizando...';
+
+      try {
+        const ids = unread.map(n => n.id);
+        const { error } = await supabase
           .from('notifications')
-          .select('*')
-          .eq('user_id', currentUser.id)
-          .order('created_at', { ascending: false });
+          .update({ read: true })
+          .in('id', ids);
+        if (error) throw error;
 
-        if (error) {
-          console.error('Erro ao carregar notificações:', error);
-          listEl.innerHTML =
-            `<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>Erro ao carregar</h3><p>Tente novamente mais tarde.</p></div>`;
-          return;
-        }
-
-        notifications = data || [];
-
-        // Buscar dados dos remetentes (sender_id)
-        const senderIds = notifications.map(n => n.sender_id).filter(id => id && !profileCache.has(id));
-        if (senderIds.length > 0) {
-          const { data: profiles, error: pError } = await supabase
-            .from('profiles')
-            .select('*')
-            .in('id', senderIds);
-          if (!pError && profiles) {
-            profiles.forEach(p => profileCache.set(p.id, p));
-          }
-        }
-
+        notifications.forEach(n => { if (!n.read) n.read = true; });
         renderNotifications();
         updateBadge();
-      }
 
-      // ===== RENDERIZAR =====
-      function renderNotifications() {
-        const filtered = getFilteredNotifications();
-        if (filtered.length === 0) {
-          listEl.innerHTML = `
-                <div class="empty-state">
-                  <i class="fas fa-bell-slash"></i>
-                  <h3>Nenhuma notificação</h3>
-                  <p>Você está em dia!</p>
-                </div>
-              `;
-          return;
-        }
-
-        // Agrupar por data (hoje, ontem, esta semana, etc.)
-        const groups = groupByDate(filtered);
-        let html = '';
-        for (const [label, items] of Object.entries(groups)) {
-          html += `<div style="margin-top:12px;font-size:12px;color:rgba(255,255,255,0.2);font-weight:500;padding-left:4px;">${label}</div>`;
-          items.forEach(notif => {
-            html += renderNotificationItem(notif);
-          });
-        }
-        listEl.innerHTML = html;
-      }
-
-      function renderNotificationItem(notif) {
-        const sender = notif.sender_id ? profileCache.get(notif.sender_id) : null;
-        const senderName = sender ? sender.full_name || 'Usuário' : 'Alguém';
-        const senderAvatar = sender ? sender.avatar_url : null;
-        const senderColor = sender ? sender.avatar_color || '#5850ec' : '#5850ec';
-        const initial = senderName[0].toUpperCase();
-
-        let icon = 'fa-bell';
-        let text = '';
-        let actionLink = '#';
-
-        switch (notif.type) {
-          case 'like':
-            icon = 'fa-heart';
-            text = `<strong>${senderName}</strong> curtiu seu post.`;
-            actionLink = notif.reference_id ? `post.html?id=${notif.reference_id}` : '#';
-            break;
-          case 'comment':
-            icon = 'fa-comment';
-            text = `<strong>${senderName}</strong> comentou: "${notif.content || ''}"`;
-            actionLink = notif.reference_id ? `post.html?id=${notif.reference_id}` : '#';
-            break;
-          case 'follow':
-            icon = 'fa-user-plus';
-            text = `<strong>${senderName}</strong> começou a te seguir.`;
-            actionLink = sender ? `perfil.html?id=${sender.id}` : '#';
-            break;
-          case 'message':
-            icon = 'fa-envelope';
-            text = `<strong>${senderName}</strong> te enviou uma mensagem.`;
-            actionLink = 'chat.html';
-            break;
-          default:
-            text = notif.content || 'Nova notificação';
-            actionLink = '#';
-        }
-
-        const timeAgo = getTimeAgo(notif.created_at);
-        const unreadClass = notif.read ? '' : 'unread';
-
-        return `
-              <div class="notification-item ${unreadClass}" data-id="${notif.id}" onclick="handleNotificationClick('${notif.id}', '${actionLink}')">
-                <div class="avatar">
-                  ${senderAvatar ? `<img src="${senderAvatar}" alt="${senderName}">` :
-                  `<div class="fallback" style="background:${senderColor};">${initial}</div>`}
-                </div>
-                <div class="content">
-                  <div class="text">${text}</div>
-                  <div class="time">${timeAgo}</div>
-                </div>
-                <div class="action-icon">
-                  <i class="fas ${icon}"></i>
-                </div>
-              </div>
-            `;
-      }
-
-      // ===== FILTROS =====
-      function getFilteredNotifications() {
-        if (currentFilter === 'all') return notifications;
-        return notifications.filter(n => n.type === currentFilter);
-      }
-
-      function setupFilterTabs() {
-        const buttons = filterTabs.querySelectorAll('button');
-        buttons.forEach(btn => {
-          btn.addEventListener('click', function() {
-            buttons.forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            currentFilter = this.dataset.filter;
-            renderNotifications();
-          });
+        Swal.fire({
+          icon: 'success', title: 'Pronto!',
+          text: 'Todas as notificações foram marcadas como lidas.',
+          timer: 2000, showConfirmButton: false,
+          background: '#14141e', color: '#fff'
         });
+      } catch (error) {
+        console.error(error);
+        Swal.fire('Erro', 'Não foi possível atualizar.', 'error');
+      } finally {
+        markAllBtn.disabled = false;
+        markAllBtn.textContent = 'Marcar todas como lidas';
       }
+    }
 
-      // ===== AGRUPAR POR DATA =====
-      function groupByDate(items) {
-        const groups = {};
-        const now = new Date();
-        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const yesterday = new Date(today);
-        yesterday.setDate(yesterday.getDate() - 1);
-        const weekAgo = new Date(today);
-        weekAgo.setDate(weekAgo.getDate() - 7);
-
-        items.forEach(item => {
-          const date = new Date(item.created_at);
-          let label = '';
-          if (date >= today) label = 'Hoje';
-          else if (date >= yesterday) label = 'Ontem';
-          else if (date >= weekAgo) label = 'Esta semana';
-          else label = 'Anterior';
-
-          if (!groups[label]) groups[label] = [];
-          groups[label].push(item);
-        });
-
-        // Ordenar labels (Hoje, Ontem, Esta semana, Anterior)
-        const order = ['Hoje', 'Ontem', 'Esta semana', 'Anterior'];
-        const sorted = {};
-        order.forEach(key => {
-          if (groups[key]) sorted[key] = groups[key];
-        });
-        return sorted;
-      }
-
-      // ===== MARCAR COMO LIDA =====
-      async function markAllAsRead() {
-        const unread = notifications.filter(n => !n.read);
-        if (unread.length === 0) {
-          Swal.fire({
-            icon: 'info',
-            title: 'Tudo lido!',
-            text: 'Você não tem notificações não lidas.',
-            confirmButtonColor: '#5850ec',
-            background: '#14141e',
-            color: '#fff'
-          });
-          return;
-        }
-
-        markAllBtn.disabled = true;
-        markAllBtn.textContent = 'Atualizando...';
-
-        try {
-          const ids = unread.map(n => n.id);
-          const { error } = await supabase
-            .from('notifications')
-            .update({ read: true })
-            .in('id', ids);
-          if (error) throw error;
-
-          // Atualizar local
-          notifications.forEach(n => { if (!n.read) n.read = true; });
+    // ============================================================
+    // CLIQUE
+    // ============================================================
+    window.handleNotificationClick = async function(id, link) {
+      try {
+        const notif = notifications.find(n => n.id === id);
+        if (notif && !notif.read) {
+          await supabase.from('notifications').update({ read: true }).eq('id', id);
+          notif.read = true;
           renderNotifications();
           updateBadge();
-          Swal.fire({
-            icon: 'success',
-            title: 'Pronto!',
-            text: 'Todas as notificações foram marcadas como lidas.',
-            timer: 2000,
-            showConfirmButton: false,
-            background: '#14141e',
-            color: '#fff'
-          });
-        } catch (error) {
-          console.error('Erro ao marcar todas como lidas:', error);
-          Swal.fire('Erro', 'Não foi possível atualizar.', 'error');
-        } finally {
-          markAllBtn.disabled = false;
-          markAllBtn.textContent = 'Marcar todas como lidas';
         }
+        if (link && link !== '#') window.location.href = link;
+      } catch (e) {
+        console.error(e);
       }
+    };
 
-      // ===== CLIQUE NA NOTIFICAÇÃO =====
-      window.handleNotificationClick = async function(id, link) {
-        try {
-          // Marcar como lida se não estiver
-          const notif = notifications.find(n => n.id === id);
-          if (notif && !notif.read) {
-            await supabase
-              .from('notifications')
-              .update({ read: true })
-              .eq('id', id);
-            notif.read = true;
+    // ============================================================
+    // BADGE
+    // ============================================================
+    function updateBadge() {
+      const unread = notifications.filter(n => !n.read).length;
+      if (unread > 0) {
+        notifBadge.style.display = 'flex';
+        notifBadge.textContent = unread > 9 ? '9+' : unread;
+      } else {
+        notifBadge.style.display = 'none';
+      }
+    }
+
+    // ============================================================
+    // REALTIME
+    // ============================================================
+    function setupRealtime() {
+      supabase
+        .channel('notifications_channel')
+        .on('postgres_changes', {
+          event: 'INSERT', schema: 'public', table: 'notifications',
+          filter: `user_id=eq.${currentUser.id}`
+        }, (payload) => {
+          const n = payload.new;
+          if (notifications.some(x => x.id === n.id)) return;
+          notifications.unshift(n);
+          renderNotifications();
+          updateBadge();
+        })
+        .on('postgres_changes', {
+          event: 'UPDATE', schema: 'public', table: 'notifications',
+          filter: `user_id=eq.${currentUser.id}`
+        }, (payload) => {
+          const idx = notifications.findIndex(x => x.id === payload.new.id);
+          if (idx !== -1) {
+            notifications[idx] = { ...notifications[idx], ...payload.new };
             renderNotifications();
             updateBadge();
           }
-          // Redirecionar
-          if (link && link !== '#') {
-            window.location.href = link;
-          } else {
-            // Se não tiver link, só marca como lida
-          }
-        } catch (error) {
-          console.error('Erro ao processar notificação:', error);
-        }
-      };
+        })
+        .subscribe();
+    }
 
-      // ===== BADGE =====
-      function updateBadge() {
-        const unread = notifications.filter(n => !n.read).length;
-        if (unread > 0) {
-          notifBadge.style.display = 'flex';
-          notifBadge.textContent = unread > 9 ? '9+' : unread;
-        } else {
-          notifBadge.style.display = 'none';
-        }
-      }
+    // ============================================================
+    // TEMPO
+    // ============================================================
+    function getTimeAgo(date) {
+      const diff = Date.now() - new Date(date).getTime();
+      const m = Math.floor(diff / 60000);
+      const h = Math.floor(diff / 3600000);
+      const d = Math.floor(diff / 86400000);
+      if (m < 1) return 'agora';
+      if (m < 60) return `${m}m`;
+      if (h < 24) return `${h}h`;
+      if (d < 7) return `${d}d`;
+      return new Date(date).toLocaleDateString('pt-BR');
+    }
 
-      // ===== TEMPO REAL =====
-      function setupRealtime() {
-        const channel = supabase
-          .channel('notifications_channel')
-          .on('postgres_changes', {
-            event: 'INSERT',
-            schema: 'public',
-            table: 'notifications',
-            filter: `user_id=eq.${currentUser.id}`
-          }, async (payload) => {
-            const newNotif = payload.new;
-            // Evitar duplicação
-            if (!notifications.some(n => n.id === newNotif.id)) {
-              // Buscar perfil do sender se não estiver em cache
-              if (newNotif.sender_id && !profileCache.has(newNotif.sender_id)) {
-                const { data } = await supabase
-                  .from('profiles')
-                  .select('*')
-                  .eq('id', newNotif.sender_id)
-                  .single();
-                if (data) profileCache.set(newNotif.sender_id, data);
-              }
-              notifications.unshift(newNotif);
-              renderNotifications();
-              updateBadge();
-            }
-          })
-          .on('postgres_changes', {
-            event: 'UPDATE',
-            schema: 'public',
-            table: 'notifications',
-            filter: `user_id=eq.${currentUser.id}`
-          }, (payload) => {
-            const updated = payload.new;
-            const index = notifications.findIndex(n => n.id === updated.id);
-            if (index !== -1) {
-              notifications[index] = { ...notifications[index], ...updated };
-              renderNotifications();
-              updateBadge();
-            }
-          })
-          .subscribe();
-      }
+    document.addEventListener('DOMContentLoaded', checkAuth);
+    window.markAllAsRead = markAllAsRead;
 
-      // ===== UTILITÁRIOS =====
-      function getTimeAgo(date) {
-        const diff = Date.now() - new Date(date).getTime();
-        const minutes = Math.floor(diff / 60000);
-        const hours = Math.floor(diff / 3600000);
-        const days = Math.floor(diff / 86400000);
-        if (minutes < 1) return 'agora';
-        if (minutes < 60) return `${minutes}m`;
-        if (hours < 24) return `${hours}h`;
-        if (days < 7) return `${days}d`;
-        return new Date(date).toLocaleDateString('pt-BR');
-      }
-
-      // ===== INICIALIZAÇÃO =====
-      document.addEventListener('DOMContentLoaded', checkAuth);
-
-      // Expor funções globalmente (para onclick)
-      window.markAllAsRead = markAllAsRead;
-      window.handleNotificationClick = handleNotificationClick;
-
-    })();
-  </script>
+  })();
+</script>
 </body>
 </html>
