@@ -2697,7 +2697,7 @@
 
         <div class="audio-selector" id="audioSelector">
             <div class="audio-options">
-                <button onclick="showAudioRecorder()"><i class="fas fa-microphone"></i> Gravar (máx 1:30)</button>
+                <button onclick="showAudioRecorder()"><i class="fas fa-microphone"></i> Gravar (máx 5:00)</button>
                 <button onclick="document.getElementById('createAudioInput').click()"><i class="fas fa-folder-open"></i> Escolher arquivo</button>
             </div>
             <div class="audio-recorder" id="audioRecorder">
@@ -4796,7 +4796,8 @@
             // ============================================================
             // ÁUDIO - GRAVAÇÃO
             // ============================================================
-            const MAX_AUDIO_DURATION = 90;
+            // ✅ Alterado de 90 (1:30) para 300 (5:00)
+            const MAX_AUDIO_DURATION = 300;
 
             window.toggleAudioSelector = function() {
                 const sel = document.getElementById('audioSelector');
@@ -4818,16 +4819,18 @@
             window.handleAudioFileSelect = function(event) {
                 const file = event.target.files[0];
                 if (!file) return;
-                if (file.size > 10 * 1024 * 1024) {
-                    document.getElementById('createMediaStatus').textContent = '❌ Arquivo muito grande (máx 10MB)';
+                // ✅ Limite aumentado de 10MB para 30MB
+                if (file.size > 30 * 1024 * 1024) {
+                    document.getElementById('createMediaStatus').textContent = '❌ Arquivo muito grande (máx 30MB)';
                     return;
                 }
                 const tempAudio = new Audio(URL.createObjectURL(file));
                 tempAudio.onloadedmetadata = () => {
                     const dur = Math.floor(tempAudio.duration);
                     if (dur > MAX_AUDIO_DURATION) {
+                        // ✅ Mensagem atualizada para 5min
                         document.getElementById('createMediaStatus').textContent =
-                            '❌ Áudio excede 1min30s (atual: ' + formatDuration(dur) + ')';
+                            '❌ Áudio excede 5min (atual: ' + formatDuration(dur) + ')';
                         return;
                     }
                     selectedAudioFile = file;
@@ -4909,8 +4912,9 @@
                             document.getElementById('recordTimer').textContent = formatDuration(recordTimer);
                             if (recordTimer >= MAX_AUDIO_DURATION) {
                                 stopRecording();
+                                // ✅ Mensagem atualizada para 5min
                                 document.getElementById('createMediaStatus').textContent =
-                                    '⏱️ Limite de 1min30s atingido';
+                                    '⏱️ Limite de 5min atingido';
                             }
                         }
                     }, 1000);
