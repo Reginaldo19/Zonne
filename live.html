@@ -7,7 +7,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         :root {
             --bg: #05050a;
@@ -23,7 +27,8 @@
             --font: 'Inter', system-ui, sans-serif;
         }
 
-        html, body {
+        html,
+        body {
             height: 100%;
             overflow: hidden;
             font-family: var(--font);
@@ -101,12 +106,19 @@
         }
 
         @keyframes pulseDot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.2); }
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(1.2);
+            }
         }
 
         .landing .hero {
-            padding: 40px 20px 28px;
+            padding: 40px 20px 20px;
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -165,36 +177,64 @@
             font-size: 15px;
             color: var(--text-2);
             max-width: 340px;
-            margin: 0 auto 26px;
+            margin: 0 auto;
             line-height: 1.55;
         }
 
-        .landing .hero .live-now-btn {
-            position: relative;
+        /* FAB — botão flutuante "Iniciar Live" */
+        .landing .fab-live {
+            position: fixed;
+            bottom: calc(24px + env(safe-area-inset-bottom, 0));
+            right: 20px;
+            z-index: 90;
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            padding: 16px 32px;
+            padding: 16px 22px;
             background: linear-gradient(135deg, var(--red), #ff6b9d);
             color: #fff;
             border: none;
             border-radius: 40px;
             font-weight: 800;
             font-size: 15px;
-            letter-spacing: 0.3px;
             cursor: pointer;
             font-family: var(--font);
-            box-shadow: 0 12px 40px var(--red-glow);
-            transition: all 0.25s;
+            box-shadow:
+                0 12px 40px var(--red-glow),
+                0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            animation: fabFloat 3s ease-in-out infinite;
         }
 
-        .landing .hero .live-now-btn:hover {
-            transform: translateY(-2px);
+        .landing .fab-live:hover {
+            transform: translateY(-3px) scale(1.03);
             box-shadow: 0 16px 48px var(--red-glow);
         }
 
+        .landing .fab-live:active {
+            transform: translateY(0) scale(0.97);
+        }
+
+        .landing .fab-live i {
+            font-size: 16px;
+        }
+
+        @keyframes fabFloat {
+            0%, 100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-4px);
+            }
+        }
+
+        body.modal-open .landing .fab-live {
+            display: none;
+        }
+
         .landing .lives-wrap {
-            padding: 8px 20px 60px;
+            padding: 8px 20px calc(140px + env(safe-area-inset-bottom, 0)) 20px;
             flex: 1;
         }
 
@@ -247,20 +287,7 @@
             cursor: pointer;
             background: linear-gradient(135deg, #1a1a2e, #0b0b12);
             transition: transform 0.25s;
-            animation: cardIn 0.5s ease backwards;
             border: 1px solid var(--border);
-        }
-
-        .landing .grid .card:nth-child(1) { animation-delay: 0.05s; }
-        .landing .grid .card:nth-child(2) { animation-delay: 0.1s; }
-        .landing .grid .card:nth-child(3) { animation-delay: 0.15s; }
-        .landing .grid .card:nth-child(4) { animation-delay: 0.2s; }
-        .landing .grid .card:nth-child(5) { animation-delay: 0.25s; }
-        .landing .grid .card:nth-child(6) { animation-delay: 0.3s; }
-
-        @keyframes cardIn {
-            from { opacity: 0; transform: translateY(16px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .landing .grid .card:hover {
@@ -452,7 +479,9 @@
             justify-content: center;
         }
 
-        .modal-backdrop.active { display: flex; }
+        .modal-backdrop.active {
+            display: flex;
+        }
 
         .modal-backdrop .modal {
             background: var(--card);
@@ -468,8 +497,13 @@
         }
 
         @keyframes slideUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
+            from {
+                transform: translateY(100%);
+            }
+
+            to {
+                transform: translateY(0);
+            }
         }
 
         .modal-backdrop .modal .handle {
@@ -594,7 +628,7 @@
         }
 
         /* ============================================================
-           LIVE ROOM — TELA CHEIA ESTILO TIKTOK
+           LIVE ROOM
            ============================================================ */
         .live-room {
             position: fixed;
@@ -602,13 +636,13 @@
             background: #000;
             z-index: 200;
             display: none;
-            flex-direction: column;
             overflow: hidden;
         }
 
-        .live-room.active { display: flex; }
+        .live-room.active {
+            display: block;
+        }
 
-        /* VÍDEO PRINCIPAL — TELA CHEIA, OBJECT-FIT COVER */
         .live-room .stage {
             position: absolute;
             inset: 0;
@@ -618,20 +652,20 @@
 
         .live-room .stage .main-video {
             position: absolute;
-            inset: 0;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             object-fit: cover;
             background: #000;
             z-index: 1;
+            display: block;
         }
 
-        .live-room .stage .main-video.hidden {
-            opacity: 0;
-            pointer-events: none;
+        .live-room .stage .main-video.mirror {
+            transform: scaleX(-1);
         }
 
-        /* Waiting overlay */
         .live-room .stage .waiting {
             position: absolute;
             inset: 0;
@@ -642,9 +676,12 @@
             gap: 20px;
             background: radial-gradient(circle at center, #14141f, #05050a);
             z-index: 6;
+            transition: opacity 0.3s;
         }
 
         .live-room .stage .waiting.hidden {
+            opacity: 0;
+            pointer-events: none;
             display: none;
         }
 
@@ -672,8 +709,15 @@
         }
 
         @keyframes pulseRing {
-            0% { transform: scale(0.5); opacity: 1; }
-            100% { transform: scale(1.5); opacity: 0; }
+            0% {
+                transform: scale(0.5);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
         }
 
         .live-room .stage .waiting .pulse i {
@@ -688,15 +732,7 @@
             color: rgba(255, 255, 255, 0.8);
         }
 
-        .live-room .stage .waiting .sub {
-            font-size: 13px;
-            color: rgba(255, 255, 255, 0.4);
-            margin-top: -12px;
-        }
-
-        /* ============================================================
-           TOP BAR
-           ============================================================ */
+        /* TOP BAR */
         .live-room .top-bar {
             position: absolute;
             top: 0;
@@ -823,7 +859,35 @@
             background: rgba(255, 255, 255, 0.15);
         }
 
-        /* LIVE tag */
+        .live-room .flip-cam-btn {
+            position: absolute;
+            top: calc(80px + env(safe-area-inset-top, 0));
+            right: 12px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            font-size: 17px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 25;
+            transition: all 0.2s;
+        }
+
+        .live-room .flip-cam-btn:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .live-room .flip-cam-btn:active {
+            transform: scale(0.9) rotate(180deg);
+        }
+
         .live-room .live-tag {
             position: absolute;
             top: calc(60px + env(safe-area-inset-top, 0));
@@ -851,93 +915,9 @@
             animation: pulseDot 1.5s infinite;
         }
 
-        /* ============================================================
-           PIP DO HOST
-           ============================================================ */
-        .live-room .self-pip {
-            position: absolute;
-            top: calc(60px + env(safe-area-inset-top, 0));
-            right: 12px;
-            width: 82px;
-            height: 110px;
-            border-radius: 14px;
-            overflow: hidden;
-            z-index: 22;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
-            background: #000;
-            cursor: pointer;
-            transition: all 0.25s;
-        }
-
-        .live-room .self-pip:active {
-            transform: scale(0.95);
-        }
-
-        .live-room .self-pip video {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transform: scaleX(-1);
-        }
-
-        .live-room .self-pip video.rear-camera {
-            transform: scaleX(1);
-        }
-
-        .live-room .self-pip .lbl {
-            position: absolute;
-            bottom: 4px;
-            left: 4px;
-            background: rgba(0, 0, 0, 0.75);
-            color: #fff;
-            font-size: 8.5px;
-            font-weight: 800;
-            padding: 2px 6px;
-            border-radius: 20px;
-            letter-spacing: 0.4px;
-            text-transform: uppercase;
-        }
-
-        /* Botão de trocar câmera (flutuante sobre o PIP) */
-        .live-room .flip-cam-btn {
-            position: absolute;
-            top: calc(60px + env(safe-area-inset-top, 0) + 90px);
-            right: 96px;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: #fff;
-            font-size: 15px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 23;
-            transition: all 0.25s;
-        }
-
-        .live-room .flip-cam-btn:hover {
-            background: rgba(0, 0, 0, 0.8);
-            transform: rotate(180deg);
-        }
-
-        .live-room .flip-cam-btn:active {
-            transform: rotate(180deg) scale(0.9);
-        }
-
-        /* ============================================================
-           REAÇÕES VOANDO
-           ============================================================ */
         .live-room .reactions-layer {
             position: absolute;
-            bottom: 100px;
+            bottom: 130px;
             right: 12px;
             width: 70px;
             height: 380px;
@@ -957,20 +937,28 @@
         }
 
         @keyframes flyUp {
-            0% { opacity: 0; transform: translate(0, 0) scale(0.4); }
-            12% { opacity: 1; transform: translate(0, -40px) scale(1.3); }
-            100% { opacity: 0; transform: translate(-40px, -400px) scale(0.9); }
+            0% {
+                opacity: 0;
+                transform: translate(0, 0) scale(0.4);
+            }
+
+            12% {
+                opacity: 1;
+                transform: translate(0, -40px) scale(1.3);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translate(-40px, -400px) scale(0.9);
+            }
         }
 
-        /* ============================================================
-           CHAT — com scroll, altura limitada
-           ============================================================ */
         .live-room .chat-float {
             position: absolute;
             bottom: 90px;
             left: 12px;
-            right: 100px;
-            max-height: 40vh;
+            right: 84px;
+            max-height: 38vh;
             overflow-y: auto;
             overflow-x: hidden;
             z-index: 20;
@@ -980,7 +968,6 @@
             padding-right: 4px;
             -webkit-overflow-scrolling: touch;
             scrollbar-width: none;
-            pointer-events: auto;
         }
 
         .live-room .chat-float::-webkit-scrollbar {
@@ -1000,21 +987,14 @@
             display: inline-block;
             max-width: 100%;
             align-self: flex-start;
-            animation: msgIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
             border: 1px solid rgba(255, 255, 255, 0.06);
             flex-shrink: 0;
-        }
-
-        @keyframes msgIn {
-            from { opacity: 0; transform: translateX(-20px) scale(0.9); }
-            to { opacity: 1; transform: translateX(0) scale(1); }
         }
 
         .live-room .chat-float .msg .u {
             font-weight: 800;
             color: #b8b1ff;
             margin-right: 5px;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
         }
 
         .live-room .chat-float .msg.own {
@@ -1033,16 +1013,13 @@
             font-size: 12.5px;
         }
 
-        /* ============================================================
-           BOTTOM BAR — fixa no rodapé
-           ============================================================ */
         .live-room .bottom-bar {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
             padding: 12px 12px calc(12px + env(safe-area-inset-bottom, 0)) 12px;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.4) 60%, transparent 100%);
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, transparent 100%);
             display: flex;
             align-items: center;
             gap: 8px;
@@ -1097,11 +1074,11 @@
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            color: #fff;
             transition: transform 0.15s, background 0.2s;
             font-family: var(--font);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            color: #fff;
         }
 
         .live-room .bottom-bar .btn:active {
@@ -1117,16 +1094,6 @@
             background: rgba(255, 46, 91, 0.45);
         }
 
-        .live-room .bottom-bar .cam {
-            background: rgba(0, 0, 0, 0.55);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
-
-        .live-room .bottom-bar .cam.off {
-            background: rgba(255, 71, 87, 0.35);
-            border-color: rgba(255, 71, 87, 0.6);
-        }
-
         .live-room .bottom-bar .send {
             background: linear-gradient(135deg, var(--accent), var(--accent-2));
             box-shadow: 0 6px 20px var(--accent-glow);
@@ -1137,9 +1104,6 @@
             box-shadow: 0 6px 20px var(--red-glow);
         }
 
-        /* ============================================================
-           ENDED OVERLAY
-           ============================================================ */
         .live-room .ended-overlay {
             position: absolute;
             inset: 0;
@@ -1156,11 +1120,18 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
-        .live-room .ended-overlay.active { display: flex; }
+        .live-room .ended-overlay.active {
+            display: flex;
+        }
 
         .live-room .ended-overlay .eico {
             width: 100px;
@@ -1211,6 +1182,7 @@
             font-size: 24px;
             font-weight: 900;
             color: var(--accent);
+            letter-spacing: -0.5px;
         }
 
         .live-room .ended-overlay .stats .st .l {
@@ -1237,7 +1209,10 @@
             transition: transform 0.2s;
         }
 
-        /* Toast */
+        .live-room .ended-overlay .leave-btn:hover {
+            transform: translateY(-2px);
+        }
+
         .toast {
             position: fixed;
             top: 90px;
@@ -1245,6 +1220,7 @@
             transform: translateX(-50%) translateY(-30px);
             background: rgba(15, 15, 24, 0.98);
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--border);
             border-radius: 30px;
             padding: 12px 22px;
@@ -1277,20 +1253,22 @@
             border-color: var(--accent);
         }
 
-        /* Resume modal */
         .resume-modal {
             display: none;
             position: fixed;
             inset: 0;
             background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             z-index: 400;
             align-items: center;
             justify-content: center;
             padding: 24px;
         }
 
-        .resume-modal.active { display: flex; }
+        .resume-modal.active {
+            display: flex;
+        }
 
         .resume-modal .res-box {
             background: var(--card);
@@ -1304,8 +1282,15 @@
         }
 
         @keyframes modalPop {
-            from { transform: scale(0.85); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+            from {
+                transform: scale(0.85);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
 
         .resume-modal .res-box .ico {
@@ -1328,6 +1313,7 @@
         .resume-modal .res-box h3 {
             font-size: 20px;
             font-weight: 900;
+            letter-spacing: -0.3px;
             margin-bottom: 8px;
         }
 
@@ -1360,6 +1346,10 @@
             border: 1px solid rgba(255, 46, 91, 0.3);
         }
 
+        .resume-modal .res-box .res-actions .end:hover {
+            background: rgba(255, 46, 91, 0.2);
+        }
+
         .resume-modal .res-box .res-actions .resume {
             background: linear-gradient(135deg, var(--accent), var(--accent-2));
             color: #fff;
@@ -1370,17 +1360,21 @@
             .landing .grid {
                 grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             }
-        }
 
-        /* Chat escondido quando não há mensagens */
-        .live-room .chat-float:empty {
-            display: none;
+            .landing .fab-live {
+                bottom: 32px;
+                right: 32px;
+                padding: 18px 26px;
+                font-size: 16px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- LANDING -->
+    <!-- ============================================================
+         LANDING
+         ============================================================ -->
     <div class="landing" id="landing">
         <div class="nav">
             <button class="back" onclick="goBack()">
@@ -1397,12 +1391,8 @@
                 <span class="live-dot"></span>
                 Transmissão ao vivo
             </div>
-            <h1>Mostre seu momento<br/>para o mundo</h1>
+            <h1>Mostre seu momento<br />para o mundo</h1>
             <p>Compartilhe o que você quiser, quando quiser. Direto do seu celular.</p>
-            <button class="live-now-btn" onclick="openCreateModal()">
-                <i class="fas fa-video"></i>
-                Começar Live
-            </button>
         </div>
 
         <div class="lives-wrap">
@@ -1417,14 +1407,24 @@
                 </div>
             </div>
         </div>
+
+        <!-- FAB — botão "Iniciar Live" sempre visível -->
+        <button class="fab-live" onclick="openCreateModal()">
+            <i class="fas fa-video"></i>
+            Iniciar Live
+        </button>
     </div>
 
-    <!-- MODAL CRIAR -->
+    <!-- ============================================================
+         MODAL CRIAR LIVE
+         ============================================================ -->
     <div class="modal-backdrop" id="createModal">
         <div class="modal">
             <div class="handle"></div>
             <div class="modal-head">
-                <div class="ico"><i class="fas fa-broadcast-tower"></i></div>
+                <div class="ico">
+                    <i class="fas fa-broadcast-tower"></i>
+                </div>
                 <div class="info">
                     <h3>Nova Live</h3>
                     <p>Configure antes de entrar no ar</p>
@@ -1446,10 +1446,14 @@
         </div>
     </div>
 
-    <!-- MODAL RESUME -->
+    <!-- ============================================================
+         MODAL RESUME
+         ============================================================ -->
     <div class="resume-modal" id="resumeModal">
         <div class="res-box">
-            <div class="ico"><i class="fas fa-broadcast-tower"></i></div>
+            <div class="ico">
+                <i class="fas fa-broadcast-tower"></i>
+            </div>
             <h3>Sua live ainda está no ar</h3>
             <p id="resumeText">Você saiu mas sua transmissão continua ativa. Deseja voltar?</p>
             <div class="res-actions">
@@ -1459,33 +1463,20 @@
         </div>
     </div>
 
-    <!-- LIVE ROOM -->
+    <!-- ============================================================
+         LIVE ROOM
+         ============================================================ -->
     <div class="live-room" id="liveRoom">
         <div class="stage">
-            <!-- Vídeo PRINCIPAL (viewer vê o host, tela cheia) -->
-            <video class="main-video" id="remoteVideo" autoplay playsinline></video>
+            <video class="main-video" id="mainVideo" autoplay playsinline muted></video>
 
-            <!-- Waiting -->
             <div class="waiting" id="waitingOverlay">
                 <div class="pulse">
                     <i class="fas fa-satellite-dish"></i>
                 </div>
                 <p id="waitingText">Conectando…</p>
-                <p class="sub">aguarde o vídeo do host</p>
             </div>
 
-            <!-- PIP do host -->
-            <div class="self-pip" id="selfPip" style="display:none;">
-                <video id="localVideo" autoplay playsinline muted></video>
-                <div class="lbl">Você</div>
-            </div>
-
-            <!-- Botão de trocar câmera flutuante -->
-            <button class="flip-cam-btn" id="flipCamBtn" onclick="flipCamera()" style="display:none;" title="Trocar câmera">
-                <i class="fas fa-sync-alt"></i>
-            </button>
-
-            <!-- Top bar -->
             <div class="top-bar">
                 <div class="host-card">
                     <div class="avatar" id="hostAvatar">
@@ -1508,18 +1499,17 @@
                 </button>
             </div>
 
-            <!-- LIVE tag -->
+            <button class="flip-cam-btn" id="flipCamBtn" onclick="flipCamera()" style="display:none;" title="Trocar câmera">
+                <i class="fas fa-sync-alt"></i>
+            </button>
+
             <div class="live-tag">
                 <span class="dot"></span> LIVE
             </div>
 
-            <!-- Reações -->
             <div class="reactions-layer" id="reactionsLayer"></div>
-
-            <!-- Chat -->
             <div class="chat-float" id="chatOverlay"></div>
 
-            <!-- Ended overlay -->
             <div class="ended-overlay" id="endedOverlay">
                 <div class="eico">
                     <i class="fas fa-broadcast-tower"></i>
@@ -1533,14 +1523,10 @@
             </div>
         </div>
 
-        <!-- Bottom bar -->
         <div class="bottom-bar">
             <div class="input-wrap">
                 <input type="text" id="chatInput" maxlength="200" placeholder="Comente algo…" />
             </div>
-            <button class="btn cam" id="cameraBtn" onclick="toggleCamera()" style="display:none;" title="Ligar/desligar câmera">
-                <i class="fas fa-video"></i>
-            </button>
             <button class="btn react" onclick="sendReaction()" title="Reação">
                 <i class="fas fa-heart"></i>
             </button>
@@ -1585,7 +1571,6 @@
             let liveStream = null;
             let isHost = false;
             let localStream = null;
-            let localCameraEnabled = true;
             let currentFacingMode = 'user';
             let peerConnections = {};
             let viewerPeerConnection = null;
@@ -1595,14 +1580,16 @@
             let statsInterval = null;
             let heartbeatInterval = null;
 
-            const remoteVideo = document.getElementById('remoteVideo');
-            const localVideo = document.getElementById('localVideo');
+            const mainVideo = document.getElementById('mainVideo');
             const waitingOverlay = document.getElementById('waitingOverlay');
             const waitingText = document.getElementById('waitingText');
             const chatOverlay = document.getElementById('chatOverlay');
             const chatInput = document.getElementById('chatInput');
             const reactionsLayer = document.getElementById('reactionsLayer');
             const endedOverlay = document.getElementById('endedOverlay');
+
+            const userNameCache = {};
+            const recentJoins = {};
 
             function toast(msg, type) {
                 const el = document.getElementById('toast');
@@ -1620,9 +1607,41 @@
                 return d.innerHTML;
             }
 
-            // ============================================================
-            // AUTH
-            // ============================================================
+            function resolveDisplayName(profile, fallbackName) {
+                if (fallbackName && !fallbackName.match(/^usuário( desconhecido)?$/i)) {
+                    return fallbackName;
+                }
+
+                if (!profile) return 'Alguém';
+
+                const fn = (profile.full_name || '').trim();
+                if (fn && !fn.match(/^usuário( desconhecido)?$/i)) return fn;
+
+                const un = (profile.username || '').trim();
+                if (un) return '@' + un;
+
+                return 'Alguém';
+            }
+
+            async function fetchUserName(userId) {
+                if (userNameCache[userId]) return userNameCache[userId];
+
+                try {
+                    const { data } = await supabase
+                        .from('profiles')
+                        .select('full_name, username')
+                        .eq('id', userId)
+                        .single();
+
+                    const name = resolveDisplayName(data);
+                    userNameCache[userId] = name;
+                    return name;
+                } catch (e) {
+                    userNameCache[userId] = 'Alguém';
+                    return 'Alguém';
+                }
+            }
+
             async function checkAuth() {
                 try {
                     const { data, error } = await supabase.auth.getSession();
@@ -1633,11 +1652,28 @@
                     }
                     currentUser = data.session.user;
 
-                    const { data: profile, error: perr } = await supabase
+                    const { data: profile } = await supabase
                         .from('profiles').select('*').eq('id', currentUser.id).single();
 
-                    if (perr) return;
-                    currentProfile = profile;
+                    currentProfile = profile || { full_name: 'Você', username: 'você' };
+
+                    if (!profile.full_name || profile.full_name.match(/^usuário( desconhecido)?$/i)) {
+                        const emailName = (currentUser.email || '').split('@')[0];
+                        if (emailName) {
+                            const niceName = emailName.charAt(0).toUpperCase() + emailName.slice(1);
+                            currentProfile.full_name = niceName;
+                            currentProfile.username = currentProfile.username || emailName;
+
+                            try {
+                                await supabase.from('profiles').update({
+                                    full_name: niceName,
+                                    username: emailName
+                                }).eq('id', currentUser.id);
+                            } catch (e) {}
+                        }
+                    }
+
+                    userNameCache[currentUser.id] = resolveDisplayName(currentProfile);
 
                     await checkExistingLive();
                     await loadLives();
@@ -1647,9 +1683,6 @@
                 }
             }
 
-            // ============================================================
-            // LIVE EXISTENTE
-            // ============================================================
             let existingLiveId = null;
 
             async function checkExistingLive() {
@@ -1731,9 +1764,6 @@
                 } catch (e) {}
             };
 
-            // ============================================================
-            // LISTA DE LIVES
-            // ============================================================
             async function loadLives() {
                 const grid = document.getElementById('livesGrid');
                 const countEl = document.getElementById('livesCount');
@@ -1747,7 +1777,9 @@
                 if (error) {
                     grid.innerHTML = `
                         <div class="empty">
-                            <div class="ico"><i class="fas fa-exclamation-triangle"></i></div>
+                            <div class="ico">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
                             <h3>Erro ao carregar</h3>
                             <p>Tente novamente</p>
                         </div>
@@ -1761,7 +1793,9 @@
                 if (!data || data.length === 0) {
                     grid.innerHTML = `
                         <div class="empty">
-                            <div class="ico"><i class="fas fa-satellite-dish"></i></div>
+                            <div class="ico">
+                                <i class="fas fa-satellite-dish"></i>
+                            </div>
                             <h3>Ninguém está ao vivo</h3>
                             <p>Seja o primeiro a iniciar uma transmissão</p>
                         </div>
@@ -1773,7 +1807,8 @@
                     const p = live.profiles || {};
                     const av = p.avatar_url;
                     const color = p.avatar_color || '#6c63ff';
-                    const initial = (p.full_name || 'U')[0].toUpperCase();
+                    const displayName = resolveDisplayName(p);
+                    const initial = (displayName.replace('@', '') || 'U')[0].toUpperCase();
                     const thumb = live.thumbnail_url;
 
                     return `
@@ -1795,7 +1830,7 @@
                                     `<div class="fallback" style="background:${color};">${initial}</div>`}
                                 </div>
                                 <div class="txt">
-                                    <div class="nm">${escapeHtml(p.full_name || 'Usuário')}</div>
+                                    <div class="nm">${escapeHtml(displayName)}</div>
                                     <div class="ttl">${escapeHtml(live.title || 'Live')}</div>
                                 </div>
                             </div>
@@ -1816,11 +1851,9 @@
                     .subscribe();
             }
 
-            // ============================================================
-            // MODAL
-            // ============================================================
             window.openCreateModal = function() {
                 document.getElementById('createModal').classList.add('active');
+                document.body.classList.add('modal-open');
                 document.getElementById('liveTitle').value = '';
                 document.getElementById('liveDesc').value = '';
                 setTimeout(() => document.getElementById('liveTitle').focus(), 300);
@@ -1828,11 +1861,9 @@
 
             window.closeCreateModal = function() {
                 document.getElementById('createModal').classList.remove('active');
+                document.body.classList.remove('modal-open');
             };
 
-            // ============================================================
-            // INICIAR COMO HOST
-            // ============================================================
             window.startLiveAsHost = async function() {
                 const title = document.getElementById('liveTitle').value.trim() || 'Live';
                 const description = document.getElementById('liveDesc').value.trim();
@@ -1842,7 +1873,12 @@
 
                 try {
                     localStream = await navigator.mediaDevices.getUserMedia({
-                        video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'user' },
+                        video: {
+                            facingMode: 'user',
+                            width: { ideal: 720 },
+                            height: { ideal: 1280 },
+                            aspectRatio: { ideal: 9 / 16 }
+                        },
                         audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
                     });
 
@@ -1919,16 +1955,17 @@
                                     const sy = (vh - sh) / 2;
                                     ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
                                     resolve(canvas.toDataURL('image/jpeg', 0.75));
-                                } catch (e) { resolve(null); }
+                                } catch (e) {
+                                    resolve(null);
+                                }
                             }, 600);
                         };
-                    } catch (e) { resolve(null); }
+                    } catch (e) {
+                        resolve(null);
+                    }
                 });
             }
 
-            // ============================================================
-            // ENTRAR COMO VIEWER
-            // ============================================================
             window.joinLive = async function(liveId) {
                 try {
                     const { data: live, error } = await supabase
@@ -1957,43 +1994,47 @@
                 }
             };
 
-            // ============================================================
-            // ENTRAR NA SALA
-            // ============================================================
             function enterLiveRoom() {
                 document.getElementById('liveRoom').classList.add('active');
 
                 const p = liveStream.profiles || currentProfile || {};
                 const av = p.avatar_url;
                 const color = p.avatar_color || '#6c63ff';
-                const initial = (p.full_name || 'U')[0].toUpperCase();
+                const displayName = resolveDisplayName(p);
+                const initial = (displayName.replace('@', '') || 'U')[0].toUpperCase();
 
                 document.getElementById('hostAvatar').innerHTML = av ?
                     `<img src="${av}" alt="">` :
                     `<div class="fallback" style="background:${color};">${initial}</div>`;
 
-                document.getElementById('hostName').textContent = p.full_name || 'Usuário';
+                document.getElementById('hostName').textContent = displayName;
 
                 chatOverlay.innerHTML = '';
                 reactionsLayer.innerHTML = '';
                 endedOverlay.classList.remove('active');
                 document.getElementById('viewersCount').textContent = '0';
 
+                mainVideo.srcObject = null;
+                mainVideo.muted = false;
+
                 if (isHost) {
                     document.getElementById('endLiveBtn').style.display = 'flex';
-                    document.getElementById('cameraBtn').style.display = 'flex';
                     document.getElementById('flipCamBtn').style.display = 'flex';
-                    document.getElementById('selfPip').style.display = 'block';
-                    waitingOverlay.classList.add('hidden');
                     document.getElementById('hostStatusText').textContent = 'você está ao vivo';
+                    waitingOverlay.classList.add('hidden');
+
+                    mainVideo.srcObject = localStream;
+                    mainVideo.muted = true;
+                    mainVideo.classList.add('mirror');
+                    mainVideo.play().catch(() => {});
                 } else {
                     document.getElementById('endLiveBtn').style.display = 'none';
-                    document.getElementById('cameraBtn').style.display = 'none';
                     document.getElementById('flipCamBtn').style.display = 'none';
-                    document.getElementById('selfPip').style.display = 'none';
+                    document.getElementById('hostStatusText').textContent = 'ao vivo';
                     waitingOverlay.classList.remove('hidden');
                     waitingText.textContent = 'Conectando…';
-                    document.getElementById('hostStatusText').textContent = 'ao vivo';
+
+                    mainVideo.classList.remove('mirror');
                 }
 
                 chatInput.onkeydown = (e) => {
@@ -2004,16 +2045,7 @@
                 };
             }
 
-            // ============================================================
-            // SETUP HOST
-            // ============================================================
             async function setupHost(liveId) {
-                localVideo.srcObject = localStream;
-                localVideo.play().catch(() => {});
-
-                // Ajusta espelho conforme câmera
-                localVideo.classList.toggle('rear-camera', currentFacingMode === 'environment');
-
                 broadcastChannel = supabase.channel('live-sig-' + liveId, {
                     config: {
                         broadcast: { self: false, ack: false },
@@ -2047,7 +2079,9 @@
 
                 broadcastChannel.on('broadcast', { event: 'viewer-leave' }, async ({ payload }) => {
                     if (peerConnections[payload.userId]) {
-                        try { peerConnections[payload.userId].close(); } catch (e) {}
+                        try {
+                            peerConnections[payload.userId].close();
+                        } catch (e) {}
                         delete peerConnections[payload.userId];
                     }
                 });
@@ -2060,11 +2094,18 @@
                     updateViewersCount(liveId, viewers);
                 });
 
-                broadcastChannel.on('presence', { event: 'join' }, ({ key, newPresences }) => {
+                broadcastChannel.on('presence', { event: 'join' }, async ({ key, newPresences }) => {
                     if (key === currentUser.id) return;
+
+                    const now = Date.now();
+                    if (recentJoins[key] && (now - recentJoins[key]) < 60000) return;
+                    recentJoins[key] = now;
+
                     let name = 'Alguém';
                     if (newPresences && newPresences.length > 0 && newPresences[0].name) {
                         name = newPresences[0].name;
+                    } else {
+                        name = await fetchUserName(key);
                     }
                     appendSystemMessage(`${name} entrou 👋`);
                 });
@@ -2073,7 +2114,7 @@
                     if (status === 'SUBSCRIBED') {
                         await broadcastChannel.track({
                             user_id: currentUser.id,
-                            name: currentProfile.full_name,
+                            name: resolveDisplayName(currentProfile),
                             role: 'host',
                             joined_at: new Date().toISOString()
                         });
@@ -2083,8 +2124,6 @@
                 setupChatAndReactions(liveId);
                 statsInterval = setInterval(() => updateViewersCount(liveId), 8000);
 
-                // Heartbeat para marcar que o host está ativo
-                if (heartbeatInterval) clearInterval(heartbeatInterval);
                 heartbeatInterval = setInterval(async () => {
                     try {
                         await supabase.from('live_streams')
@@ -2092,13 +2131,13 @@
                             .eq('id', liveId);
                     } catch (e) {}
                 }, 15000);
-
-                document.getElementById('cameraBtn').onclick = toggleCamera;
             }
 
             async function handleNewViewer(viewerId, viewerName) {
                 if (peerConnections[viewerId]) {
-                    try { peerConnections[viewerId].close(); } catch (e) {}
+                    try {
+                        peerConnections[viewerId].close();
+                    } catch (e) {}
                     delete peerConnections[viewerId];
                 }
 
@@ -2123,7 +2162,9 @@
 
                 pc.onconnectionstatechange = () => {
                     if (['failed', 'closed', 'disconnected'].includes(pc.connectionState)) {
-                        try { pc.close(); } catch (e) {}
+                        try {
+                            pc.close();
+                        } catch (e) {}
                         delete peerConnections[viewerId];
                     }
                 };
@@ -2144,9 +2185,6 @@
                 } catch (e) {}
             }
 
-            // ============================================================
-            // SETUP VIEWER
-            // ============================================================
             async function setupViewer(liveId) {
                 const hostId = liveStream.host_id;
 
@@ -2158,14 +2196,15 @@
 
                 pc.ontrack = (e) => {
                     if (e.streams && e.streams[0]) {
-                        if (remoteVideo.srcObject !== e.streams[0]) {
-                            remoteVideo.srcObject = e.streams[0];
-                            remoteVideo.play().catch(() => {});
+                        if (mainVideo.srcObject !== e.streams[0]) {
+                            mainVideo.srcObject = e.streams[0];
+                            mainVideo.muted = false;
+                            mainVideo.play().catch(() => {});
                         }
                     } else {
-                        if (!remoteVideo.srcObject) remoteVideo.srcObject = new MediaStream();
-                        remoteVideo.srcObject.addTrack(e.track);
-                        remoteVideo.play().catch(() => {});
+                        if (!mainVideo.srcObject) mainVideo.srcObject = new MediaStream();
+                        mainVideo.srcObject.addTrack(e.track);
+                        mainVideo.play().catch(() => {});
                     }
                     waitingOverlay.classList.add('hidden');
                 };
@@ -2241,20 +2280,20 @@
 
                 await broadcastChannel.subscribe(async (status) => {
                     if (status === 'SUBSCRIBED') {
+                        const name = resolveDisplayName(currentProfile);
                         const sendJoin = () => {
                             broadcastChannel.send({
                                 type: 'broadcast',
                                 event: 'viewer-join',
-                                payload: { userId: currentUser.id, name: currentProfile?.full_name || 'Usuário' }
+                                payload: { userId: currentUser.id, name: name }
                             });
                         };
                         sendJoin();
                         setTimeout(sendJoin, 800);
-                        setTimeout(sendJoin, 2000);
 
                         await broadcastChannel.track({
                             user_id: currentUser.id,
-                            name: currentProfile?.full_name || 'Usuário',
+                            name: name,
                             role: 'viewer',
                             joined_at: new Date().toISOString()
                         });
@@ -2263,17 +2302,13 @@
 
                 setupChatAndReactions(liveId);
 
-                // Timeout: se em 12s não chegar vídeo, avisa
                 setTimeout(() => {
-                    if (remoteVideo.srcObject === null || remoteVideo.readyState === 0) {
+                    if (mainVideo.srcObject === null || mainVideo.readyState === 0) {
                         waitingText.textContent = 'O host não está enviando vídeo';
                     }
                 }, 12000);
             }
 
-            // ============================================================
-            // CHAT + REAÇÕES
-            // ============================================================
             function setupChatAndReactions(liveId) {
                 if (chatChannel) return;
 
@@ -2284,7 +2319,13 @@
                         schema: 'public',
                         table: 'live_messages',
                         filter: `live_id=eq.${liveId}`
-                    }, (payload) => appendChatMessage(payload.new))
+                    }, async (payload) => {
+                        const msg = payload.new;
+                        if (!msg.profiles) {
+                            msg._displayName = await fetchUserName(msg.user_id);
+                        }
+                        appendChatMessage(msg);
+                    })
                     .on('postgres_changes', {
                         event: 'INSERT',
                         schema: 'public',
@@ -2309,11 +2350,21 @@
 
             function appendChatMessage(msg) {
                 const isOwn = msg.user_id === currentUser.id;
-                let name = 'Usuário';
+                let name = msg._displayName;
 
-                if (msg.profiles && msg.profiles.full_name) name = msg.profiles.full_name;
-                else if (msg.user_id === liveStream.host_id) name = liveStream.profiles?.full_name || 'Host';
-                else if (isOwn) name = currentProfile?.full_name || 'Você';
+                if (!name) {
+                    if (msg.profiles) {
+                        name = resolveDisplayName(msg.profiles);
+                    } else if (isOwn) {
+                        name = resolveDisplayName(currentProfile);
+                    } else if (msg.user_id === liveStream.host_id) {
+                        name = resolveDisplayName(liveStream.profiles);
+                    } else {
+                        name = userNameCache[msg.user_id] || 'Alguém';
+                    }
+                }
+
+                userNameCache[msg.user_id] = name;
 
                 const el = document.createElement('div');
                 el.className = 'msg' + (isOwn ? ' own' : '');
@@ -2358,6 +2409,7 @@
                 const content = chatInput.value.trim();
                 if (!content || !liveStream) return;
                 chatInput.value = '';
+
                 try {
                     await supabase.from('live_messages').insert({
                         live_id: liveStream.id,
@@ -2370,6 +2422,7 @@
             window.sendReaction = async function() {
                 if (!liveStream) return;
                 spawnFlyingReaction('❤️');
+
                 try {
                     await supabase.from('live_reactions').insert({
                         live_id: liveStream.id,
@@ -2398,42 +2451,64 @@
                 } catch (e) {}
             }
 
-            window.toggleCamera = function() {
-                if (!localStream || !isHost) return;
-                const t = localStream.getVideoTracks()[0];
-                if (!t) return;
-                localCameraEnabled = !localCameraEnabled;
-                t.enabled = localCameraEnabled;
-                const btn = document.getElementById('cameraBtn');
-                btn.classList.toggle('off', !localCameraEnabled);
-                btn.innerHTML = localCameraEnabled ? '<i class="fas fa-video"></i>' : '<i class="fas fa-video-slash"></i>';
-            };
-
-            // ============================================================
-            // FLIP CAMERA (trocar frontal/traseira)
-            // ============================================================
             window.flipCamera = async function() {
                 if (!isHost || !localStream) return;
 
                 const flipBtn = document.getElementById('flipCamBtn');
-                flipBtn.style.pointerEvents = 'none';
+                const oldIcon = flipBtn.innerHTML;
                 flipBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                flipBtn.style.pointerEvents = 'none';
 
                 try {
                     const newFacing = currentFacingMode === 'user' ? 'environment' : 'user';
 
-                    const newStream = await navigator.mediaDevices.getUserMedia({
-                        video: {
-                            width: { ideal: 1280 },
-                            height: { ideal: 720 },
-                            facingMode: { ideal: newFacing }
-                        },
-                        audio: false
+                    const oldVideoTracks = localStream.getVideoTracks();
+                    oldVideoTracks.forEach(t => {
+                        try {
+                            t.stop();
+                        } catch (e) {}
                     });
+
+                    oldVideoTracks.forEach(t => {
+                        try {
+                            localStream.removeTrack(t);
+                        } catch (e) {}
+                    });
+
+                    let newStream;
+                    try {
+                        newStream = await navigator.mediaDevices.getUserMedia({
+                            video: {
+                                facingMode: { ideal: newFacing },
+                                width: { ideal: 720 },
+                                height: { ideal: 1280 }
+                            },
+                            audio: false
+                        });
+                    } catch (e) {
+                        console.warn('Fallback: câmera traseira não disponível');
+                        newStream = await navigator.mediaDevices.getUserMedia({
+                            video: true,
+                            audio: false
+                        });
+                    }
 
                     const newVideoTrack = newStream.getVideoTracks()[0];
 
-                    // Substitui nos peer connections
+                    localStream.addTrack(newVideoTrack);
+
+                    mainVideo.srcObject = null;
+                    mainVideo.srcObject = localStream;
+                    mainVideo.muted = true;
+                    mainVideo.play().catch(() => {});
+
+                    currentFacingMode = newFacing;
+                    if (currentFacingMode === 'environment') {
+                        mainVideo.classList.remove('mirror');
+                    } else {
+                        mainVideo.classList.add('mirror');
+                    }
+
                     for (const viewerId in peerConnections) {
                         const pc = peerConnections[viewerId];
                         const senders = pc.getSenders();
@@ -2447,40 +2522,19 @@
                         }
                     }
 
-                    // Remove tracks antigas de vídeo
-                    localStream.getVideoTracks().forEach(t => t.stop());
-
-                    // Remove do MediaStream local
-                    localStream.getVideoTracks().forEach(t => localStream.removeTrack(t));
-
-                    // Adiciona a nova
-                    localStream.addTrack(newVideoTrack);
-
-                    // Atualiza o vídeo do PIP
-                    localVideo.srcObject = null;
-                    localVideo.srcObject = localStream;
-                    localVideo.play().catch(() => {});
-
-                    currentFacingMode = newFacing;
-
-                    // Ajusta o espelho
-                    localVideo.classList.toggle('rear-camera', currentFacingMode === 'environment');
-
-                    toast('Câmera trocada', 'success');
+                    toast('Câmera trocada ✓', 'success');
                 } catch (e) {
                     console.error('Erro ao trocar câmera:', e);
                     toast('Não foi possível trocar a câmera.', 'error');
                 }
 
                 flipBtn.style.pointerEvents = 'auto';
-                flipBtn.innerHTML = '<i class="fas fa-sync-alt"></i>';
+                flipBtn.innerHTML = oldIcon;
             };
 
-            // ============================================================
-            // ENCERRAR / SAIR
-            // ============================================================
             window.endLive = async function() {
                 if (!isHost || !liveStream) return;
+
                 try {
                     await supabase.from('live_streams')
                         .update({ status: 'ended', ended_at: new Date().toISOString() })
@@ -2536,12 +2590,16 @@
 
                 if (isHost) {
                     Object.values(peerConnections).forEach(pc => {
-                        try { pc.close(); } catch (e) {}
+                        try {
+                            pc.close();
+                        } catch (e) {}
                     });
                     peerConnections = {};
                 } else {
                     if (viewerPeerConnection) {
-                        try { viewerPeerConnection.close(); } catch (e) {}
+                        try {
+                            viewerPeerConnection.close();
+                        } catch (e) {}
                         viewerPeerConnection = null;
                     }
                 }
@@ -2552,7 +2610,9 @@
                 }
 
                 [broadcastChannel, chatChannel].forEach(ch => {
-                    if (ch) try { supabase.removeChannel(ch); } catch (e) {}
+                    if (ch) try {
+                        supabase.removeChannel(ch);
+                    } catch (e) {}
                 });
                 broadcastChannel = null;
                 chatChannel = null;
@@ -2568,8 +2628,7 @@
 
                 document.getElementById('liveRoom').classList.remove('active');
                 endedOverlay.classList.remove('active');
-                remoteVideo.srcObject = null;
-                localVideo.srcObject = null;
+                mainVideo.srcObject = null;
                 chatOverlay.innerHTML = '';
                 reactionsLayer.innerHTML = '';
                 waitingOverlay.classList.remove('hidden');
