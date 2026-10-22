@@ -4,94 +4,153 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Zonne - Configurações</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #0a0a0f;
-            color: #fff;
-            min-height: 100vh;
-            padding-bottom: 70px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
+
+        :root {
+            --bg: #0b0b12;
+            --bg-elevated: #12121c;
+            --bg-hover: #16162a;
+            --border: #1e1e2e;
+            --border-hover: #2a2a40;
+            --text: #f0f0f5;
+            --text-secondary: #a0a0b8;
+            --text-muted: #6a6a80;
+            --accent: #6c63ff;
+            --accent-glow: rgba(108, 99, 255, 0.2);
+            --red: #ff2e5b;
+            --red-glow: rgba(255, 46, 91, 0.15);
+            --green: #2ecc71;
+            --font: 'Inter', system-ui, sans-serif;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 80px;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* ============================================================
+           TOP BAR GLOBAL
+           ============================================================ */
         .top-bar {
             position: sticky;
             top: 0;
             z-index: 100;
-            background: rgba(10, 10, 15, 0.92);
+            background: rgba(11, 11, 18, 0.85);
             backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255,255,255,0.04);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
             padding: 10px 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
+
         .top-bar .logo {
             display: flex;
             align-items: center;
             gap: 10px;
             font-weight: 800;
-            font-size: 18px;
+            font-size: 17px;
             color: #fff;
             cursor: pointer;
+            user-select: none;
         }
-        .top-bar .logo i {
-            font-size: 22px;
-            background: linear-gradient(135deg, #5850ec, #764ba2);
-            padding: 7px 8px;
-            border-radius: 10px;
+
+        .top-bar .logo .z-mark {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent), #9b4dff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 19px;
             color: #fff;
+            box-shadow: 0 6px 20px var(--accent-glow);
+            letter-spacing: -1px;
         }
+
         .top-bar .actions {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 4px;
         }
+
         .top-bar .actions .icon-btn {
             background: none;
             border: none;
-            color: rgba(255,255,255,0.4);
-            font-size: 18px;
+            color: var(--text-secondary);
+            font-size: 17px;
             cursor: pointer;
-            position: relative;
-            transition: color 0.3s;
-            padding: 4px;
-        }
-        .top-bar .actions .icon-btn:hover { color: #fff; }
-        .top-bar .actions .icon-btn .badge {
-            position: absolute;
-            top: -2px;
-            right: -2px;
-            background: #e74c3c;
-            color: #fff;
-            font-size: 9px;
-            font-weight: 700;
-            min-width: 17px;
-            height: 17px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0 4px;
+            transition: all 0.2s;
+            position: relative;
         }
+
+        .top-bar .actions .icon-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+        }
+
+        .top-bar .actions .icon-btn .badge {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: var(--red);
+            color: #fff;
+            font-size: 9px;
+            font-weight: 700;
+            min-width: 16px;
+            height: 16px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+            border: 2px solid var(--bg);
+        }
+
         .top-bar .avatar-mini {
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             overflow: hidden;
-            border: 2px solid rgba(255,255,255,0.06);
+            border: 2px solid rgba(108, 99, 255, 0.35);
             cursor: pointer;
-            transition: border 0.3s;
-            flex-shrink: 0;
+            margin-left: 4px;
+            transition: all 0.2s;
         }
-        .top-bar .avatar-mini:hover { border-color: #5850ec; }
+
+        .top-bar .avatar-mini:hover {
+            border-color: var(--accent);
+            transform: scale(1.05);
+        }
+
         .top-bar .avatar-mini img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
+
         .top-bar .avatar-mini .fallback {
             width: 100%;
             height: 100%;
@@ -103,335 +162,725 @@
             color: #fff;
         }
 
-        .container {
-            max-width: 720px;
-            margin: 0 auto;
-            padding: 16px 16px 20px;
+        /* ============================================================
+           GERENCIADOR DE TELAS (ESTILO APP NATIVO)
+           ============================================================ */
+        .screens-container {
+            position: relative;
+            width: 100%;
+            height: calc(100vh - 130px);
+            overflow: hidden;
         }
 
-        .page-header {
+        .screen {
+            position: absolute;
+            inset: 0;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            transform: translateX(100%);
+            z-index: 10;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .screen.active {
+            transform: translateX(0);
+            z-index: 20;
+        }
+
+        .screen.pushed {
+            transform: translateX(-30%);
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        /* ============================================================
+           CONTEÚDO DAS TELAS
+           ============================================================ */
+        .screen-header {
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 20px;
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            background: rgba(11, 11, 18, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 30;
         }
-        .page-header h2 {
-            font-size: 22px;
-            font-weight: 700;
-            color: #fff;
-        }
-        .page-header .back-btn {
+
+        .screen-header .back-btn {
             background: none;
             border: none;
-            color: rgba(255,255,255,0.4);
+            color: var(--text);
             font-size: 20px;
             cursor: pointer;
-            padding: 4px 8px;
-            transition: color 0.3s;
-        }
-        .page-header .back-btn:hover { color: #fff; }
-
-        .settings-tabs {
+            width: 32px;
+            height: 32px;
             display: flex;
-            gap: 4px;
-            overflow-x: auto;
-            padding-bottom: 8px;
-            border-bottom: 1px solid rgba(255,255,255,0.04);
-            margin-bottom: 20px;
-            scrollbar-width: none;
-            -webkit-overflow-scrolling: touch;
-        }
-        .settings-tabs::-webkit-scrollbar { display: none; }
-        .settings-tabs button {
-            flex-shrink: 0;
-            background: none;
-            border: none;
-            padding: 8px 18px;
-            border-radius: 30px;
-            font-size: 14px;
-            font-weight: 500;
-            color: rgba(255,255,255,0.3);
-            cursor: pointer;
-            font-family: 'Inter', sans-serif;
-            transition: all 0.3s;
-        }
-        .settings-tabs button:hover { color: rgba(255,255,255,0.6); }
-        .settings-tabs button.active {
-            background: rgba(88,80,236,0.15);
-            color: #5850ec;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s;
         }
 
-        .tab-content {
-            display: none;
-            animation: fadeUp 0.3s ease;
-        }
-        .tab-content.active { display: block; }
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .screen-header .back-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
         }
 
-        .settings-section {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.04);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 16px;
-        }
-        .settings-section h3 {
-            font-size: 16px;
-            font-weight: 600;
-            color: #fff;
-            margin-bottom: 12px;
-        }
-        .settings-section .description {
-            font-size: 13px;
-            color: rgba(255,255,255,0.3);
-            margin-bottom: 12px;
+        .screen-header h2 {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -0.3px;
         }
 
-        .form-group {
-            margin-bottom: 14px;
-        }
-        .form-group label {
-            display: block;
-            font-size: 13px;
-            font-weight: 500;
-            color: rgba(255,255,255,0.5);
-            margin-bottom: 4px;
-        }
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 10px;
-            padding: 10px 14px;
-            color: #fff;
-            font-size: 14px;
-            font-family: 'Inter', sans-serif;
-            outline: none;
-            transition: border 0.3s;
-        }
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-            border-color: #5850ec;
-        }
-        .form-group textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-        .form-group .helper {
-            font-size: 12px;
-            color: rgba(255,255,255,0.2);
-            margin-top: 4px;
+        .screen-content {
+            padding: 20px 16px 40px;
+            flex: 1;
         }
 
-        .avatar-upload {
+        /* ============================================================
+           MENU PRINCIPAL
+           ============================================================ */
+        .profile-summary {
             display: flex;
             align-items: center;
             gap: 16px;
-            margin-bottom: 14px;
+            padding: 20px 16px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            margin-bottom: 24px;
         }
-        .avatar-upload .avatar-preview {
+
+        .profile-summary .avatar {
             width: 64px;
             height: 64px;
             border-radius: 50%;
             overflow: hidden;
-            border: 2px solid rgba(255,255,255,0.06);
             flex-shrink: 0;
+            border: 2px solid var(--border);
         }
-        .avatar-upload .avatar-preview img {
+
+        .profile-summary .avatar img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-        .avatar-upload .avatar-preview .fallback {
+
+        .profile-summary .avatar .fallback {
             width: 100%;
             height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 28px;
-            font-weight: 700;
-            color: #fff;
-        }
-        .avatar-upload .upload-btn {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 30px;
-            padding: 8px 16px;
-            color: rgba(255,255,255,0.5);
-            font-size: 13px;
-            cursor: pointer;
-            font-family: 'Inter', sans-serif;
-            transition: all 0.3s;
-        }
-        .avatar-upload .upload-btn:hover {
-            background: rgba(255,255,255,0.08);
+            font-weight: 800;
             color: #fff;
         }
 
-        .color-picker-grid {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin: 6px 0 10px;
+        .profile-summary .info {
+            flex: 1;
+            min-width: 0;
         }
-        .color-picker-grid .color-opt {
+
+        .profile-summary .info .name {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .profile-summary .info .username {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .menu-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+            text-align: left;
+            font-family: var(--font);
+        }
+
+        .menu-item:hover {
+            background: var(--bg-hover);
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+        }
+
+        .menu-item .icon-box {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .menu-item .icon-box.blue {
+            background: rgba(78, 168, 255, 0.1);
+            color: #4ea8ff;
+        }
+
+        .menu-item .icon-box.purple {
+            background: rgba(108, 99, 255, 0.1);
+            color: var(--accent);
+        }
+
+        .menu-item .icon-box.green {
+            background: rgba(46, 204, 113, 0.1);
+            color: var(--green);
+        }
+
+        .menu-item .icon-box.red {
+            background: rgba(255, 46, 91, 0.1);
+            color: var(--red);
+        }
+
+        .menu-item .info {
+            flex: 1;
+        }
+
+        .menu-item .info .title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 2px;
+        }
+
+        .menu-item .info .subtitle {
+            font-size: 12.5px;
+            color: var(--text-secondary);
+        }
+
+        .menu-item .arrow {
+            color: var(--text-muted);
+            font-size: 14px;
+            transition: transform 0.2s;
+        }
+
+        .menu-item:hover .arrow {
+            transform: translateX(3px);
+            color: var(--text);
+        }
+
+        /* ============================================================
+           FORMULÁRIOS
+           ============================================================ */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            background: var(--bg-elevated);
+            border: 1.5px solid var(--border);
+            border-radius: 14px;
+            padding: 14px 16px;
+            color: var(--text);
+            font-size: 15px;
+            font-family: var(--font);
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        .form-group input:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group .helper {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 6px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* AVATAR */
+        .avatar-edit-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+
+        .avatar-edit-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid var(--border);
+            margin-bottom: 12px;
+            position: relative;
+            background: var(--bg-elevated);
+        }
+
+        .avatar-edit-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-edit-preview .fallback {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .avatar-edit-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .avatar-edit-actions button {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            padding: 8px 16px;
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: var(--font);
+            transition: all 0.2s;
+        }
+
+        .avatar-edit-actions button:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* CORES */
+        .color-picker {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .color-opt {
             width: 36px;
             height: 36px;
             border-radius: 50%;
-            border: 2px solid transparent;
+            border: 3px solid transparent;
             cursor: pointer;
-            transition: all 0.3s;
-        }
-        .color-picker-grid .color-opt:hover { transform: scale(1.1); }
-        .color-picker-grid .color-opt.active {
-            border-color: #fff;
-            box-shadow: 0 0 0 2px rgba(88,80,236,0.3);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .btn-save {
-            background: linear-gradient(135deg, #5850ec, #764ba2);
-            border: none;
-            border-radius: 30px;
-            padding: 10px 24px;
+        .color-opt:hover {
+            transform: scale(1.15);
+        }
+
+        .color-opt.active {
+            border-color: var(--text);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        .color-opt.active::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
             color: #fff;
-            font-weight: 600;
-            font-size: 14px;
+            font-size: 12px;
+        }
+
+        /* BOTÕES */
+        .btn-primary {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent), #9b4dff);
+            border: none;
+            border-radius: 14px;
+            padding: 16px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 15px;
             cursor: pointer;
-            transition: all 0.3s;
-            font-family: 'Inter', sans-serif;
-            margin-top: 4px;
+            font-family: var(--font);
+            transition: all 0.2s;
+            box-shadow: 0 6px 20px var(--accent-glow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 10px;
         }
-        .btn-save:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 8px 30px rgba(88,80,236,0.25);
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px var(--accent-glow);
         }
-        .btn-save:disabled {
-            opacity: 0.5;
+
+        .btn-primary:disabled {
+            opacity: 0.6;
             cursor: not-allowed;
             transform: none;
         }
 
-        .danger-zone {
-            border-color: rgba(231,76,60,0.2);
-        }
-        .danger-zone h3 { color: #e74c3c; }
-
         .btn-danger {
-            background: rgba(231,76,60,0.15);
-            border: 1px solid rgba(231,76,60,0.2);
-            border-radius: 30px;
-            padding: 8px 20px;
-            color: #e74c3c;
-            font-weight: 600;
-            font-size: 13px;
+            width: 100%;
+            background: rgba(255, 46, 91, 0.1);
+            border: 1.5px solid rgba(255, 46, 91, 0.3);
+            border-radius: 14px;
+            padding: 16px;
+            color: var(--red);
+            font-weight: 700;
+            font-size: 15px;
             cursor: pointer;
-            font-family: 'Inter', sans-serif;
+            font-family: var(--font);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .btn-danger:hover {
+            background: var(--red);
+            color: #fff;
+        }
+
+        .btn-danger:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-outline {
+            width: 100%;
+            background: transparent;
+            border: 1.5px solid var(--border-hover);
+            border-radius: 14px;
+            padding: 16px;
+            color: var(--text);
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            font-family: var(--font);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* DANGER ZONE */
+        .danger-zone-card {
+            background: rgba(255, 46, 91, 0.03);
+            border: 1px solid rgba(255, 46, 91, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .danger-zone-card h3 {
+            color: var(--red);
+            font-size: 16px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .danger-zone-card p {
+            font-size: 13.5px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .danger-zone-card ul {
+            margin: 12px 0 0 20px;
+            color: var(--text-secondary);
+            font-size: 13.5px;
+            line-height: 1.7;
+        }
+
+        .checkbox-wrap {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            cursor: pointer;
+            padding: 16px;
+            background: rgba(255, 46, 91, 0.05);
+            border: 1px solid rgba(255, 46, 91, 0.15);
+            border-radius: 14px;
+            margin-bottom: 16px;
+        }
+
+        .checkbox-wrap input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--red);
+            cursor: pointer;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .checkbox-wrap span {
+            font-size: 13.5px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .checkbox-wrap span a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* STEP INDICATOR */
+        .steps-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 16px 0 24px;
+        }
+
+        .step-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--border-hover);
             transition: all 0.3s;
         }
-        .btn-danger:hover {
-            background: rgba(231,76,60,0.25);
+
+        .step-dot.active {
+            background: var(--accent);
+            width: 24px;
+            border-radius: 4px;
+            box-shadow: 0 0 10px var(--accent-glow);
         }
 
+        .step-dot.done {
+            background: var(--accent);
+        }
+
+        /* STEPS CONTAINER */
+        .delete-step {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .delete-step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* STATUS BOX */
+        .delete-status-box {
+            display: none;
+            background: rgba(255, 46, 91, 0.1);
+            border: 1px solid rgba(255, 46, 91, 0.2);
+            border-radius: 14px;
+            padding: 20px;
+        }
+
+        .delete-status-box.active {
+            display: block;
+        }
+
+        .delete-status-box h4 {
+            color: var(--red);
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .delete-status-box p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        /* INFO BOX */
+        .info-box {
+            background: rgba(108, 99, 255, 0.05);
+            border: 1px solid rgba(108, 99, 255, 0.2);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .info-box i {
+            color: var(--accent);
+            font-size: 18px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .info-box p {
+            font-size: 13.5px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* ABOUT */
+        .about-list {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .about-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .about-item:last-child {
+            border-bottom: none;
+        }
+
+        .about-item .key {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .about-item .value {
+            font-size: 14px;
+            color: var(--text);
+            font-weight: 700;
+        }
+
+        /* BOTTOM NAV */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
             z-index: 100;
-            background: rgba(10, 10, 15, 0.95);
+            background: rgba(11, 11, 18, 0.95);
             backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(255,255,255,0.04);
+            border-top: 1px solid var(--border);
             display: flex;
             justify-content: space-around;
-            padding: 6px 0 env(safe-area-inset-bottom, 8px) 0;
+            padding: 4px 0 env(safe-area-inset-bottom, 8px) 0;
         }
+
         .bottom-nav .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 2px;
+            gap: 1px;
             background: none;
             border: none;
-            color: rgba(255,255,255,0.25);
+            color: var(--text-secondary);
             font-size: 20px;
             cursor: pointer;
-            padding: 4px 16px;
-            transition: color 0.3s;
-            position: relative;
-            font-family: 'Inter', sans-serif;
+            padding: 4px 14px;
+            transition: all 0.2s;
         }
+
         .bottom-nav .nav-item span {
             font-size: 9px;
             font-weight: 500;
-            letter-spacing: 0.3px;
         }
+
         .bottom-nav .nav-item.active {
-            color: #5850ec;
+            color: var(--accent);
         }
-        .bottom-nav .nav-item:hover { color: rgba(255,255,255,0.6); }
-        .bottom-nav .nav-item .nav-icon {
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+
         .bottom-nav .nav-item .nav-icon .plus-circle {
-            background: linear-gradient(135deg, #5850ec, #764ba2);
+            background: linear-gradient(135deg, var(--accent), #9b4dff);
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
+            font-size: 20px;
             color: #fff;
             margin-top: -14px;
-            box-shadow: 0 4px 20px rgba(88,80,236,0.3);
-            transition: transform 0.3s;
-        }
-        .bottom-nav .nav-item .nav-icon .plus-circle:hover {
-            transform: scale(1.05);
-        }
-
-        .delete-form {
-            background: rgba(255,255,255,0.02);
-            border-radius: 12px;
-            padding: 16px;
-            margin-top: 12px;
-            border: 1px solid rgba(231,76,60,0.1);
-        }
-        .delete-form .form-group {
-            margin-bottom: 10px;
-        }
-        .delete-form .form-group label {
-            color: rgba(255,255,255,0.4);
-        }
-        .delete-form .btn-danger {
-            width: 100%;
-            padding: 12px;
-            font-size: 14px;
-        }
-
-        @media (max-width: 600px) {
-            .container { padding: 12px; }
-            .settings-tabs button { font-size: 13px; padding: 6px 14px; }
-            .avatar-upload { flex-direction: column; align-items: center; }
-            .avatar-upload .upload-btn { width: 100%; text-align: center; }
+            box-shadow: 0 6px 20px var(--accent-glow);
         }
     </style>
 </head>
 <body>
 
+    <!-- TOP BAR -->
     <header class="top-bar">
         <div class="logo" onclick="window.location.href='feed.html'">
-            <i class="fas fa-users"></i>
-            <span>Zonne</span>
+            <div class="z-mark">Z</div>
+            Zonne
         </div>
         <div class="actions">
             <button class="icon-btn" onclick="window.location.href='notificacoes.html'">
@@ -439,613 +888,1004 @@
                 <span class="badge" id="notifBadge" style="display:none;">0</span>
             </button>
             <button class="icon-btn" onclick="window.location.href='amigos.html'">
-                <i class="fas fa-users"></i>
-                <span class="badge" id="friendBadge" style="display:none;">0</span>
+                <i class="fas fa-user-friends"></i>
             </button>
             <div class="avatar-mini" id="userAvatar" onclick="window.location.href='perfil.html'">
-                <div class="fallback" style="background:#5850ec;"><i class="fas fa-user"></i></div>
+                <div class="fallback" style="background:var(--accent);"><i class="fas fa-user"></i></div>
             </div>
         </div>
     </header>
 
-    <div class="container">
-        <div class="page-header">
-            <button class="back-btn" onclick="window.location.href='feed.html'"><i class="fas fa-arrow-left"></i></button>
-            <h2><i class="fas fa-cog" style="color:#5850ec;margin-right:10px;"></i>Configurações</h2>
+    <!-- CONTAINER DE TELAS -->
+    <div class="screens-container" id="screensContainer">
+
+        <!-- ===== TELA 1: MENU PRINCIPAL ===== -->
+        <div class="screen active" id="screen-main">
+            <div class="screen-content" style="padding-top: 24px;">
+                
+                <div class="profile-summary" id="profileSummary"></div>
+
+                <h3 style="font-size: 13px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; padding-left: 8px;">Configurações</h3>
+
+                <div class="menu-list">
+                    <button class="menu-item" onclick="openScreen('screen-profile')">
+                        <div class="icon-box blue"><i class="fas fa-user-edit"></i></div>
+                        <div class="info">
+                            <div class="title">Editar Perfil</div>
+                            <div class="subtitle">Foto, nome, bio e cor</div>
+                        </div>
+                        <i class="fas fa-chevron-right arrow"></i>
+                    </button>
+
+                    <button class="menu-item" onclick="openScreen('screen-security')">
+                        <div class="icon-box purple"><i class="fas fa-shield-alt"></i></div>
+                        <div class="info">
+                            <div class="title">Conta e Segurança</div>
+                            <div class="subtitle">Senha e e-mail</div>
+                        </div>
+                        <i class="fas fa-chevron-right arrow"></i>
+                    </button>
+
+                    <button class="menu-item" onclick="openScreen('screen-about')">
+                        <div class="icon-box green"><i class="fas fa-info-circle"></i></div>
+                        <div class="info">
+                            <div class="title">Sobre o Zonne</div>
+                            <div class="subtitle">Versão e informações</div>
+                        </div>
+                        <i class="fas fa-chevron-right arrow"></i>
+                    </button>
+                </div>
+
+                <h3 style="font-size: 13px; font-weight: 800; color: var(--red); text-transform: uppercase; letter-spacing: 1px; margin: 30px 0 12px; padding-left: 8px;">Zona de Perigo</h3>
+
+                <div class="menu-list">
+                    <button class="menu-item" onclick="confirmLogout()">
+                        <div class="icon-box red"><i class="fas fa-sign-out-alt"></i></div>
+                        <div class="info">
+                            <div class="title">Sair da conta</div>
+                            <div class="subtitle">Encerrar sessão neste dispositivo</div>
+                        </div>
+                        <i class="fas fa-chevron-right arrow"></i>
+                    </button>
+
+                    <button class="menu-item" onclick="openScreen('screen-delete')">
+                        <div class="icon-box red"><i class="fas fa-user-slash"></i></div>
+                        <div class="info">
+                            <div class="title" style="color: var(--red);">Excluir conta</div>
+                            <div class="subtitle">Remover permanentemente</div>
+                        </div>
+                        <i class="fas fa-chevron-right arrow"></i>
+                    </button>
+                </div>
+
+            </div>
         </div>
 
-        <div class="settings-tabs" id="settingsTabs">
-            <button class="active" data-tab="profile">Perfil</button>
-            <button data-tab="account">Conta</button>
-            <button data-tab="danger">Zona de Perigo</button>
-            <button data-tab="about">Sobre</button>
-        </div>
-
-        <!-- ========== PERFIL ========== -->
-        <div class="tab-content active" id="tabProfile">
-            <div class="settings-section">
-                <h3><i class="fas fa-user-circle" style="color:#5850ec;margin-right:8px;"></i>Editar Perfil</h3>
-                <div class="avatar-upload">
-                    <div class="avatar-preview" id="avatarPreview">
-                        <div class="fallback" style="background:#5850ec;"><i class="fas fa-user"></i></div>
+        <!-- ===== TELA 2: EDITAR PERFIL ===== -->
+        <div class="screen" id="screen-profile">
+            <div class="screen-header">
+                <button class="back-btn" onclick="closeScreen('screen-profile')"><i class="fas fa-arrow-left"></i></button>
+                <h2>Editar Perfil</h2>
+            </div>
+            <div class="screen-content">
+                
+                <div class="avatar-edit-wrap">
+                    <div class="avatar-edit-preview" id="avatarPreview">
+                        <div class="fallback" style="background:var(--accent);"><i class="fas fa-user"></i></div>
                     </div>
-                    <div>
-                        <button class="upload-btn" onclick="document.getElementById('avatarInput').click()">
+                    <div class="avatar-edit-actions">
+                        <button onclick="document.getElementById('avatarInput').click()">
                             <i class="fas fa-camera"></i> Alterar foto
                         </button>
                         <input type="file" id="avatarInput" accept="image/*" style="display:none;">
-                        <div style="font-size:12px;color:rgba(255,255,255,0.2);margin-top:4px;">JPG, PNG ou GIF • Máx 5MB</div>
                     </div>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-top: 10px;">JPG, PNG • Máx 5MB</p>
                 </div>
 
                 <div class="form-group">
                     <label>Nome completo</label>
-                    <input type="text" id="fullName" placeholder="Seu nome">
+                    <input type="text" id="fullName" placeholder="Ex: Reginaldo Muanza">
                 </div>
+
                 <div class="form-group">
                     <label>Nome de usuário</label>
-                    <input type="text" id="username" placeholder="@usuario">
-                    <div class="helper">Apenas letras, números e underline</div>
+                    <input type="text" id="username" placeholder="@reginaldo">
+                    <div class="helper">Apenas letras, números e _</div>
                 </div>
+
                 <div class="form-group">
                     <label>Bio</label>
                     <textarea id="bio" placeholder="Conte um pouco sobre você..." maxlength="160"></textarea>
-                    <div class="helper"><span id="bioCount">0</span>/160</div>
+                    <div class="helper">
+                        <span>Até 160 caracteres</span>
+                        <span><span id="bioCount">0</span>/160</span>
+                    </div>
                 </div>
+
                 <div class="form-group">
-                    <label>Cor do avatar (fallback)</label>
-                    <div class="color-picker-grid" id="colorPicker">
-                        <div class="color-opt active" style="background:#5850ec;" data-color="#5850ec"></div>
-                        <div class="color-opt" style="background:#e74c3c;" data-color="#e74c3c"></div>
+                    <label>Cor do avatar</label>
+                    <div class="color-picker" id="colorPicker">
+                        <div class="color-opt active" style="background:#6c63ff;" data-color="#6c63ff"></div>
+                        <div class="color-opt" style="background:#ff2e5b;" data-color="#ff2e5b"></div>
                         <div class="color-opt" style="background:#2ecc71;" data-color="#2ecc71"></div>
-                        <div class="color-opt" style="background:#3498db;" data-color="#3498db"></div>
-                        <div class="color-opt" style="background:#f1c40f;" data-color="#f1c40f"></div>
-                        <div class="color-opt" style="background:#9b59b6;" data-color="#9b59b6"></div>
+                        <div class="color-opt" style="background:#4ea8ff;" data-color="#4ea8ff"></div>
+                        <div class="color-opt" style="background:#feca57;" data-color="#feca57"></div>
+                        <div class="color-opt" style="background:#9b4dff;" data-color="#9b4dff"></div>
                         <div class="color-opt" style="background:#1abc9c;" data-color="#1abc9c"></div>
                         <div class="color-opt" style="background:#e67e22;" data-color="#e67e22"></div>
-                        <div class="color-opt" style="background:#2c3e50;" data-color="#2c3e50"></div>
-                        <div class="color-opt" style="background:#7f8c8d;" data-color="#7f8c8d"></div>
                     </div>
                 </div>
-                <button class="btn-save" onclick="saveProfile()"><i class="fas fa-save"></i> Salvar alterações</button>
+
+                <button class="btn-primary" onclick="saveProfile()">
+                    <i class="fas fa-check"></i> Salvar alterações
+                </button>
             </div>
         </div>
 
-        <!-- ========== CONTA ========== -->
-        <div class="tab-content" id="tabAccount">
-            <div class="settings-section">
-                <h3><i class="fas fa-lock" style="color:#5850ec;margin-right:8px;"></i>Segurança</h3>
-                <div class="form-group">
-                    <label>E-mail</label>
-                    <input type="email" id="email" disabled style="opacity:0.6;">
-                    <div class="helper">Para alterar o e-mail, entre em contato com o suporte.</div>
-                </div>
-                <div class="form-group">
-                    <label>Nova senha</label>
-                    <input type="password" id="newPassword" placeholder="Digite a nova senha">
-                </div>
-                <div class="form-group">
-                    <label>Confirmar nova senha</label>
-                    <input type="password" id="confirmPassword" placeholder="Confirme a nova senha">
-                </div>
-                <button class="btn-save" onclick="changePassword()"><i class="fas fa-key"></i> Alterar senha</button>
+        <!-- ===== TELA 3: CONTA E SEGURANÇA ===== -->
+        <div class="screen" id="screen-security">
+            <div class="screen-header">
+                <button class="back-btn" onclick="closeScreen('screen-security')"><i class="fas fa-arrow-left"></i></button>
+                <h2>Conta e Segurança</h2>
             </div>
-        </div>
-
-        <!-- ========== ZONA DE PERIGO ========== -->
-        <div class="tab-content" id="tabDanger">
-            <div class="settings-section danger-zone">
-                <h3><i class="fas fa-exclamation-triangle" style="color:#e74c3c;margin-right:8px;"></i>Zona de Perigo</h3>
-                <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
-                    <button class="btn-danger" onclick="confirmLogout()"><i class="fas fa-sign-out-alt"></i> Sair da conta</button>
+            <div class="screen-content">
+                
+                <div class="form-group">
+                    <label>E-mail cadastrado</label>
+                    <input type="email" id="email" disabled>
+                    <div class="helper">Para alterar, contate o suporte.</div>
                 </div>
 
-                <hr style="border-color:rgba(255,255,255,0.04);margin:16px 0;">
+                <hr style="border: none; border-top: 1px solid var(--border); margin: 24px 0;">
 
-                <h4 style="color:#e74c3c;font-size:14px;margin-bottom:8px;">Excluir conta permanentemente</h4>
-                <p style="font-size:13px;color:rgba(255,255,255,0.3);margin-bottom:12px;">
-                    Ao solicitar a exclusão, sua conta será desativada imediatamente e todos os seus dados serão removidos permanentemente após <strong>15 dias</strong>. Você pode cancelar a solicitação a qualquer momento dentro desse prazo.
+                <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 12px;">Senha</h3>
+                <p style="font-size: 13.5px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 16px;">
+                    Por segurança, você precisará informar sua senha atual para alterá-la.
                 </p>
 
-                <div class="delete-form" id="deleteForm">
-                    <div class="form-group">
-                        <label>Motivo da exclusão (opcional)</label>
-                        <select id="deleteReason">
-                            <option value="">Selecione um motivo...</option>
-                            <option value="privacy">Preocupações com privacidade</option>
-                            <option value="spam">Muito spam ou conteúdo indesejado</option>
-                            <option value="not_using">Não estou usando mais</option>
-                            <option value="alternative">Encontrei uma alternativa melhor</option>
-                            <option value="other">Outro</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Detalhes (opcional)</label>
-                        <textarea id="deleteDetails" placeholder="Conte-nos mais sobre sua decisão..." rows="2"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
-                            <input type="checkbox" id="deleteConfirm">
-                            <span style="font-weight:400;font-size:13px;color:rgba(255,255,255,0.5);">
-                                Entendo que esta ação é irreversível e que todos os meus dados serão removidos.
-                            </span>
-                        </label>
-                    </div>
-                    <button class="btn-danger" onclick="requestAccountDeletion()" style="width:100%;padding:12px;font-size:14px;">
-                        <i class="fas fa-trash"></i> Solicitar exclusão da conta
-                    </button>
+                <button class="btn-primary" onclick="openScreen('screen-verify-password')">
+                    <i class="fas fa-key"></i> Alterar senha
+                </button>
+            </div>
+        </div>
+
+        <!-- ===== TELA 4: VERIFICAR SENHA ATUAL ===== -->
+        <div class="screen" id="screen-verify-password">
+            <div class="screen-header">
+                <button class="back-btn" onclick="closeScreen('screen-verify-password')"><i class="fas fa-arrow-left"></i></button>
+                <h2>Verificar senha</h2>
+            </div>
+            <div class="screen-content">
+
+                <div class="info-box">
+                    <i class="fas fa-shield-alt"></i>
+                    <p>Digite sua senha atual para confirmar que é você mesmo.</p>
                 </div>
 
-                <div id="deleteStatus" style="display:none;margin-top:12px;padding:12px;background:rgba(231,76,60,0.1);border-radius:10px;border:1px solid rgba(231,76,60,0.2);">
-                    <p style="color:#e74c3c;font-size:14px;">
-                        <i class="fas fa-clock"></i> <strong>Solicitação de exclusão registrada!</strong>
-                    </p>
-                    <p style="color:rgba(255,255,255,0.4);font-size:13px;margin-top:4px;">
-                        Sua conta será excluída permanentemente em <strong id="deleteCountdown">15 dias</strong>. 
-                        Você pode cancelar clicando no botão abaixo.
-                    </p>
-                    <button class="btn-danger" onclick="cancelDeletion()" style="margin-top:8px;">
+                <div class="form-group">
+                    <label>Senha atual</label>
+                    <input type="password" id="currentPassword" placeholder="Digite sua senha atual" autocomplete="current-password">
+                </div>
+
+                <button class="btn-primary" id="verifyPasswordBtn" onclick="verifyCurrentPassword()">
+                    <i class="fas fa-check"></i> Verificar
+                </button>
+            </div>
+        </div>
+
+        <!-- ===== TELA 5: ALTERAR SENHA (SÓ ABRE APÓS VERIFICAÇÃO) ===== -->
+        <div class="screen" id="screen-change-password">
+            <div class="screen-header">
+                <button class="back-btn" onclick="closeScreen('screen-change-password')"><i class="fas fa-arrow-left"></i></button>
+                <h2>Nova senha</h2>
+            </div>
+            <div class="screen-content">
+
+                <div class="form-group">
+                    <label>Nova senha</label>
+                    <input type="password" id="newPassword" placeholder="Mínimo 6 caracteres" autocomplete="new-password">
+                </div>
+
+                <div class="form-group">
+                    <label>Confirmar nova senha</label>
+                    <input type="password" id="confirmPassword" placeholder="Repita a nova senha" autocomplete="new-password">
+                </div>
+
+                <button class="btn-primary" id="changePasswordBtn" onclick="changePassword()">
+                    <i class="fas fa-lock"></i> Atualizar senha
+                </button>
+            </div>
+        </div>
+
+        <!-- ===== TELA 6: SOBRE ===== -->
+        <div class="screen" id="screen-about">
+            <div class="screen-header">
+                <button class="back-btn" onclick="closeScreen('screen-about')"><i class="fas fa-arrow-left"></i></button>
+                <h2>Sobre o Zonne</h2>
+            </div>
+            <div class="screen-content">
+                <div class="about-list">
+                    <div class="about-item">
+                        <span class="key">Versão</span>
+                        <span class="value">1.0.0</span>
+                    </div>
+                    <div class="about-item">
+                        <span class="key">Desenvolvido por</span>
+                        <span class="value">Zonne Team</span>
+                    </div>
+                    <div class="about-item">
+                        <span class="key">Rede social</span>
+                        <span class="value">Modern & Minimal</span>
+                    </div>
+                    <div class="about-item">
+                        <span class="key">© 2026</span>
+                        <span class="value">Zonne</span>
+                    </div>
+                </div>
+
+                <div style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
+                    <i class="fas fa-users" style="font-size: 40px; margin-bottom: 12px; opacity: 0.3;"></i>
+                    <p style="font-size: 13px;">Feito com ❤️ para conectar pessoas.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== TELA 7: EXCLUIR CONTA (4 STEPS) ===== -->
+        <div class="screen" id="screen-delete">
+            <div class="screen-header">
+                <button class="back-btn" onclick="closeScreen('screen-delete')"><i class="fas fa-arrow-left"></i></button>
+                <h2>Excluir Conta</h2>
+            </div>
+            <div class="screen-content">
+
+                <!-- Status: já existe solicitação ativa -->
+                <div class="delete-status-box" id="deleteStatus">
+                    <h4><i class="fas fa-clock"></i> Solicitação Ativa</h4>
+                    <p>Sua conta será excluída em <strong id="deleteCountdown">15 dias</strong>.</p>
+                    <button class="btn-primary" onclick="cancelDeletion()" style="background: var(--green);">
                         <i class="fas fa-undo"></i> Cancelar exclusão
                     </button>
                 </div>
+
+                <!-- Fluxo de exclusão (steps) -->
+                <div id="deleteFlow">
+                    <div class="steps-indicator" id="deleteStepsIndicator">
+                        <div class="step-dot active" data-step="1"></div>
+                        <div class="step-dot" data-step="2"></div>
+                        <div class="step-dot" data-step="3"></div>
+                        <div class="step-dot" data-step="4"></div>
+                    </div>
+
+                    <!-- STEP 1: DETALHES -->
+                    <div class="delete-step active" data-step="1">
+                        <div class="danger-zone-card">
+                            <h3><i class="fas fa-exclamation-triangle"></i> Antes de continuar</h3>
+                            <p>Ao solicitar a exclusão da sua conta:</p>
+                            <ul>
+                                <li>Sua conta será <strong>desativada imediatamente</strong>.</li>
+                                <li>Você não poderá fazer login durante o período de carência.</li>
+                                <li>Todos os seus dados serão <strong>removidos permanentemente após 15 dias</strong>.</li>
+                                <li>Você poderá <strong>cancelar</strong> a solicitação a qualquer momento dentro desse prazo.</li>
+                            </ul>
+                        </div>
+
+                        <button class="btn-primary" onclick="deleteGoToStep(2)">
+                            Entendi, continuar <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- STEP 2: TERMOS E POLÍTICAS -->
+                    <div class="delete-step" data-step="2">
+                        <div class="danger-zone-card">
+                            <h3><i class="fas fa-file-contract"></i> Termos e Políticas</h3>
+                            <p>Para prosseguir com a exclusão, é necessário ler e aceitar os nossos termos.</p>
+                        </div>
+
+                        <label class="checkbox-wrap">
+                            <input type="checkbox" id="termsAccepted">
+                            <span>
+                                Li e aceito os <a href="#" onclick="event.preventDefault(); Swal.fire({title:'Termos de Uso', html:'<div style=\'text-align:left;font-size:13px;line-height:1.6;color:#a0a0b8;\'>Ao excluir sua conta, você concorda que:<br><br>• Todos os seus dados (posts, mensagens, fotos) serão removidos permanentemente após 15 dias.<br><br>• Você perde o direito de recuperar sua conta após esse prazo.<br><br>• Conteúdos que você compartilhou publicamente podem aparecer em caches de terceiros.<br><br>• Você pode cancelar a solicitação dentro do prazo de 15 dias.</div>', confirmButtonColor:'#6c63ff'});">Termos de Uso</a>
+                                e a <a href="#" onclick="event.preventDefault(); Swal.fire({title:'Política de Privacidade', html:'<div style=\'text-align:left;font-size:13px;line-height:1.6;color:#a0a0b8;\'>Sobre seus dados:<br><br>• Seus dados não serão vendidos ou compartilhados com terceiros.<br><br>• Após a exclusão, backups podem reter cópias por até 30 dias adicionais.<br><br>• Você tem direito de solicitar uma cópia dos seus dados antes da exclusão.<br><br>• Para dúvidas, contate: privacidade@zonne.app</div>', confirmButtonColor:'#6c63ff'});">Política de Privacidade</a>.
+                            </span>
+                        </label>
+
+                        <button class="btn-primary" id="termsContinueBtn" onclick="deleteGoToStep(3)" disabled>
+                            Aceitar e continuar <i class="fas fa-arrow-right"></i>
+                        </button>
+
+                        <button class="btn-outline" onclick="deleteGoToStep(1)">
+                            <i class="fas fa-arrow-left"></i> Voltar
+                        </button>
+                    </div>
+
+                    <!-- STEP 3: MOTIVO -->
+                    <div class="delete-step" data-step="3">
+                        <div class="form-group">
+                            <label>Motivo da exclusão (opcional)</label>
+                            <select id="deleteReason">
+                                <option value="">Selecione...</option>
+                                <option value="privacy">Privacidade</option>
+                                <option value="spam">Muito spam</option>
+                                <option value="not_using">Não uso mais</option>
+                                <option value="alternative">Outra rede social</option>
+                                <option value="other">Outro</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Detalhes adicionais (opcional)</label>
+                            <textarea id="deleteDetails" placeholder="Conte mais sobre o motivo..." rows="3"></textarea>
+                        </div>
+
+                        <button class="btn-primary" onclick="deleteGoToStep(4)">
+                            Continuar <i class="fas fa-arrow-right"></i>
+                        </button>
+
+                        <button class="btn-outline" onclick="deleteGoToStep(2)">
+                            <i class="fas fa-arrow-left"></i> Voltar
+                        </button>
+                    </div>
+
+                    <!-- STEP 4: SENHA -->
+                    <div class="delete-step" data-step="4">
+                        <div class="danger-zone-card">
+                            <h3><i class="fas fa-lock"></i> Confirme sua senha</h3>
+                            <p>Por segurança, informe sua senha atual para finalizar a solicitação de exclusão.</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Senha atual</label>
+                            <input type="password" id="deletePassword" placeholder="Digite sua senha atual" autocomplete="current-password">
+                        </div>
+
+                        <button class="btn-danger" id="confirmDeleteBtn" onclick="requestAccountDeletion()">
+                            <i class="fas fa-trash"></i> Confirmar exclusão
+                        </button>
+
+                        <button class="btn-outline" onclick="deleteGoToStep(3)">
+                            <i class="fas fa-arrow-left"></i> Voltar
+                        </button>
+                    </div>
+                </div>
+
             </div>
         </div>
 
-        <!-- ========== SOBRE ========== -->
-        <div class="tab-content" id="tabAbout">
-            <div class="settings-section">
-                <h3><i class="fas fa-info-circle" style="color:#5850ec;margin-right:8px;"></i>Sobre o Zonne</h3>
-                <div style="color:rgba(255,255,255,0.5);line-height:1.7;">
-                    <p><strong>Versão:</strong> 1.0.0</p>
-                    <p><strong>Desenvolvido por:</strong> Zonne Team</p>
-                    <p><strong>Descrição:</strong> Uma rede social moderna e minimalista.</p>
-                    <p style="margin-top:12px;font-size:13px;color:rgba(255,255,255,0.2);">
-                        © 2026 Zonne. Todos os direitos reservados.
-                    </p>
-                </div>
-            </div>
-        </div>
     </div>
 
+    <!-- BOTTOM NAV -->
     <nav class="bottom-nav">
         <button class="nav-item" onclick="window.location.href='feed.html'">
-            <div class="nav-icon"><i class="fas fa-home"></i></div>
-            <span>Início</span>
+            <div class="nav-icon"><i class="fas fa-home"></i></div><span>Início</span>
         </button>
-        <button class="nav-item" onclick="window.location.href='explorar.html'">
-            <div class="nav-icon"><i class="fas fa-compass"></i></div>
-            <span>Explorar</span>
+        <button class="nav-item" onclick="window.location.href='feed.html?tab=explore'">
+            <div class="nav-icon"><i class="fas fa-compass"></i></div><span>Explorar</span>
         </button>
-        <button class="nav-item" onclick="window.location.href='criar-post.html'">
-            <div class="nav-icon">
-                <div class="plus-circle"><i class="fas fa-plus"></i></div>
-            </div>
-            <span>Novo</span>
+        <button class="nav-item" onclick="window.location.href='feed.html?tab=create'">
+            <div class="nav-icon"><div class="plus-circle"><i class="fas fa-plus"></i></div></div><span>Novo</span>
         </button>
-        <button class="nav-item" onclick="window.location.href='amigos.html'">
-            <div class="nav-icon"><i class="fas fa-users"></i></div>
-            <span>Amigos</span>
+        <button class="nav-item" onclick="window.location.href='chat.html'">
+            <div class="nav-icon"><i class="fas fa-envelope"></i></div><span>Mensagens</span>
         </button>
-        <button class="nav-item active" onclick="window.location.href='definicoes.html'">
-            <div class="nav-icon"><i class="fas fa-cog"></i></div>
-            <span>Config.</span>
+        <button class="nav-item" onclick="window.location.href='perfil.html'">
+            <div class="nav-icon"><i class="fas fa-user"></i></div><span>Perfil</span>
         </button>
     </nav>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-    (function() {
-        'use strict';
+        (function() {
+            'use strict';
 
-        const SUPABASE_URL = 'https://cfanqigkvfpigjvjjbon.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmYW5xaWdrdmZwaWdqdmpqYm9uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM4NzI5NzIsImV4cCI6MjA5OTQ0ODk3Mn0.UDyNusIz7PNaz4-n-Bpgn2LJCUi6fIw6tW0QrsJEii0';
+            const SUPABASE_URL = 'https://cfanqigkvfpigjvjjbon.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmYW5xaWdrdmZwaWdqdmpqYm9uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM4NzI5NzIsImV4cCI6MjA5OTQ0ODk3Mn0.UDyNusIz7PNaz4-n-Bpgn2LJCUi6fIw6tW0QrsJEii0';
 
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        let currentUser = null;
-        let currentProfile = null;
-        let selectedAvatarFile = null;
-        let selectedColor = '#5850ec';
+            let currentUser = null;
+            let currentProfile = null;
+            let selectedAvatarFile = null;
+            let selectedColor = '#6c63ff';
+            let screenStack = ['screen-main'];
 
-        // ===== AUTH =====
-        async function checkAuth() {
-            const { data, error } = await supabase.auth.getSession();
-            if (error || !data.session) {
-                window.location.href = 'index.html';
-                return;
-            }
-            currentUser = data.session.user;
-            await loadProfile();
-            await loadNotifications();
-            await loadFriendBadge();
-            checkDeletionStatus();
-        }
+            // ============================================================
+            // NAVEGAÇÃO ENTRE TELAS
+            // ============================================================
+            window.openScreen = function(screenId) {
+                const currentId = screenStack[screenStack.length - 1];
+                const currentEl = document.getElementById(currentId);
+                const nextEl = document.getElementById(screenId);
 
-        async function loadProfile() {
-            const { data, error } = await supabase
-                .from('profiles')
-                .select('*')
-                .eq('id', currentUser.id)
-                .single();
+                if (!nextEl || currentId === screenId) return;
 
-            if (error) {
-                console.error('Erro ao carregar perfil:', error);
-                return;
-            }
-            currentProfile = data;
-            fillProfileForm();
-            updateUI();
-        }
+                currentEl.classList.remove('active');
+                currentEl.classList.add('pushed');
+                
+                nextEl.classList.add('active');
+                nextEl.classList.remove('pushed');
 
-        function updateUI() {
-            if (!currentProfile) return;
-            const avatarEl = document.getElementById('userAvatar');
-            if (currentProfile.avatar_url) {
-                avatarEl.innerHTML = `<img src="${currentProfile.avatar_url}" alt="Avatar">`;
-            } else {
-                const color = currentProfile.avatar_color || '#5850ec';
-                const initial = (currentProfile.full_name || 'U')[0].toUpperCase();
-                avatarEl.innerHTML = `<div class="fallback" style="background:${color};">${initial}</div>`;
-            }
+                screenStack.push(screenId);
 
-            const preview = document.getElementById('avatarPreview');
-            if (currentProfile.avatar_url) {
-                preview.innerHTML = `<img src="${currentProfile.avatar_url}" alt="Avatar">`;
-            } else {
-                const color = currentProfile.avatar_color || '#5850ec';
-                const initial = (currentProfile.full_name || 'U')[0].toUpperCase();
-                preview.innerHTML = `<div class="fallback" style="background:${color};">${initial}</div>`;
-            }
-        }
-
-        function fillProfileForm() {
-            if (!currentProfile) return;
-            document.getElementById('fullName').value = currentProfile.full_name || '';
-            document.getElementById('username').value = currentProfile.username || '';
-            document.getElementById('bio').value = currentProfile.bio || '';
-            document.getElementById('bioCount').textContent = (currentProfile.bio || '').length;
-            document.getElementById('email').value = currentUser.email || '';
-
-            selectedColor = currentProfile.avatar_color || '#5850ec';
-            document.querySelectorAll('#colorPicker .color-opt').forEach(el => {
-                el.classList.toggle('active', el.dataset.color === selectedColor);
-            });
-        }
-
-        // ===== AVATAR UPLOAD =====
-        document.getElementById('avatarInput').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            if (file.size > 5 * 1024 * 1024) {
-                Swal.fire('Erro', 'A imagem deve ter no máximo 5MB.', 'error');
-                return;
-            }
-            selectedAvatarFile = file;
-            const reader = new FileReader();
-            reader.onload = function(ev) {
-                const preview = document.getElementById('avatarPreview');
-                preview.innerHTML = `<img src="${ev.target.result}" alt="Avatar">`;
-            };
-            reader.readAsDataURL(file);
-        });
-
-        // ===== COLOR PICKER =====
-        document.querySelectorAll('#colorPicker .color-opt').forEach(el => {
-            el.onclick = function() {
-                document.querySelectorAll('#colorPicker .color-opt').forEach(c => c.classList.remove('active'));
-                this.classList.add('active');
-                selectedColor = this.dataset.color;
-            };
-        });
-
-        // ===== BIO COUNTER =====
-        document.getElementById('bio').addEventListener('input', function() {
-            document.getElementById('bioCount').textContent = this.value.length;
-        });
-
-        // ===== SAVE PROFILE =====
-        window.saveProfile = async function() {
-            const fullName = document.getElementById('fullName').value.trim();
-            const username = document.getElementById('username').value.trim();
-            const bio = document.getElementById('bio').value.trim();
-
-            if (!fullName) {
-                Swal.fire('Atenção', 'O nome completo é obrigatório.', 'warning');
-                return;
-            }
-            if (!username) {
-                Swal.fire('Atenção', 'O nome de usuário é obrigatório.', 'warning');
-                return;
-            }
-            if (!/^[a-zA-Z0-9_]+$/.test(username)) {
-                Swal.fire('Atenção', 'O nome de usuário deve conter apenas letras, números e underline.', 'warning');
-                return;
-            }
-
-            const btn = document.querySelector('#tabProfile .btn-save');
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
-
-            try {
-                let avatarUrl = currentProfile.avatar_url;
-
-                if (selectedAvatarFile) {
-                    const fileExt = selectedAvatarFile.name.split('.').pop();
-                    const fileName = `${currentUser.id}-avatar-${Date.now()}.${fileExt}`;
-                    const { error: uploadError } = await supabase.storage
-                        .from('avatars')
-                        .upload(fileName, selectedAvatarFile, { cacheControl: '3600' });
-
-                    if (uploadError) throw uploadError;
-                    const { data: urlData } = supabase.storage
-                        .from('avatars')
-                        .getPublicUrl(fileName);
-                    avatarUrl = urlData.publicUrl;
+                // Reset do fluxo de exclusão ao abrir a tela
+                if (screenId === 'screen-delete') {
+                    resetDeleteFlow();
                 }
 
-                const { error } = await supabase
-                    .from('profiles')
-                    .update({
-                        full_name: fullName,
-                        username: username,
-                        bio: bio,
-                        avatar_url: avatarUrl,
-                        avatar_color: selectedColor
-                    })
-                    .eq('id', currentUser.id);
+                // Reset dos campos de senha ao abrir as telas
+                if (screenId === 'screen-verify-password') {
+                    const input = document.getElementById('currentPassword');
+                    if (input) input.value = '';
+                }
+                if (screenId === 'screen-change-password') {
+                    const np = document.getElementById('newPassword');
+                    const cp = document.getElementById('confirmPassword');
+                    if (np) np.value = '';
+                    if (cp) cp.value = '';
+                }
+            };
 
-                if (error) throw error;
+            window.closeScreen = function(screenId) {
+                if (screenStack.length <= 1) return;
 
-                currentProfile.full_name = fullName;
-                currentProfile.username = username;
-                currentProfile.bio = bio;
-                currentProfile.avatar_url = avatarUrl;
-                currentProfile.avatar_color = selectedColor;
+                const currentEl = document.getElementById(screenId);
+                screenStack.pop();
 
-                updateUI();
-                Swal.fire('Sucesso', 'Perfil atualizado com sucesso!', 'success');
-            } catch (error) {
-                console.error('Erro ao salvar perfil:', error);
-                Swal.fire('Erro', 'Não foi possível salvar as alterações: ' + error.message, 'error');
-            }
+                const prevId = screenStack[screenStack.length - 1];
+                const prevEl = document.getElementById(prevId);
 
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-save"></i> Salvar alterações';
-        };
+                currentEl.classList.remove('active');
+                prevEl.classList.remove('pushed');
+                prevEl.classList.add('active');
+            };
 
-        // ===== CHANGE PASSWORD =====
-        window.changePassword = async function() {
-            const newPass = document.getElementById('newPassword').value;
-            const confirmPass = document.getElementById('confirmPassword').value;
-
-            if (!newPass || newPass.length < 6) {
-                Swal.fire('Atenção', 'A senha deve ter pelo menos 6 caracteres.', 'warning');
-                return;
-            }
-            if (newPass !== confirmPass) {
-                Swal.fire('Atenção', 'As senhas não coincidem.', 'warning');
-                return;
-            }
-
-            const btn = document.querySelector('#tabAccount .btn-save');
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Alterando...';
-
-            try {
-                const { error } = await supabase.auth.updateUser({ password: newPass });
-                if (error) throw error;
-                document.getElementById('newPassword').value = '';
-                document.getElementById('confirmPassword').value = '';
-                Swal.fire('Sucesso', 'Senha alterada com sucesso!', 'success');
-            } catch (error) {
-                console.error('Erro ao alterar senha:', error);
-                Swal.fire('Erro', 'Não foi possível alterar a senha: ' + error.message, 'error');
-            }
-
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-key"></i> Alterar senha';
-        };
-
-        // ===== LOGOUT =====
-        window.confirmLogout = function() {
-            Swal.fire({
-                title: 'Sair da conta?',
-                text: 'Você será desconectado do Zonne.',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#e74c3c',
-                cancelButtonColor: '#555',
-                confirmButtonText: 'Sair',
-                cancelButtonText: 'Cancelar'
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    await supabase.auth.signOut();
+            // ============================================================
+            // INICIALIZAÇÃO
+            // ============================================================
+            async function init() {
+                const { data, error } = await supabase.auth.getSession();
+                if (error || !data.session) {
                     window.location.href = 'index.html';
+                    return;
                 }
-            });
-        };
+                currentUser = data.session.user;
 
-        // ===== DELETE ACCOUNT (solicitação com 15 dias) =====
-        async function checkDeletionStatus() {
-            if (!currentProfile) return;
-            if (currentProfile.delete_requested_at) {
+                await loadProfile();
+                await loadNotifications();
+            }
+
+            async function loadProfile() {
+                const { data } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
+                if (!data) return;
+                
+                currentProfile = data;
+                fillForm();
+                updateUI();
+                checkDeletionStatus();
+            }
+
+            function fillForm() {
+                if (!currentProfile) return;
+                
+                document.getElementById('fullName').value = currentProfile.full_name || '';
+                document.getElementById('username').value = currentProfile.username || '';
+                document.getElementById('bio').value = currentProfile.bio || '';
+                document.getElementById('bioCount').textContent = (currentProfile.bio || '').length;
+                document.getElementById('email').value = currentUser.email || '';
+
+                selectedColor = currentProfile.avatar_color || '#6c63ff';
+                document.querySelectorAll('.color-opt').forEach(el => {
+                    el.classList.toggle('active', el.dataset.color === selectedColor);
+                });
+
+                updateAvatarPreview();
+            }
+
+            function updateUI() {
+                if (!currentProfile) return;
+
+                const avatarEl = document.getElementById('userAvatar');
+                const profileSummary = document.getElementById('profileSummary');
+
+                let avatarHtml = '';
+                if (currentProfile.avatar_url) {
+                    avatarHtml = `<img src="${currentProfile.avatar_url}" alt="Avatar">`;
+                } else {
+                    const color = currentProfile.avatar_color || '#6c63ff';
+                    const initial = (currentProfile.full_name || 'U')[0].toUpperCase();
+                    avatarHtml = `<div class="fallback" style="background:${color};">${initial}</div>`;
+                }
+
+                avatarEl.innerHTML = avatarHtml;
+
+                if (profileSummary) {
+                    profileSummary.innerHTML = `
+                        <div class="avatar">${avatarHtml}</div>
+                        <div class="info">
+                            <div class="name">${currentProfile.full_name || 'Usuário'}</div>
+                            <div class="username">@${currentProfile.username || 'usuario'}</div>
+                        </div>
+                    `;
+                }
+            }
+
+            function updateAvatarPreview() {
+                const preview = document.getElementById('avatarPreview');
+                if (!preview) return;
+
+                if (selectedAvatarFile) return;
+
+                if (currentProfile.avatar_url) {
+                    preview.innerHTML = `<img src="${currentProfile.avatar_url}" alt="Avatar">`;
+                } else {
+                    const initial = (currentProfile.full_name || 'U')[0].toUpperCase();
+                    preview.innerHTML = `<div class="fallback" style="background:${selectedColor};">${initial}</div>`;
+                }
+            }
+
+            // ============================================================
+            // UPLOAD DE AVATAR
+            // ============================================================
+            document.getElementById('avatarInput').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                if (file.size > 5 * 1024 * 1024) {
+                    Swal.fire('Erro', 'A imagem deve ter no máximo 5MB.', 'error');
+                    return;
+                }
+
+                selectedAvatarFile = file;
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    const preview = document.getElementById('avatarPreview');
+                    preview.innerHTML = `<img src="${ev.target.result}" alt="Avatar">`;
+                };
+                reader.readAsDataURL(file);
+            });
+
+            // ============================================================
+            // COLOR PICKER
+            // ============================================================
+            document.querySelectorAll('.color-opt').forEach(el => {
+                el.onclick = function() {
+                    document.querySelectorAll('.color-opt').forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    selectedColor = this.dataset.color;
+                    if (!selectedAvatarFile) updateAvatarPreview();
+                };
+            });
+
+            // ============================================================
+            // BIO COUNTER
+            // ============================================================
+            document.getElementById('bio').addEventListener('input', function() {
+                document.getElementById('bioCount').textContent = this.value.length;
+            });
+
+            // ============================================================
+            // SALVAR PERFIL
+            // ============================================================
+            window.saveProfile = async function() {
+                const fullName = document.getElementById('fullName').value.trim();
+                const username = document.getElementById('username').value.trim();
+                const bio = document.getElementById('bio').value.trim();
+
+                if (!fullName) {
+                    Swal.fire('Atenção', 'O nome completo é obrigatório.', 'warning');
+                    return;
+                }
+                if (!username) {
+                    Swal.fire('Atenção', 'O nome de usuário é obrigatório.', 'warning');
+                    return;
+                }
+                if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+                    Swal.fire('Atenção', 'Use apenas letras, números e _ no username.', 'warning');
+                    return;
+                }
+
+                const btn = document.querySelector('#screen-profile .btn-primary');
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+
+                try {
+                    let avatarUrl = currentProfile.avatar_url;
+
+                    if (selectedAvatarFile) {
+                        const fileExt = selectedAvatarFile.name.split('.').pop();
+                        const fileName = `${currentUser.id}-avatar-${Date.now()}.${fileExt}`;
+
+                        const { error: uploadError } = await supabase.storage
+                            .from('avatars')
+                            .upload(fileName, selectedAvatarFile, { cacheControl: '3600' });
+
+                        if (uploadError) throw uploadError;
+
+                        const { data: urlData } = supabase.storage.from('avatars').getPublicUrl(fileName);
+                        avatarUrl = urlData.publicUrl;
+                    }
+
+                    const { error } = await supabase
+                        .from('profiles')
+                        .update({
+                            full_name: fullName,
+                            username: username,
+                            bio: bio,
+                            avatar_url: avatarUrl,
+                            avatar_color: selectedColor
+                        })
+                        .eq('id', currentUser.id);
+
+                    if (error) throw error;
+
+                    currentProfile.full_name = fullName;
+                    currentProfile.username = username;
+                    currentProfile.bio = bio;
+                    currentProfile.avatar_url = avatarUrl;
+                    currentProfile.avatar_color = selectedColor;
+                    selectedAvatarFile = null;
+
+                    updateUI();
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Perfil atualizado!',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+
+                } catch (error) {
+                    console.error('Erro:', error);
+                    Swal.fire('Erro', 'Não foi possível salvar: ' + error.message, 'error');
+                }
+
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-check"></i> Salvar alterações';
+            };
+
+            // ============================================================
+            // VERIFICAR SENHA ATUAL (para alteração de senha)
+            // ============================================================
+            window.verifyCurrentPassword = async function() {
+                const pwd = document.getElementById('currentPassword').value;
+
+                if (!pwd) {
+                    Swal.fire('Atenção', 'Digite sua senha atual.', 'warning');
+                    return;
+                }
+
+                const btn = document.getElementById('verifyPasswordBtn');
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
+
+                try {
+                    // Re-login para validar a senha atual
+                    const { error } = await supabase.auth.signInWithPassword({
+                        email: currentUser.email,
+                        password: pwd
+                    });
+
+                    if (error) {
+                        Swal.fire('Senha incorreta', 'A senha informada está errada. Tente novamente.', 'error');
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fas fa-check"></i> Verificar';
+                        return;
+                    }
+
+                    // Senha correta → abre a tela de alteração
+                    document.getElementById('currentPassword').value = '';
+                    openScreen('screen-change-password');
+
+                } catch (err) {
+                    console.error(err);
+                    Swal.fire('Erro', 'Não foi possível verificar: ' + err.message, 'error');
+                }
+
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-check"></i> Verificar';
+            };
+
+            // ============================================================
+            // ALTERAR SENHA (só acessível após verificação)
+            // ============================================================
+            window.changePassword = async function() {
+                const newPass = document.getElementById('newPassword').value;
+                const confirmPass = document.getElementById('confirmPassword').value;
+
+                if (!newPass || newPass.length < 6) {
+                    Swal.fire('Atenção', 'A senha deve ter pelo menos 6 caracteres.', 'warning');
+                    return;
+                }
+                if (newPass !== confirmPass) {
+                    Swal.fire('Atenção', 'As senhas não coincidem.', 'warning');
+                    return;
+                }
+
+                const btn = document.getElementById('changePasswordBtn');
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Alterando...';
+
+                try {
+                    const { error } = await supabase.auth.updateUser({ password: newPass });
+                    if (error) throw error;
+                    
+                    document.getElementById('newPassword').value = '';
+                    document.getElementById('confirmPassword').value = '';
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Senha alterada!',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+
+                    // Volta para a tela de segurança
+                    closeScreen('screen-change-password');
+                    closeScreen('screen-verify-password');
+
+                } catch (error) {
+                    Swal.fire('Erro', 'Não foi possível alterar: ' + error.message, 'error');
+                }
+
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-lock"></i> Atualizar senha';
+            };
+
+            // ============================================================
+            // LOGOUT
+            // ============================================================
+            window.confirmLogout = function() {
+                Swal.fire({
+                    title: 'Sair da conta?',
+                    text: 'Você precisará fazer login novamente.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ff2e5b',
+                    cancelButtonColor: '#2a2a40',
+                    confirmButtonText: 'Sair',
+                    cancelButtonText: 'Cancelar'
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        await supabase.auth.signOut();
+                        window.location.href = 'index.html';
+                    }
+                });
+            };
+
+            // ============================================================
+            // FLUXO DE EXCLUSÃO - STEPS
+            // ============================================================
+            function resetDeleteFlow() {
+                // Se já existe solicitação ativa, não reseta os steps visíveis
+                if (currentProfile && currentProfile.delete_requested_at) {
+                    return;
+                }
+
+                // Reseta tudo para o step 1
+                document.querySelectorAll('.delete-step').forEach(el => {
+                    el.classList.remove('active');
+                    el.classList.toggle('active', el.dataset.step === '1');
+                });
+
+                document.querySelectorAll('.step-dot').forEach(el => {
+                    el.classList.remove('active', 'done');
+                    el.classList.toggle('active', el.dataset.step === '1');
+                });
+
+                const terms = document.getElementById('termsAccepted');
+                if (terms) terms.checked = false;
+
+                const termsBtn = document.getElementById('termsContinueBtn');
+                if (termsBtn) termsBtn.disabled = true;
+
+                const reason = document.getElementById('deleteReason');
+                if (reason) reason.value = '';
+
+                const details = document.getElementById('deleteDetails');
+                if (details) details.value = '';
+
+                const pwd = document.getElementById('deletePassword');
+                if (pwd) pwd.value = '';
+            }
+
+            window.deleteGoToStep = function(step) {
+                // Validação do step 2 (termos)
+                if (step === 3) {
+                    const terms = document.getElementById('termsAccepted');
+                    if (!terms || !terms.checked) {
+                        Swal.fire('Atenção', 'Você precisa aceitar os Termos de Uso e a Política de Privacidade.', 'warning');
+                        return;
+                    }
+                }
+
+                document.querySelectorAll('.delete-step').forEach(el => {
+                    el.classList.remove('active');
+                });
+
+                const target = document.querySelector(`.delete-step[data-step="${step}"]`);
+                if (target) target.classList.add('active');
+
+                document.querySelectorAll('.step-dot').forEach(el => {
+                    const s = parseInt(el.dataset.step, 10);
+                    el.classList.remove('active', 'done');
+                    if (s < step) el.classList.add('done');
+                    if (s === step) el.classList.add('active');
+                });
+
+                // Scroll ao topo do conteúdo
+                const screenContent = document.querySelector('#screen-delete .screen-content');
+                if (screenContent) screenContent.scrollTop = 0;
+            };
+
+            // Habilita/desabilita o botão de continuar no step 2 conforme o checkbox
+            document.getElementById('termsAccepted').addEventListener('change', function() {
+                const btn = document.getElementById('termsContinueBtn');
+                if (btn) btn.disabled = !this.checked;
+            });
+
+            // ============================================================
+            // VERIFICAR STATUS DE EXCLUSÃO
+            // ============================================================
+            async function checkDeletionStatus() {
+                const statusBox = document.getElementById('deleteStatus');
+                const flow = document.getElementById('deleteFlow');
+
+                if (!currentProfile || !currentProfile.delete_requested_at) {
+                    flow.style.display = 'block';
+                    statusBox.classList.remove('active');
+                    return;
+                }
+
                 const requestedDate = new Date(currentProfile.delete_requested_at);
                 const now = new Date();
                 const diffDays = Math.floor((now - requestedDate) / (1000 * 60 * 60 * 24));
                 const remaining = Math.max(0, 15 - diffDays);
 
-                document.getElementById('deleteForm').style.display = 'none';
-                document.getElementById('deleteStatus').style.display = 'block';
+                flow.style.display = 'none';
+                statusBox.classList.add('active');
                 document.getElementById('deleteCountdown').textContent = remaining + ' dias';
+            }
 
-                if (remaining === 0) {
-                    // Já passou 15 dias, excluir automaticamente
-                    await deleteAccountNow();
+            // ============================================================
+            // SOLICITAR EXCLUSÃO (com verificação de senha)
+            // ============================================================
+            window.requestAccountDeletion = async function() {
+                const pwd = document.getElementById('deletePassword').value;
+
+                if (!pwd) {
+                    Swal.fire('Atenção', 'Digite sua senha para confirmar a exclusão.', 'warning');
+                    return;
                 }
-            } else {
-                document.getElementById('deleteForm').style.display = 'block';
-                document.getElementById('deleteStatus').style.display = 'none';
-            }
-        }
 
-        window.requestAccountDeletion = async function() {
-            const reason = document.getElementById('deleteReason').value;
-            const details = document.getElementById('deleteDetails').value.trim();
-            const confirm = document.getElementById('deleteConfirm').checked;
+                const btn = document.getElementById('confirmDeleteBtn');
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
 
-            if (!confirm) {
-                Swal.fire('Atenção', 'Você precisa confirmar que entende as consequências.', 'warning');
-                return;
-            }
+                try {
+                    // 1. Valida a senha via re-login
+                    const { error: authError } = await supabase.auth.signInWithPassword({
+                        email: currentUser.email,
+                        password: pwd
+                    });
 
-            const result = await Swal.fire({
-                title: 'Solicitar exclusão da conta?',
-                text: 'Sua conta será desativada imediatamente e todos os dados serão removidos permanentemente após 15 dias. Você pode cancelar a qualquer momento.',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#e74c3c',
-                cancelButtonColor: '#555',
-                confirmButtonText: 'Sim, solicitar',
-                cancelButtonText: 'Cancelar'
-            });
+                    if (authError) {
+                        Swal.fire('Senha incorreta', 'A senha informada está errada. Tente novamente.', 'error');
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fas fa-trash"></i> Confirmar exclusão';
+                        return;
+                    }
 
-            if (!result.isConfirmed) return;
+                    // 2. Confirmação final
+                    const result = await Swal.fire({
+                        title: 'Excluir conta?',
+                        text: 'Sua conta será desativada e removida em 15 dias.',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#ff2e5b',
+                        cancelButtonColor: '#2a2a40',
+                        confirmButtonText: 'Sim, excluir',
+                        cancelButtonText: 'Cancelar'
+                    });
 
-            try {
-                const now = new Date().toISOString();
-                const { error } = await supabase
-                    .from('profiles')
-                    .update({
-                        delete_requested_at: now,
-                        delete_reason: reason || details || 'Não informado',
-                        delete_details: details || null
-                    })
-                    .eq('id', currentUser.id);
+                    if (!result.isConfirmed) {
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fas fa-trash"></i> Confirmar exclusão';
+                        return;
+                    }
 
-                if (error) throw error;
+                    // 3. Registra a solicitação
+                    const now = new Date().toISOString();
+                    const reason = document.getElementById('deleteReason').value;
+                    const details = document.getElementById('deleteDetails').value.trim();
 
-                currentProfile.delete_requested_at = now;
-                await checkDeletionStatus();
-                Swal.fire('Solicitação registrada', 'Sua conta será excluída em 15 dias.', 'success');
-            } catch (error) {
-                console.error('Erro ao solicitar exclusão:', error);
-                Swal.fire('Erro', 'Não foi possível solicitar a exclusão: ' + error.message, 'error');
-            }
-        };
+                    const { error } = await supabase
+                        .from('profiles')
+                        .update({
+                            delete_requested_at: now,
+                            delete_reason: reason || 'Não informado',
+                            delete_details: details || null
+                        })
+                        .eq('id', currentUser.id);
 
-        window.cancelDeletion = async function() {
-            const result = await Swal.fire({
-                title: 'Cancelar exclusão?',
-                text: 'Sua conta será mantida e você poderá continuar usando o Zonne.',
-                icon: 'info',
-                showCancelButton: true,
-                confirmButtonColor: '#2ecc71',
-                cancelButtonColor: '#555',
-                confirmButtonText: 'Sim, cancelar',
-                cancelButtonText: 'Cancelar'
-            });
+                    if (error) throw error;
 
-            if (!result.isConfirmed) return;
+                    currentProfile.delete_requested_at = now;
+                    await checkDeletionStatus();
 
-            try {
-                const { error } = await supabase
-                    .from('profiles')
-                    .update({
-                        delete_requested_at: null,
-                        delete_reason: null,
-                        delete_details: null
-                    })
-                    .eq('id', currentUser.id);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Solicitação registrada',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
 
-                if (error) throw error;
+                } catch (error) {
+                    console.error(error);
+                    Swal.fire('Erro', 'Não foi possível solicitar: ' + error.message, 'error');
+                }
 
-                currentProfile.delete_requested_at = null;
-                await checkDeletionStatus();
-                Swal.fire('Exclusão cancelada', 'Sua conta está segura.', 'success');
-            } catch (error) {
-                console.error('Erro ao cancelar exclusão:', error);
-                Swal.fire('Erro', 'Não foi possível cancelar a exclusão: ' + error.message, 'error');
-            }
-        };
-
-        async function deleteAccountNow() {
-            try {
-                // Deletar perfil (cascade vai deletar posts, etc.)
-                const { error } = await supabase
-                    .from('profiles')
-                    .delete()
-                    .eq('id', currentUser.id);
-
-                if (error) throw error;
-
-                await supabase.auth.signOut();
-                window.location.href = 'index.html';
-            } catch (error) {
-                console.error('Erro ao excluir conta:', error);
-            }
-        }
-
-        // ===== TABS =====
-        document.querySelectorAll('#settingsTabs button').forEach(btn => {
-            btn.onclick = function() {
-                document.querySelectorAll('#settingsTabs button').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                const tab = this.dataset.tab;
-                document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-                document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-trash"></i> Confirmar exclusão';
             };
-        });
 
-        // ===== BADGES =====
-        async function loadNotifications() {
-            const { data, error } = await supabase
-                .from('notifications')
-                .select('id')
-                .eq('user_id', currentUser.id)
-                .eq('read', false);
+            // ============================================================
+            // CANCELAR EXCLUSÃO
+            // ============================================================
+            window.cancelDeletion = async function() {
+                const result = await Swal.fire({
+                    title: 'Cancelar exclusão?',
+                    text: 'Sua conta será mantida.',
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#2ecc71',
+                    cancelButtonColor: '#2a2a40',
+                    confirmButtonText: 'Sim, cancelar',
+                    cancelButtonText: 'Não'
+                });
 
-            if (error) return;
-            const badge = document.getElementById('notifBadge');
-            if (data && data.length > 0) {
-                badge.style.display = 'flex';
-                badge.textContent = data.length > 9 ? '9+' : data.length;
-            } else {
-                badge.style.display = 'none';
+                if (!result.isConfirmed) return;
+
+                try {
+                    const { error } = await supabase
+                        .from('profiles')
+                        .update({
+                            delete_requested_at: null,
+                            delete_reason: null,
+                            delete_details: null
+                        })
+                        .eq('id', currentUser.id);
+
+                    if (error) throw error;
+
+                    currentProfile.delete_requested_at = null;
+                    await checkDeletionStatus();
+                    resetDeleteFlow();
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Cancelado',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                } catch (error) {
+                    Swal.fire('Erro', 'Não foi possível cancelar: ' + error.message, 'error');
+                }
+            };
+
+            // ============================================================
+            // BADGES
+            // ============================================================
+            async function loadNotifications() {
+                const { data } = await supabase.from('notifications').select('id').eq('user_id', currentUser.id).eq('read', false);
+                const badge = document.getElementById('notifBadge');
+                if (data && data.length > 0) {
+                    badge.style.display = 'flex';
+                    badge.textContent = data.length > 9 ? '9+' : data.length;
+                }
             }
-        }
 
-        async function loadFriendBadge() {
-            const { count, error } = await supabase
-                .from('friends')
-                .select('id', { count: 'exact', head: true })
-                .eq('user_id', currentUser.id);
+            document.addEventListener('DOMContentLoaded', init);
 
-            if (error) return;
-            const badge = document.getElementById('friendBadge');
-            if (count > 0) {
-                badge.style.display = 'flex';
-                badge.textContent = count > 9 ? '9+' : count;
-            } else {
-                badge.style.display = 'none';
-            }
-        }
-
-        // ===== INIT =====
-        document.addEventListener('DOMContentLoaded', () => {
-            checkAuth();
-            setInterval(loadNotifications, 30000);
-            setInterval(loadFriendBadge, 60000);
-        });
-
-        // Expor funções globais
-        window.saveProfile = saveProfile;
-        window.changePassword = changePassword;
-        window.confirmLogout = confirmLogout;
-        window.requestAccountDeletion = requestAccountDeletion;
-        window.cancelDeletion = cancelDeletion;
-
-        console.log('✅ Zonne Configurações carregado!');
-    })();
+        })();
     </script>
 </body>
 </html>
