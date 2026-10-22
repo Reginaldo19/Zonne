@@ -1,826 +1,1033 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Zonne - Notificações</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #0a0a0f;
-      color: #fff;
-      min-height: 100vh;
-      overflow-x: hidden;
-      padding-bottom: 80px;
-    }
-    /* top-bar igual ao chat */
-    .top-bar {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(10, 10, 15, 0.92);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-      padding: 10px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .top-bar .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 800;
-      font-size: 18px;
-      color: #fff;
-      cursor: pointer;
-    }
-    .top-bar .logo i {
-      font-size: 22px;
-      background: linear-gradient(135deg, #5850ec, #764ba2);
-      padding: 7px 8px;
-      border-radius: 10px;
-      color: #fff;
-    }
-    .top-bar .actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .top-bar .actions .icon-btn {
-      background: none;
-      border: none;
-      color: rgba(255, 255, 255, 0.4);
-      font-size: 18px;
-      cursor: pointer;
-      position: relative;
-      transition: color 0.3s;
-      padding: 4px;
-    }
-    .top-bar .actions .icon-btn:hover {
-      color: #fff;
-    }
-    .top-bar .actions .icon-btn .badge {
-      position: absolute;
-      top: -2px;
-      right: -2px;
-      background: #e74c3c;
-      color: #fff;
-      font-size: 9px;
-      font-weight: 700;
-      min-width: 17px;
-      height: 17px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0 4px;
-    }
-    .top-bar .avatar-mini {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      overflow: hidden;
-      border: 2px solid rgba(255, 255, 255, 0.06);
-      cursor: pointer;
-      transition: border 0.3s;
-      flex-shrink: 0;
-    }
-    .top-bar .avatar-mini:hover {
-      border-color: #5850ec;
-    }
-    .top-bar .avatar-mini img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .top-bar .avatar-mini .fallback {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      font-weight: 600;
-      color: #fff;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Zonne - Notificações</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    /* Container principal */
-    .container {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 12px 16px 20px;
-    }
+        :root {
+            --bg: #0b0b12;
+            --bg-elevated: #12121c;
+            --bg-hover: #16162a;
+            --border: #1e1e2e;
+            --border-hover: #2a2a40;
+            --text: #f0f0f5;
+            --text-secondary: #a0a0b8;
+            --text-muted: #6a6a80;
+            --accent: #6c63ff;
+            --accent-glow: rgba(108, 99, 255, 0.2);
+            --red: #ff2e5b;
+            --font: 'Inter', system-ui, sans-serif;
+        }
 
-    .page-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-    }
-    .page-header h2 {
-      font-weight: 700;
-      font-size: 20px;
-      color: #fff;
-    }
-    .page-header .mark-all-btn {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 30px;
-      padding: 6px 14px;
-      color: rgba(255, 255, 255, 0.5);
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.3s;
-      font-family: 'Inter', sans-serif;
-    }
-    .page-header .mark-all-btn:hover {
-      background: rgba(88, 80, 236, 0.15);
-      border-color: #5850ec;
-      color: #fff;
-    }
-    .page-header .mark-all-btn:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
-    }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 80px;
+            -webkit-font-smoothing: antialiased;
+        }
 
-    /* Filtros rápidos */
-    .filter-tabs {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 16px;
-      overflow-x: auto;
-      padding-bottom: 4px;
-      scrollbar-width: none;
-    }
-    .filter-tabs::-webkit-scrollbar {
-      display: none;
-    }
-    .filter-tabs button {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid transparent;
-      border-radius: 30px;
-      padding: 6px 16px;
-      color: rgba(255, 255, 255, 0.4);
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.3s;
-      white-space: nowrap;
-      font-family: 'Inter', sans-serif;
-      flex-shrink: 0;
-    }
-    .filter-tabs button.active {
-      background: rgba(88, 80, 236, 0.15);
-      border-color: #5850ec;
-      color: #fff;
-    }
-    .filter-tabs button:hover {
-      color: #fff;
-      background: rgba(255, 255, 255, 0.06);
-    }
+        /* ============================================================
+           TOP BAR
+           ============================================================ */
+        .top-bar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(11, 11, 18, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
 
-    /* Lista de notificações */
-    .notifications-list {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
+        .top-bar .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 17px;
+            color: #fff;
+            cursor: pointer;
+            user-select: none;
+        }
 
-    .notification-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 14px;
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid transparent;
-      cursor: pointer;
-      transition: all 0.2s;
-      position: relative;
-    }
-    .notification-item:hover {
-      background: rgba(255, 255, 255, 0.04);
-    }
-    .notification-item.unread {
-      background: rgba(88, 80, 236, 0.06);
-      border-color: rgba(88, 80, 236, 0.15);
-    }
-    .notification-item.unread::before {
-      content: '';
-      position: absolute;
-      left: 6px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #5850ec;
-    }
-    .notification-item .avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      overflow: hidden;
-      flex-shrink: 0;
-      background: rgba(255, 255, 255, 0.04);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      color: rgba(255, 255, 255, 0.3);
-    }
-    .notification-item .avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .notification-item .avatar .fallback {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
-      font-size: 16px;
-      color: #fff;
-    }
-    .notification-item .content {
-      flex: 1;
-      min-width: 0;
-    }
-    .notification-item .content .text {
-      font-size: 14px;
-      line-height: 1.4;
-      color: rgba(255, 255, 255, 0.85);
-      word-wrap: break-word;
-    }
-    .notification-item .content .text strong {
-      color: #fff;
-      font-weight: 600;
-    }
-    .notification-item .content .time {
-      font-size: 12px;
-      color: rgba(255, 255, 255, 0.25);
-      margin-top: 2px;
-    }
-    .notification-item .action-icon {
-      flex-shrink: 0;
-      font-size: 18px;
-      margin-left: 4px;
-      transition: transform 0.2s;
-    }
-    .notification-item:hover .action-icon {
-      transform: scale(1.15);
-    }
+        .top-bar .logo .z-mark {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent), #9b4dff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 19px;
+            color: #fff;
+            box-shadow: 0 6px 20px var(--accent-glow);
+            letter-spacing: -1px;
+        }
 
-    /* Estado vazio */
-    .empty-state {
-      text-align: center;
-      padding: 60px 20px;
-      color: rgba(255, 255, 255, 0.15);
-    }
-    .empty-state i {
-      font-size: 48px;
-      margin-bottom: 16px;
-    }
-    .empty-state h3 {
-      font-weight: 500;
-      font-size: 18px;
-      color: rgba(255, 255, 255, 0.3);
-    }
-    .empty-state p {
-      font-size: 14px;
-      margin-top: 4px;
-    }
+        .top-bar .actions {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
 
-    /* Loading */
-    .loading-placeholder {
-      display: flex;
-      justify-content: center;
-      padding: 40px 0;
-      color: rgba(255, 255, 255, 0.1);
-      font-size: 14px;
-    }
-    .loading-placeholder i {
-      margin-right: 8px;
-    }
+        .top-bar .actions .icon-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 17px;
+            cursor: pointer;
+            position: relative;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
 
-    /* Bottom nav */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 100;
-      background: rgba(10, 10, 15, 0.95);
-      backdrop-filter: blur(20px);
-      border-top: 1px solid rgba(255, 255, 255, 0.04);
-      display: flex;
-      justify-content: space-around;
-      padding: 6px 0 env(safe-area-inset-bottom, 8px) 0;
-    }
-    .bottom-nav .nav-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-      background: none;
-      border: none;
-      color: rgba(255, 255, 255, 0.25);
-      font-size: 20px;
-      cursor: pointer;
-      padding: 4px 16px;
-      transition: color 0.3s;
-      position: relative;
-      font-family: 'Inter', sans-serif;
-    }
-    .bottom-nav .nav-item span {
-      font-size: 9px;
-      font-weight: 500;
-      letter-spacing: 0.3px;
-    }
-    .bottom-nav .nav-item.active {
-      color: #5850ec;
-    }
-    .bottom-nav .nav-item:hover {
-      color: rgba(255, 255, 255, 0.6);
-    }
-    .bottom-nav .nav-item .badge {
-      position: absolute;
-      top: -2px;
-      right: 6px;
-      background: #e74c3c;
-      color: #fff;
-      font-size: 8px;
-      font-weight: 700;
-      min-width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0 4px;
-    }
-    .bottom-nav .nav-item .nav-icon {
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .bottom-nav .nav-item .nav-icon .plus-circle {
-      background: linear-gradient(135deg, #5850ec, #764ba2);
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      color: #fff;
-      margin-top: -14px;
-      box-shadow: 0 4px 20px rgba(88, 80, 236, 0.3);
-      transition: transform 0.3s;
-    }
-    .bottom-nav .nav-item .nav-icon .plus-circle:hover {
-      transform: scale(1.05);
-    }
+        .top-bar .actions .icon-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+        }
 
-    /* Responsividade */
-    @media (max-width: 480px) {
-      .top-bar .logo span {
-        display: none;
-      }
-      .page-header h2 {
-        font-size: 18px;
-      }
-      .notification-item {
-        padding: 10px 12px;
-      }
-      .notification-item .avatar {
-        width: 34px;
-        height: 34px;
-        font-size: 14px;
-      }
-      .notification-item .content .text {
-        font-size: 13px;
-      }
-    }
-  </style>
+        .top-bar .actions .icon-btn.active {
+            color: var(--accent);
+        }
+
+        .top-bar .actions .icon-btn .badge {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: var(--red);
+            color: #fff;
+            font-size: 9px;
+            font-weight: 700;
+            min-width: 16px;
+            height: 16px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+            border: 2px solid var(--bg);
+        }
+
+        .top-bar .avatar-mini {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid rgba(108, 99, 255, 0.35);
+            cursor: pointer;
+            margin-left: 4px;
+            transition: all 0.2s;
+        }
+
+        .top-bar .avatar-mini:hover {
+            border-color: var(--accent);
+            transform: scale(1.05);
+        }
+
+        .top-bar .avatar-mini img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .top-bar .avatar-mini .fallback {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        /* ============================================================
+           CONTAINER & HEADER
+           ============================================================ */
+        .container {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 20px 16px 40px;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .page-header h2 {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-header h2 i {
+            color: var(--accent);
+            font-size: 22px;
+        }
+
+        .mark-all-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 8px 16px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: var(--font);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .mark-all-btn:hover {
+            background: var(--bg-hover);
+            border-color: var(--border-hover);
+            color: var(--text);
+        }
+
+        .mark-all-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* ============================================================
+           FILTROS (TABS)
+           ============================================================ */
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            scrollbar-width: none;
+        }
+
+        .filter-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-tabs button {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            padding: 8px 18px;
+            color: var(--text-secondary);
+            font-size: 13.5px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            font-family: var(--font);
+            flex-shrink: 0;
+        }
+
+        .filter-tabs button:hover {
+            background: var(--bg-hover);
+            color: var(--text);
+        }
+
+        .filter-tabs button.active {
+            background: var(--text);
+            border-color: var(--text);
+            color: var(--bg);
+        }
+
+        /* ============================================================
+           LISTA DE NOTIFICAÇÕES
+           ============================================================ */
+        .notifications-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .date-group-label {
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 20px 8px 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .date-group-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .notification-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 16px;
+            border-radius: 20px;
+            background: transparent;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .notification-item:hover {
+            background: var(--bg-elevated);
+            border-color: var(--border);
+        }
+
+        /* Estilo de Não Lida */
+        .notification-item.unread {
+            background: linear-gradient(90deg, rgba(108, 99, 255, 0.06) 0%, transparent 100%);
+        }
+
+        .notification-item.unread::before {
+            content: '';
+            position: absolute;
+            left: 4px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        /* Avatar e Badge */
+        .notification-item .avatar-wrap {
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .notification-item .avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: var(--bg-elevated);
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notification-item .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .notification-item .avatar .fallback {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 20px;
+            color: #fff;
+        }
+
+        .notification-item .type-icon {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #fff;
+            border: 2px solid var(--bg);
+        }
+
+        /* Conteúdo da Notificação */
+        .notification-item .content {
+            flex: 1;
+            min-width: 0;
+            padding-top: 2px;
+        }
+
+        .notification-item .content .text {
+            font-size: 15px;
+            line-height: 1.5;
+            color: var(--text-secondary);
+            word-wrap: break-word;
+        }
+
+        .notification-item .content .text strong {
+            color: var(--text);
+            font-weight: 700;
+        }
+
+        .notification-item .content .text .highlight {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        /* Preview do Post ou Comentário */
+        .notification-item .content .preview-box {
+            margin-top: 8px;
+            padding: 10px 14px;
+            background: var(--bg-elevated);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            font-size: 13.5px;
+            color: var(--text-muted);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .notification-item .content .preview-box::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--accent);
+            border-radius: 3px 0 0 3px;
+        }
+
+        .notification-item .content .time {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* ============================================================
+           EMPTY & SKELETON
+           ============================================================ */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state .icon-wrapper {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(108, 99, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+        }
+
+        .empty-state .icon-wrapper i {
+            font-size: 32px;
+            color: rgba(108, 99, 255, 0.4);
+        }
+
+        .empty-state h3 {
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+
+        .skeleton-item {
+            display: flex;
+            gap: 16px;
+            padding: 16px;
+            align-items: flex-start;
+        }
+
+        .sk-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(90deg, #1a1a2a 25%, #24243a 50%, #1a1a2a 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            flex-shrink: 0;
+        }
+
+        .sk-lines {
+            flex: 1;
+        }
+
+        .sk-line {
+            height: 14px;
+            border-radius: 4px;
+            background: linear-gradient(90deg, #1a1a2a 25%, #24243a 50%, #1a1a2a 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            margin-bottom: 10px;
+            width: 70%;
+        }
+
+        .sk-line.short {
+            width: 40%;
+            height: 10px;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* ============================================================
+           BOTTOM NAV
+           ============================================================ */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(11, 11, 18, 0.95);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            padding: 4px 0 env(safe-area-inset-bottom, 8px) 0;
+        }
+
+        .bottom-nav .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px 14px;
+            transition: all 0.2s;
+        }
+
+        .bottom-nav .nav-item span {
+            font-size: 9px;
+            font-weight: 500;
+        }
+
+        .bottom-nav .nav-item.active {
+            color: var(--accent);
+        }
+
+        .bottom-nav .nav-item .nav-icon .plus-circle {
+            background: linear-gradient(135deg, var(--accent), #9b4dff);
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #fff;
+            margin-top: -14px;
+            box-shadow: 0 6px 20px var(--accent-glow);
+        }
+
+        @media (max-width: 480px) {
+            .top-bar .logo span { display: none; }
+            .notification-item { padding: 12px; gap: 12px; }
+            .notification-item .avatar { width: 42px; height: 42px; }
+            .mark-all-btn { padding: 6px 12px; font-size: 12px; }
+        }
+    </style>
 </head>
 <body>
 
-  <header class="top-bar">
-    <div class="logo" onclick="window.location.href='feed.html'">
-      <i class="fas fa-users"></i>
-      <span>Zonne</span>
+    <header class="top-bar">
+        <div class="logo" onclick="window.location.href='feed.html'">
+            <div class="z-mark">Z</div>
+            Zonne
+        </div>
+        <div class="actions">
+            <button class="icon-btn active" onclick="window.location.href='notificacoes.html'">
+                <i class="fas fa-bell"></i>
+                <span class="badge" id="notifBadge" style="display:none;">0</span>
+            </button>
+            <button class="icon-btn" onclick="window.location.href='amigos.html'">
+                <i class="fas fa-user-friends"></i>
+            </button>
+            <div class="avatar-mini" id="userAvatar" onclick="window.location.href='perfil.html'">
+                <div class="fallback" style="background:var(--accent);"><i class="fas fa-user"></i></div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <h2><i class="fas fa-bell"></i> Notificações</h2>
+            <button class="mark-all-btn" id="markAllBtn" onclick="markAllAsRead()">
+                <i class="fas fa-check-double"></i> Ler tudo
+            </button>
+        </div>
+
+        <div class="filter-tabs" id="filterTabs">
+            <button class="active" data-filter="all">Todas</button>
+            <button data-filter="like">Curtidas</button>
+            <button data-filter="comment">Comentários</button>
+            <button data-filter="follow">Seguidores</button>
+            <button data-filter="mention">Menções</button>
+        </div>
+
+        <div class="notifications-list" id="notificationsList">
+            <div class="skeleton-item">
+                <div class="sk-avatar"></div>
+                <div class="sk-lines"><div class="sk-line"></div><div class="sk-line short"></div></div>
+            </div>
+            <div class="skeleton-item">
+                <div class="sk-avatar"></div>
+                <div class="sk-lines"><div class="sk-line"></div><div class="sk-line short"></div></div>
+            </div>
+        </div>
     </div>
-    <div class="actions">
-      <button class="icon-btn" onclick="window.location.href='notificacoes.html'">
-        <i class="fas fa-bell"></i>
-        <span class="badge" id="notifBadge" style="display:none;">0</span>
-      </button>
-      <button class="icon-btn" onclick="window.location.href='amigos.html'">
-        <i class="fas fa-users"></i>
-        <span class="badge" id="friendBadge" style="display:none;">0</span>
-      </button>
-      <div class="avatar-mini" id="userAvatar" onclick="window.location.href='perfil.html'">
-        <div class="fallback" style="background:#5850ec;"><i class="fas fa-user"></i></div>
-      </div>
-    </div>
-  </header>
 
-  <div class="container">
-    <div class="page-header">
-      <h2><i class="fas fa-bell" style="color:#5850ec;margin-right:8px;"></i>Notificações</h2>
-      <button class="mark-all-btn" id="markAllBtn" onclick="markAllAsRead()">Marcar todas como lidas</button>
-    </div>
+    <nav class="bottom-nav">
+        <button class="nav-item" onclick="window.location.href='feed.html'">
+            <div class="nav-icon"><i class="fas fa-home"></i></div><span>Início</span>
+        </button>
+        <button class="nav-item" onclick="window.location.href='feed.html?tab=explore'">
+            <div class="nav-icon"><i class="fas fa-compass"></i></div><span>Explorar</span>
+        </button>
+        <button class="nav-item" onclick="window.location.href='feed.html?tab=create'">
+            <div class="nav-icon"><div class="plus-circle"><i class="fas fa-plus"></i></div></div><span>Novo</span>
+        </button>
+        <button class="nav-item" onclick="window.location.href='chat.html'">
+            <div class="nav-icon"><i class="fas fa-envelope"></i></div><span>Mensagens</span>
+        </button>
+        <button class="nav-item" onclick="window.location.href='perfil.html'">
+            <div class="nav-icon"><i class="fas fa-user"></i></div><span>Perfil</span>
+        </button>
+    </nav>
 
-    <!-- Filtros -->
-    <div class="filter-tabs" id="filterTabs">
-      <button class="active" data-filter="all">Todas</button>
-      <button data-filter="like">Curtidas</button>
-      <button data-filter="comment">Comentários</button>
-      <button data-filter="follow">Seguidores</button>
-      <button data-filter="message">Mensagens</button>
-    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        (function() {
+            'use strict';
 
-    <!-- Lista -->
-    <div class="notifications-list" id="notificationsList">
-      <div class="loading-placeholder"><i class="fas fa-spinner fa-spin"></i> Carregando...</div>
-    </div>
-  </div>
+            const SUPABASE_URL = 'https://cfanqigkvfpigjvjjbon.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmYW5xaWdrdmZwaWdqdmpqYm9uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM4NzI5NzIsImV4cCI6MjA5OTQ0ODk3Mn0.UDyNusIz7PNaz4-n-Bpgn2LJCUi6fIw6tW0QrsJEii0';
 
-  <!-- Bottom Nav -->
-  <nav class="bottom-nav">
-    <button class="nav-item" onclick="window.location.href='feed.html'">
-      <div class="nav-icon"><i class="fas fa-home"></i></div>
-      <span>Início</span>
-    </button>
-    <button class="nav-item" onclick="window.location.href='explorar.html'">
-      <div class="nav-icon"><i class="fas fa-compass"></i></div>
-      <span>Explorar</span>
-    </button>
-    <button class="nav-item" onclick="window.location.href='criar-post.html'">
-      <div class="nav-icon"><div class="plus-circle"><i class="fas fa-plus"></i></div></div>
-      <span>Novo</span>
-    </button>
-    <button class="nav-item" onclick="window.location.href='chat.html'">
-      <div class="nav-icon"><i class="fas fa-comment-dots"></i></div>
-      <span>Chat</span>
-    </button>
-    <button class="nav-item active" onclick="window.location.href='notificacoes.html'">
-      <div class="nav-icon"><i class="fas fa-bell"></i></div>
-      <span>Notif.</span>
-    </button>
-  </nav>
+            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-  (function() {
-    'use strict';
+            let currentUser = null;
+            let notifications = [];
+            let currentFilter = 'all';
+            
+            // Cache para não buscar o mesmo perfil/post várias vezes
+            const profilesCache = new Map();
+            const postsCache = new Map();
 
-    const SUPABASE_URL = 'https://cfanqigkvfpigjvjjbon.supabase.co';
-    const SUPABASE_ANON_KEY =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmYW5xaWdrdmZwaWdqdmpqYm9uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM4NzI5NzIsImV4cCI6MjA5OTQ0ODk3Mn0.UDyNusIz7PNaz4-n-Bpgn2LJCUi6fIw6tW0QrsJEii0';
+            const listEl = document.getElementById('notificationsList');
+            const filterTabs = document.getElementById('filterTabs');
+            const markAllBtn = document.getElementById('markAllBtn');
+            const notifBadge = document.getElementById('notifBadge');
 
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            const TYPE_CONFIG = {
+                like:    { icon: 'fa-heart',     color: '#fff', bg: '#ff4757' }, // Vermelho
+                comment: { icon: 'fa-comment',   color: '#fff', bg: '#4ea8ff' }, // Azul
+                follow:  { icon: 'fa-user-plus', color: '#fff', bg: 'var(--accent)' }, // Roxo
+                mention: { icon: 'fa-at',        color: '#fff', bg: '#feca57' }, // Amarelo
+                reply:   { icon: 'fa-reply',     color: '#fff', bg: '#4ea8ff' }, // Azul
+                default: { icon: 'fa-bell',      color: '#fff', bg: '#6a6a80' }
+            };
 
-    let currentUser = null;
-    let notifications = [];
-    let currentFilter = 'all';
+            function getTypeConfig(type) {
+                const t = String(type || '').toLowerCase().trim();
+                return TYPE_CONFIG[t] || TYPE_CONFIG.default;
+            }
 
-    const listEl = document.getElementById('notificationsList');
-    const filterTabs = document.getElementById('filterTabs');
-    const markAllBtn = document.getElementById('markAllBtn');
-    const notifBadge = document.getElementById('notifBadge');
+            function escapeHtml(str) {
+                if (!str) return '';
+                const div = document.createElement('div');
+                div.textContent = str;
+                return div.innerHTML;
+            }
 
-    // ============================================================
-    // ÍCONE E COR POR TIPO
-    // ============================================================
-    const TYPE_CONFIG = {
-      like:    { icon: 'fa-heart',     color: '#e74c3c' },
-      comment: { icon: 'fa-comment',   color: '#3498db' },
-      follow:  { icon: 'fa-user-plus', color: '#5850ec' },
-      message: { icon: 'fa-envelope',  color: '#2ecc71' },
-      mention: { icon: 'fa-at',        color: '#f1c40f' },
-      reply:   { icon: 'fa-reply',     color: '#3498db' },
-      default: { icon: 'fa-bell',      color: '#5850ec' }
-    };
+            // ============================================================
+            // AUTENTICAÇÃO E INIT
+            // ============================================================
+            async function init() {
+                const { data, error } = await supabase.auth.getSession();
+                if (error || !data.session) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+                currentUser = data.session.user;
 
-    function getTypeConfig(type) {
-      const t = String(type || '').toLowerCase().trim();
-      return TYPE_CONFIG[t] || TYPE_CONFIG.default;
-    }
+                await loadProfile();
+                await loadNotifications();
+                setupRealtime();
+                setupFilterTabs();
+            }
 
-    // ============================================================
-    // AUTH
-    // ============================================================
-    async function checkAuth() {
-      const { data, error } = await supabase.auth.getSession();
-      if (error || !data.session) {
-        window.location.href = 'index.html';
-        return;
-      }
-      currentUser = data.session.user;
-      await loadProfile();
-      await loadNotifications();
-      setupRealtime();
-      setupFilterTabs();
-    }
+            async function loadProfile() {
+                const { data } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
+                if (!data) return;
+                
+                profilesCache.set(data.id, data);
+                
+                const avatarEl = document.getElementById('userAvatar');
+                if (data.avatar_url) {
+                    avatarEl.innerHTML = `<img src="${data.avatar_url}" alt="Avatar">`;
+                } else {
+                    avatarEl.innerHTML = `<div class="fallback" style="background:${data.avatar_color || '#6c63ff'};">${(data.full_name || 'U')[0].toUpperCase()}</div>`;
+                }
+            }
 
-    async function loadProfile() {
-      const { data } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', currentUser.id)
-        .single();
-      if (!data) return;
-      const avatarEl = document.getElementById('userAvatar');
-      if (data.avatar_url) {
-        avatarEl.innerHTML = `<img src="${data.avatar_url}" alt="Avatar">`;
-      } else {
-        const color = data.avatar_color || '#5850ec';
-        const initial = (data.full_name || 'U')[0].toUpperCase();
-        avatarEl.innerHTML = `<div class="fallback" style="background:${color};">${initial}</div>`;
-      }
-    }
+            // ============================================================
+            // BUSCAR DADOS EXTRAS (Perfil do remetente / Post)
+            // ============================================================
+            async function getSenderProfile(senderId) {
+                if (!senderId) return null;
+                if (profilesCache.has(senderId)) return profilesCache.get(senderId);
 
-    // ============================================================
-    // CARREGAR
-    // ============================================================
-    async function loadNotifications(showLoading = true) {
-      if (showLoading) {
-        listEl.innerHTML = `<div class="loading-placeholder"><i class="fas fa-spinner fa-spin"></i> Carregando...</div>`;
-      }
+                const { data } = await supabase.from('profiles').select('*').eq('id', senderId).single();
+                if (data) {
+                    profilesCache.set(senderId, data);
+                    return data;
+                }
+                return null;
+            }
 
-      const { data, error } = await supabase
-        .from('notifications')
-        .select('*')
-        .eq('user_id', currentUser.id)
-        .order('created_at', { ascending: false });
+            async function getPostData(postId) {
+                if (!postId) return null;
+                if (postsCache.has(postId)) return postsCache.get(postId);
 
-      if (error) {
-        console.error('❌ Erro:', error);
-        listEl.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>Erro ao carregar</h3><p>${error.message}</p></div>`;
-        return;
-      }
+                // Busca o conteúdo do post para exibir o preview
+                const { data } = await supabase.from('posts').select('content, media_url').eq('id', postId).single();
+                if (data) {
+                    postsCache.set(postId, data);
+                    return data;
+                }
+                return null;
+            }
 
-      notifications = data || [];
-      renderNotifications();
-      updateBadge();
-    }
+            // ============================================================
+            // CARREGAR NOTIFICAÇÕES
+            // ============================================================
+            async function loadNotifications() {
+                const { data, error } = await supabase
+                    .from('notifications')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false })
+                    .limit(100);
 
-    // ============================================================
-    // RENDERIZAR
-    // ============================================================
-    function renderNotifications() {
-      const filtered = getFilteredNotifications();
-      if (filtered.length === 0) {
-        listEl.innerHTML = `
-          <div class="empty-state">
-            <i class="fas fa-bell-slash"></i>
-            <h3>Nenhuma notificação</h3>
-            <p>Você está em dia!</p>
-          </div>`;
-        return;
-      }
+                if (error) {
+                    console.error('Erro ao carregar:', error);
+                    listEl.innerHTML = `<div class="empty-state"><h3>Erro ao carregar notificações</h3></div>`;
+                    return;
+                }
 
-      const groups = groupByDate(filtered);
-      let html = '';
-      for (const [label, items] of Object.entries(groups)) {
-        html += `<div style="margin-top:12px;font-size:12px;color:rgba(255,255,255,0.2);font-weight:500;padding-left:4px;">${label}</div>`;
-        items.forEach(n => { html += renderNotificationItem(n); });
-      }
-      listEl.innerHTML = html;
-    }
+                notifications = data || [];
+                
+                // Pré-carrega perfis e posts em paralelo
+                const senderIds = [...new Set(notifications.map(n => n.sender_id).filter(Boolean))];
+                const postIds = [...new Set(notifications.map(n => n.reference_id).filter(Boolean))];
 
-    function renderNotificationItem(notif) {
-      // 🔥 O texto JÁ VEM pronto do banco no campo `message`
-      const message = notif.message || notif.content || notif.title || 'Nova notificação';
-      const type = String(notif.type || '').toLowerCase().trim();
-      const cfg = getTypeConfig(type);
+                await Promise.all([
+                    ...senderIds.map(id => getSenderProfile(id)),
+                    ...postIds.map(id => getPostData(id))
+                ]);
 
-      const timeAgo = getTimeAgo(notif.created_at);
-      const unread = !notif.read ? 'unread' : '';
+                renderNotifications();
+                updateBadge();
+            }
 
-      // Avatar genérico com ícone (não temos sender_id na tabela)
-      const avatarHtml = `
-        <div class="fallback" style="background:rgba(88,80,236,0.15);color:${cfg.color};">
-          <i class="fas ${cfg.icon}"></i>
-        </div>`;
+            // ============================================================
+            // MONTAR TEXTO DA NOTIFICAÇÃO
+            // ============================================================
+            function buildNotificationContent(notif) {
+                const type = String(notif.type || '').toLowerCase();
+                const sender = notif.sender_id ? profilesCache.get(notif.sender_id) : null;
+                const post = notif.reference_id ? postsCache.get(notif.reference_id) : null;
 
-      // Link de destino (se tiver reference_id ou post_id)
-      const refId = notif.reference_id || notif.post_id || null;
-      let actionLink = '#';
-      if (type === 'follow') actionLink = 'perfil.html';
-      else if (type === 'message') actionLink = 'chat.html';
-      else if (refId) actionLink = `post.html?id=${refId}`;
+                const senderName = sender ? `<strong>${escapeHtml(sender.full_name || 'Usuário')}</strong>` : 'Alguém';
+                
+                let mainText = '';
+                let previewHtml = '';
 
-      return `
-        <div class="notification-item ${unread}" data-id="${notif.id}" onclick="handleNotificationClick('${notif.id}', '${actionLink}')">
-          <div class="avatar">${avatarHtml}</div>
-          <div class="content">
-            <div class="text">${escapeHtml(message)}</div>
-            <div class="time">${timeAgo}</div>
-          </div>
-          <div class="action-icon" style="color:${cfg.color};">
-            <i class="fas ${cfg.icon}"></i>
-          </div>
-        </div>`;
-    }
+                // Extrai o texto do post ou comentário para o preview
+                let previewText = post ? (post.content || '') : '';
+                if (!previewText && notif.content && !notif.content.includes('curtiu') && !notif.content.includes('seguiu')) {
+                    previewText = notif.content; // Se a notificação for um comentário, usa o content
+                }
+                
+                // Se tiver mídia mas não texto, avisa
+                if (!previewText && post && post.media_url) previewText = '📷 Mídia';
 
-    function escapeHtml(str) {
-      if (!str) return '';
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-    }
+                if (type === 'like') {
+                    mainText = `${senderName} curtiu sua publicação`;
+                } 
+                else if (type === 'comment' || type === 'reply') {
+                    mainText = `${senderName} comentou:`;
+                    if (notif.content) {
+                        previewText = notif.content; // O texto do comentário em si
+                    }
+                } 
+                else if (type === 'follow') {
+                    mainText = `${senderName} começou a te seguir`;
+                } 
+                else if (type === 'mention') {
+                    mainText = `${senderName} mencionou você em um post`;
+                } 
+                else {
+                    // Fallback para notificações antigas
+                    mainText = notif.message || notif.content || `${senderName} interagiu com você`;
+                }
 
-    // ============================================================
-    // FILTROS
-    // ============================================================
-    function getFilteredNotifications() {
-      if (currentFilter === 'all') return notifications;
-      return notifications.filter(n => String(n.type || '').toLowerCase() === currentFilter);
-    }
+                // Se tiver preview, adiciona a caixinha
+                if (previewText && (type === 'like' || type === 'comment' || type === 'mention')) {
+                    previewHtml = `<div class="preview-box">"${escapeHtml(previewText)}"</div>`;
+                }
 
-    function setupFilterTabs() {
-      const buttons = filterTabs.querySelectorAll('button');
-      buttons.forEach(btn => {
-        btn.addEventListener('click', function() {
-          buttons.forEach(b => b.classList.remove('active'));
-          this.classList.add('active');
-          currentFilter = this.dataset.filter;
-          renderNotifications();
-        });
-      });
-    }
+                return { mainText, previewHtml };
+            }
 
-    // ============================================================
-    // AGRUPAR POR DATA
-    // ============================================================
-    function groupByDate(items) {
-      const groups = {};
-      const now = new Date();
-      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      const yesterday = new Date(today); yesterday.setDate(yesterday.getDate() - 1);
-      const weekAgo = new Date(today);   weekAgo.setDate(weekAgo.getDate() - 7);
+            // ============================================================
+            // RENDERIZAR LISTA
+            // ============================================================
+            function renderNotifications() {
+                const filtered = getFilteredNotifications();
+                
+                if (filtered.length === 0) {
+                    listEl.innerHTML = `
+                        <div class="empty-state">
+                            <div class="icon-wrapper"><i class="fas fa-bell-slash"></i></div>
+                            <h3>Tudo em dia</h3>
+                            <p>Você não tem notificações aqui.</p>
+                        </div>`;
+                    return;
+                }
 
-      items.forEach(item => {
-        const d = new Date(item.created_at);
-        let label = 'Anterior';
-        if (d >= today) label = 'Hoje';
-        else if (d >= yesterday) label = 'Ontem';
-        else if (d >= weekAgo) label = 'Esta semana';
+                const groups = groupByDate(filtered);
+                let html = '';
+                
+                for (const [label, items] of Object.entries(groups)) {
+                    html += `<div class="date-group-label">${label}</div>`;
+                    items.forEach(n => { html += renderNotificationItem(n); });
+                }
+                
+                listEl.innerHTML = html;
+            }
 
-        if (!groups[label]) groups[label] = [];
-        groups[label].push(item);
-      });
+            function renderNotificationItem(notif) {
+                const cfg = getTypeConfig(notif.type);
+                const timeAgo = getTimeAgo(notif.created_at);
+                const unreadClass = !notif.read ? 'unread' : '';
+                const sender = notif.sender_id ? profilesCache.get(notif.sender_id) : null;
+                
+                // Avatar do Remetente
+                let avatarHtml = '';
+                if (sender) {
+                    const initial = (sender.full_name || 'U')[0].toUpperCase();
+                    avatarHtml = `
+                        ${sender.avatar_url 
+                            ? `<img src="${sender.avatar_url}" alt="">` 
+                            : `<div class="fallback" style="background:${sender.avatar_color || '#6c63ff'};">${initial}</div>`
+                        }
+                    `;
+                } else {
+                    avatarHtml = `
+                        <div class="fallback" style="background:${cfg.bg};"><i class="fas ${cfg.icon}"></i></div>
+                    `;
+                }
 
-      const order = ['Hoje', 'Ontem', 'Esta semana', 'Anterior'];
-      const sorted = {};
-      order.forEach(k => { if (groups[k]) sorted[k] = groups[k]; });
-      return sorted;
-    }
+                // Conteúdo (Texto e Preview)
+                const { mainText, previewHtml } = buildNotificationContent(notif);
 
-    // ============================================================
-    // MARCAR TODAS COMO LIDAS
-    // ============================================================
-    async function markAllAsRead() {
-      const unread = notifications.filter(n => !n.read);
-      if (unread.length === 0) {
-        Swal.fire({
-          icon: 'info', title: 'Tudo lido!',
-          text: 'Você não tem notificações não lidas.',
-          confirmButtonColor: '#5850ec', background: '#14141e', color: '#fff'
-        });
-        return;
-      }
+                // Link
+                let actionLink = '#';
+                if (notif.type === 'follow') actionLink = notif.sender_id ? `perfil.html?id=${notif.sender_id}` : '#';
+                else if (notif.type === 'message') actionLink = 'chat.html';
+                else if (notif.reference_id) actionLink = `post.html?id=${notif.reference_id}`;
 
-      markAllBtn.disabled = true;
-      markAllBtn.textContent = 'Atualizando...';
+                return `
+                    <div class="notification-item ${unreadClass}" onclick="handleNotificationClick('${notif.id}', '${actionLink}')">
+                        <div class="avatar-wrap">
+                            <div class="avatar">${avatarHtml}</div>
+                            <div class="type-icon" style="background:${cfg.bg};">
+                                <i class="fas ${cfg.icon}"></i>
+                            </div>
+                        </div>
+                        <div class="content">
+                            <div class="text">${mainText}</div>
+                            ${previewHtml}
+                            <div class="time">
+                                <i class="far fa-clock"></i> ${timeAgo}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
 
-      try {
-        const ids = unread.map(n => n.id);
-        const { error } = await supabase
-          .from('notifications')
-          .update({ read: true })
-          .in('id', ids);
-        if (error) throw error;
+            // ============================================================
+            // FILTROS E AGRUPAMENTO
+            // ============================================================
+            function getFilteredNotifications() {
+                if (currentFilter === 'all') return notifications;
+                return notifications.filter(n => String(n.type || '').toLowerCase() === currentFilter);
+            }
 
-        notifications.forEach(n => { if (!n.read) n.read = true; });
-        renderNotifications();
-        updateBadge();
+            function setupFilterTabs() {
+                const buttons = filterTabs.querySelectorAll('button');
+                buttons.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        buttons.forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                        currentFilter = this.dataset.filter;
+                        renderNotifications();
+                    });
+                });
+            }
 
-        Swal.fire({
-          icon: 'success', title: 'Pronto!',
-          text: 'Todas as notificações foram marcadas como lidas.',
-          timer: 2000, showConfirmButton: false,
-          background: '#14141e', color: '#fff'
-        });
-      } catch (error) {
-        console.error(error);
-        Swal.fire('Erro', 'Não foi possível atualizar.', 'error');
-      } finally {
-        markAllBtn.disabled = false;
-        markAllBtn.textContent = 'Marcar todas como lidas';
-      }
-    }
+            function groupByDate(items) {
+                const groups = {};
+                const now = new Date();
+                const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                const yesterday = new Date(today); yesterday.setDate(yesterday.getDate() - 1);
+                const weekAgo = new Date(today); weekAgo.setDate(weekAgo.getDate() - 7);
 
-    // ============================================================
-    // CLIQUE
-    // ============================================================
-    window.handleNotificationClick = async function(id, link) {
-      try {
-        const notif = notifications.find(n => n.id === id);
-        if (notif && !notif.read) {
-          await supabase.from('notifications').update({ read: true }).eq('id', id);
-          notif.read = true;
-          renderNotifications();
-          updateBadge();
-        }
-        if (link && link !== '#') window.location.href = link;
-      } catch (e) {
-        console.error(e);
-      }
-    };
+                items.forEach(item => {
+                    const d = new Date(item.created_at);
+                    let label = 'Anterior';
+                    if (d >= today) label = 'Hoje';
+                    else if (d >= yesterday) label = 'Ontem';
+                    else if (d >= weekAgo) label = 'Esta semana';
 
-    // ============================================================
-    // BADGE
-    // ============================================================
-    function updateBadge() {
-      const unread = notifications.filter(n => !n.read).length;
-      if (unread > 0) {
-        notifBadge.style.display = 'flex';
-        notifBadge.textContent = unread > 9 ? '9+' : unread;
-      } else {
-        notifBadge.style.display = 'none';
-      }
-    }
+                    if (!groups[label]) groups[label] = [];
+                    groups[label].push(item);
+                });
 
-    // ============================================================
-    // REALTIME
-    // ============================================================
-    function setupRealtime() {
-      supabase
-        .channel('notifications_channel')
-        .on('postgres_changes', {
-          event: 'INSERT', schema: 'public', table: 'notifications',
-          filter: `user_id=eq.${currentUser.id}`
-        }, (payload) => {
-          const n = payload.new;
-          if (notifications.some(x => x.id === n.id)) return;
-          notifications.unshift(n);
-          renderNotifications();
-          updateBadge();
-        })
-        .on('postgres_changes', {
-          event: 'UPDATE', schema: 'public', table: 'notifications',
-          filter: `user_id=eq.${currentUser.id}`
-        }, (payload) => {
-          const idx = notifications.findIndex(x => x.id === payload.new.id);
-          if (idx !== -1) {
-            notifications[idx] = { ...notifications[idx], ...payload.new };
-            renderNotifications();
-            updateBadge();
-          }
-        })
-        .subscribe();
-    }
+                const order = ['Hoje', 'Ontem', 'Esta semana', 'Anterior'];
+                const sorted = {};
+                order.forEach(k => { if (groups[k]) sorted[k] = groups[k]; });
+                return sorted;
+            }
 
-    // ============================================================
-    // TEMPO
-    // ============================================================
-    function getTimeAgo(date) {
-      const diff = Date.now() - new Date(date).getTime();
-      const m = Math.floor(diff / 60000);
-      const h = Math.floor(diff / 3600000);
-      const d = Math.floor(diff / 86400000);
-      if (m < 1) return 'agora';
-      if (m < 60) return `${m}m`;
-      if (h < 24) return `${h}h`;
-      if (d < 7) return `${d}d`;
-      return new Date(date).toLocaleDateString('pt-BR');
-    }
+            // ============================================================
+            // AÇÕES
+            // ============================================================
+            async function markAllAsRead() {
+                const unread = notifications.filter(n => !n.read);
+                if (unread.length === 0) return;
 
-    document.addEventListener('DOMContentLoaded', checkAuth);
-    window.markAllAsRead = markAllAsRead;
+                markAllBtn.disabled = true;
+                markAllBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...';
 
-  })();
-</script>
+                try {
+                    const ids = unread.map(n => n.id);
+                    await supabase.from('notifications').update({ read: true }).in('id', ids);
+                    
+                    notifications.forEach(n => { n.read = true; });
+                    renderNotifications();
+                    updateBadge();
+                } catch (error) {
+                    console.error(error);
+                } finally {
+                    markAllBtn.disabled = false;
+                    markAllBtn.innerHTML = '<i class="fas fa-check-double"></i> Ler tudo';
+                }
+            }
+
+            window.handleNotificationClick = async function(id, link) {
+                try {
+                    const notif = notifications.find(n => n.id === id);
+                    if (notif && !notif.read) {
+                        await supabase.from('notifications').update({ read: true }).eq('id', id);
+                        notif.read = true;
+                        renderNotifications();
+                        updateBadge();
+                    }
+                    if (link && link !== '#') window.location.href = link;
+                } catch (e) { console.error(e); }
+            };
+
+            function updateBadge() {
+                const unread = notifications.filter(n => !n.read).length;
+                if (unread > 0) {
+                    notifBadge.style.display = 'flex';
+                    notifBadge.textContent = unread > 9 ? '9+' : unread;
+                } else {
+                    notifBadge.style.display = 'none';
+                }
+            }
+
+            function setupRealtime() {
+                supabase.channel('notifications_realtime')
+                    .on('postgres_changes', {
+                        event: 'INSERT', schema: 'public', table: 'notifications',
+                        filter: `user_id=eq.${currentUser.id}`
+                    }, async (payload) => {
+                        const n = payload.new;
+                        if (notifications.some(x => x.id === n.id)) return;
+                        
+                        // Busca dados extras em background antes de renderizar
+                        if (n.sender_id) await getSenderProfile(n.sender_id);
+                        if (n.reference_id) await getPostData(n.reference_id);
+
+                        notifications.unshift(n);
+                        renderNotifications();
+                        updateBadge();
+                    })
+                    .subscribe();
+            }
+
+            function getTimeAgo(date) {
+                const diff = Date.now() - new Date(date).getTime();
+                const m = Math.floor(diff / 60000);
+                const h = Math.floor(diff / 3600000);
+                const d = Math.floor(diff / 86400000);
+                if (m < 1) return 'agora';
+                if (m < 60) return `${m}min`;
+                if (h < 24) return `${h}h`;
+                if (d < 7) return `${d}d`;
+                return new Date(date).toLocaleDateString('pt-BR');
+            }
+
+            document.addEventListener('DOMContentLoaded', init);
+            window.markAllAsRead = markAllAsRead;
+
+        })();
+    </script>
 </body>
 </html>
